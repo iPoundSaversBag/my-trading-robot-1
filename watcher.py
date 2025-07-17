@@ -61,8 +61,6 @@ from notifications import send_notification, send_error_alert
 from datetime import datetime
 import re
 import argparse
-import psutil
-
 # --- Global Settings ---
 LOG_FILE = "watcher_log.txt"
 WATCH_INTERVAL_MINUTES = 1 # Default wait time in minutes
@@ -88,35 +86,7 @@ HIT_THRESHOLD_PERCENT = 0.1
 # How long to wait after starting the live bot to check its logs for errors
 BOT_VALIDATION_PERIOD_SECONDS = 60
 
-def find_and_terminate_process(script_name):
-    """Finds and terminates a running Python script process."""
-    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
-        try:
-            # Check if the process is a python process and if the script name is in its command line
-            if 'python' in proc.info['name'].lower() and any(script_name in s for s in proc.info['cmdline']):
-                log_message(f"Found running live bot process with PID: {proc.pid}. Terminating it.")
-                p = psutil.Process(proc.pid)
-                p.terminate() # Send a termination signal
-                p.wait(timeout=5) # Wait for the process to terminate
-                log_message(f"Process {proc.pid} terminated successfully.")
-                return True
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.TimeoutExpired) as e:
-            log_message(f"Could not terminate process {proc.pid}: {e}. It may have already closed.")
-        except Exception as e:
-            log_message(f"An unexpected error occurred while trying to terminate process {proc.pid}: {e}")
-    return False
-
-def start_live_bot():
-    """Starts the live_bot.py script as a new background process."""
-    log_message("Attempting to start live_bot.py in the background...")
-    try:
-        # Use Popen to start the script in a new process without waiting for it
-        subprocess.Popen([sys.executable, "live_bot.py"])
-        log_message("Successfully launched live_bot.py.")
-        send_notification("Watcher: Live bot has been started with the latest parameters.")
-    except Exception as e:
-        log_message(f"FATAL: Failed to start live_bot.py: {e}")
-        send_error_alert(f"Watcher FATAL: Could not start the live bot. Please check the system. Error: {e}")
+# [REMOVED] Functions for local bot management are no longer needed.
 
 def run_script(script_name, args=None):
     """Runs a python script and waits for it to complete."""
@@ -232,38 +202,7 @@ def update_config_bounds(params_to_update):
         print(f"ERROR: Could not write updated {CONFIG_FILE}: {e}")
         return False
 
-def check_bot_logs_for_errors(log_file="live_bot_log.txt"):
-    """Reads the live bot's log file to check for critical startup errors."""
-    log_message(f"Checking '{log_file}' for critical errors...")
-    if not os.path.exists(log_file):
-        log_message("Bot log file not found. Cannot check for errors.")
-        return False
-    
-    try:
-        with open(log_file, 'r', encoding='utf-8') as f:
-            logs = f.read()
-        
-        # Define what constitutes a critical error
-        critical_error_patterns = [
-            "CRITICAL ERROR",
-            "FATAL",
-            "Traceback",
-            "Could not fetch balance",
-            "Data preparation failed"
-        ]
-        
-        for pattern in critical_error_patterns:
-            if re.search(pattern, logs, re.IGNORECASE):
-                error_message = f"Critical error pattern '{pattern}' found in live bot log."
-                log_message(error_message)
-                send_error_alert(f"Watcher detected a critical error in the live bot. Please check '{log_file}'.")
-                return True # Errors found
-                
-        log_message("No critical errors found in bot log file.")
-        return False # No errors found
-    except Exception as e:
-        log_message(f"Could not read or analyze bot log file: {e}")
-        return True # Assume error if we can't even read the log
+# [REMOVED] Functions for local bot management are no longer needed.
 
 def main_loop(args):
     """
@@ -277,14 +216,6 @@ def main_loop(args):
         print(f"\n{'='*40}\n{'='*10} STARTING WATCHER CYCLE #{run_count} {'='*10}\n{'='*40}")
 
         send_notification("Watcher: Starting new optimization cycle.")
-
-                        # --- Step 0: Clear old logs and stop any running live bot ---
-        if os.path.exists("live_bot_log.txt"):
-            os.remove("live_bot_log.txt")
-        log_message("Checking for and stopping any running live bot instance...")
-        find_and_terminate_process("live_bot.py")
-
-
 
         # --- Step 1: Data Management ---
         if first_run and not args.skip_download:
@@ -371,22 +302,10 @@ def main_loop(args):
         params_to_update = parse_analysis(analysis_text)
         config_updated = update_config_bounds(params_to_update)
         
-        # --- Step 6: Validate the Live Bot ---
-        log_message("\n--- Validating Live Bot with New Parameters ---")
-        # FIX: Save the latest run directory path for the bot to read
-        with open("latest_run_dir.txt", "w") as f:
-            f.write(latest_run_dir)
-            
-        start_live_bot()
-        
-        log_message(f"Waiting for {BOT_VALIDATION_PERIOD_SECONDS} seconds to let the bot initialize...")
-        time.sleep(BOT_VALIDATION_PERIOD_SECONDS)
-        
-        log_message("Stopping live bot after validation period.")
-        find_and_terminate_process("live_bot.py")
-        
-        # Check logs for any startup issues
-        check_bot_logs_for_errors()
+        # --- Step 6: Live Bot Validation (REMOVED) ---
+        # This step is no longer needed as the live bot runs independently on the VM
+        # and will pick up the new parameters automatically from Google Cloud Storage.
+        log_message("Watcher cycle complete. New parameters have been uploaded to GCS for the live bot.")
 
         print(f"\n{'='*40}\n{'='*10} WATCHER CYCLE #{run_count} COMPLETE {'='*10}\n{'='*40}")
         
