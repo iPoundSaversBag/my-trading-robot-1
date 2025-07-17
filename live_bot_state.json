@@ -1,0 +1,12 @@
+{
+    "in_position": true,
+    "position_details": {
+        "type": "long",
+        "entry_price": 119983.7,
+        "size": 0.008247036006282665,
+        "partial_exit_taken": false,
+        "hard_stop_loss": 95732.5630039158,
+        "trailing_stop_loss": 102923.82482905974,
+        "take_profit_price": 125129.16491948963
+    }
+}

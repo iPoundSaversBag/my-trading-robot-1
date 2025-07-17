@@ -1,0 +1,18 @@
+# Python cache
+__pycache__/
+
+# Generated output from the backtester
+/plots_output/
+
+# Log files
+full_analysis_log.txt
+
+# Data files
+crypto_data.parquet
+
+# Generated parameter files
+final_optimized_params.json
+
+
+# Environment variables
+.env

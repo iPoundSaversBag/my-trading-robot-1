@@ -1,0 +1,421 @@
+{
+    "_comment": "This is the master configuration file for the entire trading robot pipeline. It defines the data source, optimization settings, parameter search spaces, and other critical operational parameters. The 'best_parameters_so_far' section is automatically updated by the watcher.py script, enabling a continuous, self-optimizing feedback loop.",
+    "bot_settings": {
+        "_comment": "General operational settings for the bot and associated scripts.",
+        "exchange_name": "binance",
+        "symbol": "BTC/USDT",
+        "timeframe": "5m",
+        "use_testnet": true,
+        "years_of_data_to_download": 4
+    },
+    "data_settings": {
+        "_comment": "Specifies the location of the historical market data.",
+        "file_path": "crypto_data.parquet"
+    },
+    "optimization_settings": {
+        "intensity": "1",
+        "calls_per_window": {
+            "1": 50,
+            "2": 200,
+            "3": 500,
+            "4": 1000
+        },
+        "risk_per_trade_percentage": 0.02,
+        "min_trades_per_window": 5
+    },
+    "parameter_spaces": {
+        "global": [
+            {
+                "name": "ADX_PERIOD",
+                "type": "Integer",
+                "bounds": [
+                    4,
+                    200
+                ],
+                "hard_bounds": [
+                    2,
+                    200
+                ]
+            },
+            {
+                "name": "ATR_PERIOD",
+                "type": "Integer",
+                "bounds": [
+                    6,
+                    200
+                ],
+                "hard_bounds": [
+                    2,
+                    200
+                ]
+            },
+            {
+                "name": "TENKAN_SEN_PERIOD",
+                "type": "Integer",
+                "bounds": [
+                    4,
+                    28
+                ],
+                "hard_bounds": [
+                    1,
+                    100
+                ]
+            },
+            {
+                "name": "KIJUN_SEN_PERIOD",
+                "type": "Integer",
+                "bounds": [
+                    21,
+                    60
+                ],
+                "hard_bounds": [
+                    1,
+                    200
+                ]
+            },
+            {
+                "name": "SENKOU_SPAN_B_PERIOD",
+                "type": "Integer",
+                "bounds": [
+                    51,
+                    200
+                ],
+                "hard_bounds": [
+                    1,
+                    300
+                ]
+            },
+            {
+                "name": "RSI_PERIOD",
+                "type": "Integer",
+                "bounds": [
+                    2,
+                    200
+                ],
+                "hard_bounds": [
+                    2,
+                    200
+                ]
+            },
+            {
+                "name": "RSI_OVERBOUGHT",
+                "type": "Integer",
+                "bounds": [
+                    70,
+                    100
+                ],
+                "hard_bounds": [
+                    60,
+                    100
+                ]
+            },
+            {
+                "name": "RSI_OVERSOLD",
+                "type": "Integer",
+                "bounds": [
+                    4,
+                    30
+                ],
+                "hard_bounds": [
+                    0,
+                    40
+                ]
+            },
+            {
+                "name": "RSI_LOOKBACK",
+                "type": "Integer",
+                "bounds": [
+                    1,
+                    100
+                ],
+                "hard_bounds": [
+                    1,
+                    100
+                ]
+            },
+            {
+                "name": "ADX_TREND_THRESHOLD",
+                "type": "Integer",
+                "bounds": [
+                    15,
+                    48
+                ],
+                "hard_bounds": [
+                    10,
+                    50
+                ]
+            },
+            {
+                "name": "BB_WIDTH_THRESHOLD",
+                "type": "Real",
+                "bounds": [
+                    0.01,
+                    0.2
+                ],
+                "hard_bounds": [
+                    0.001,
+                    0.5
+                ]
+            }
+        ],
+        "feature_switches": [
+            {
+                "name": "USE_RSI_FILTER",
+                "type": "Categorical",
+                "values": [
+                    true,
+                    false
+                ]
+            },
+            {
+                "name": "USE_ADX_FILTER",
+                "type": "Categorical",
+                "values": [
+                    true,
+                    false
+                ]
+            },
+            {
+                "name": "USE_BBANDS_FILTER",
+                "type": "Categorical",
+                "values": [
+                    true,
+                    false
+                ]
+            },
+            {
+                "name": "USE_ICHIMOKU_CLOUD_FILTER",
+                "type": "Categorical",
+                "values": [
+                    true,
+                    false
+                ]
+            },
+            {
+                "name": "USE_ICHIMOKU_TENKAN_KIJUN_CROSS_FILTER",
+                "type": "Categorical",
+                "values": [
+                    true,
+                    false
+                ]
+            },
+            {
+                "name": "USE_ICHIMOKU_CHIKOU_SPAN_FILTER",
+                "type": "Categorical",
+                "values": [
+                    true,
+                    false
+                ]
+            },
+            {
+                "name": "MIN_LONG_CONDITIONS",
+                "type": "Integer",
+                "bounds": [
+                    1,
+                    6
+                ],
+                "hard_bounds": [
+                    1,
+                    6
+                ]
+            },
+            {
+                "name": "MIN_SHORT_CONDITIONS",
+                "type": "Integer",
+                "bounds": [
+                    1,
+                    6
+                ],
+                "hard_bounds": [
+                    1,
+                    6
+                ]
+            }
+        ],
+        "trade_management": [
+            {
+                "name": "PARTIAL_EXIT_PERCENTAGE",
+                "type": "Real",
+                "bounds": [
+                    0.3,
+                    0.8
+                ],
+                "hard_bounds": [
+                    0.01,
+                    1.0
+                ]
+            },
+            {
+                "name": "TIME_IN_TRADE_BARS",
+                "type": "Integer",
+                "bounds": [
+                    5,
+                    100
+                ],
+                "hard_bounds": [
+                    3,
+                    200
+                ]
+            }
+        ],
+        "trending": [
+            {
+                "name": "TRENDING_TSL_ATR_MULTIPLIER",
+                "type": "Real",
+                "bounds": [
+                    1.5,
+                    20.0
+                ],
+                "hard_bounds": [
+                    0.5,
+                    20.0
+                ]
+            },
+            {
+                "name": "TRENDING_TP_ATR_MULTIPLIER",
+                "type": "Real",
+                "bounds": [
+                    2.0,
+                    10.0
+                ],
+                "hard_bounds": [
+                    1.0,
+                    25.0
+                ]
+            },
+            {
+                "name": "TRENDING_EXIT_STRATEGY",
+                "type": "Categorical",
+                "values": [
+                    "TSL_ONLY",
+                    "TP_AND_TSL",
+                    "FIXED_TP_AND_SL",
+                    "TIME_IN_TRADE"
+                ]
+            }
+        ],
+        "ranging": [
+            {
+                "name": "RANGING_TSL_ATR_MULTIPLIER",
+                "type": "Real",
+                "bounds": [
+                    0.64,
+                    20.0
+                ],
+                "hard_bounds": [
+                    0.5,
+                    20.0
+                ]
+            },
+            {
+                "name": "RANGING_TP_ATR_MULTIPLIER",
+                "type": "Real",
+                "bounds": [
+                    0.5,
+                    5.0
+                ],
+                "hard_bounds": [
+                    0.5,
+                    10.0
+                ]
+            },
+            {
+                "name": "BBANDS_PERIOD",
+                "type": "Integer",
+                "bounds": [
+                    12,
+                    100
+                ],
+                "hard_bounds": [
+                    2,
+                    100
+                ]
+            },
+            {
+                "name": "BBANDS_STD_DEV",
+                "type": "Real",
+                "bounds": [
+                    0.5,
+                    5.0
+                ],
+                "hard_bounds": [
+                    0.5,
+                    5.0
+                ]
+            },
+            {
+                "name": "RANGING_EXIT_STRATEGY",
+                "type": "Categorical",
+                "values": [
+                    "TSL_ONLY",
+                    "TP_AND_TSL",
+                    "FIXED_TP_AND_SL",
+                    "TIME_IN_TRADE"
+                ]
+            }
+        ]
+    },
+    "fixed_parameters": {
+        "INITIAL_CAPITAL": 10000.0,
+        "FIXED_RISK_PERCENTAGE": 0.02,
+        "COMMISSION_PERCENTAGE": 0.0023,
+        "SLIPPAGE_PERCENTAGE": 0.0005
+    },
+    "walk_forward_settings": {
+        "training_days": 180,
+        "testing_days": 30
+    },
+    "monte_carlo_settings": {
+        "enabled": true,
+        "confidence_level": 0.95,
+        "simulations_per_intensity": {
+            "1": 500,
+            "2": 1000,
+            "3": 2000,
+            "4": 4000
+        }
+    },
+    "output_settings": {
+        "directory": "plots_output",
+        "runs_to_keep": 5,
+        "enable_plotting": true,
+        "windows_to_plot": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ]
+    },
+    "best_parameters_so_far": {
+        "ADX_PERIOD": 170,
+        "ATR_PERIOD": 9,
+        "TENKAN_SEN_PERIOD": 20,
+        "KIJUN_SEN_PERIOD": 51,
+        "SENKOU_SPAN_B_PERIOD": 104,
+        "RSI_PERIOD": 54,
+        "RSI_OVERBOUGHT": 73,
+        "RSI_OVERSOLD": 10,
+        "RSI_LOOKBACK": 87,
+        "ADX_TREND_THRESHOLD": 46,
+        "BB_WIDTH_THRESHOLD": 0.03963732611971073,
+        "USE_RSI_FILTER": true,
+        "USE_ADX_FILTER": false,
+        "USE_BBANDS_FILTER": false,
+        "USE_ICHIMOKU_CLOUD_FILTER": false,
+        "USE_ICHIMOKU_TENKAN_KIJUN_CROSS_FILTER": true,
+        "USE_ICHIMOKU_CHIKOU_SPAN_FILTER": false,
+        "MIN_LONG_CONDITIONS": 6,
+        "MIN_SHORT_CONDITIONS": 1,
+        "PARTIAL_EXIT_PERCENTAGE": 0.4520106861925472,
+        "TIME_IN_TRADE_BARS": 5,
+        "TRENDING_TSL_ATR_MULTIPLIER": 6.966412753492945,
+        "TRENDING_TP_ATR_MULTIPLIER": 9.961499794641927,
+        "TRENDING_EXIT_STRATEGY": "TIME_IN_TRADE",
+        "RANGING_TSL_ATR_MULTIPLIER": 18.112904680855927,
+        "RANGING_TP_ATR_MULTIPLIER": 0.939682180265031,
+        "BBANDS_PERIOD": 29,
+        "BBANDS_STD_DEV": 4.005870105044188,
+        "RANGING_EXIT_STRATEGY": "TSL_ONLY"
+    }
+}

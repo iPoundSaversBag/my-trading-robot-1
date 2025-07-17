@@ -1,2 +1,24 @@
-# Auto detect text files and perform LF normalization
+# ==============================================================================
+#
+#                            GIT ATTRIBUTES
+#
+# ==============================================================================
+#
+# FILE: .gitattributes
+#
+# PURPOSE:
+#   This file is used to define attributes for specific paths or files within
+#   the Git repository. Its primary role is to ensure consistent handling of
+#   files across different operating systems and development environments.
+#
+# METHODOLOGY:
+#   This configuration ensures that all text files are automatically normalized
+#   to use Unix-style line endings (LF) within the Git repository. When a team
+#   member on Windows checks out the files, Git will automatically convert these
+#   line endings to Windows-style (CRLF), and vice-versa. This prevents
+#   spurious changes from appearing in `git status` due to line-ending
+#   differences alone.
+#
+# ==============================================================================
+
 * text=auto
