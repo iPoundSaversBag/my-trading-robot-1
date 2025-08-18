@@ -10,15 +10,7 @@
       "use": "@vercel/python"
     },
     {
-      "src": "api/portfolio.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/trading-bot.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/cron/trading-scheduler.py",
+      "src": "api/test-python.py",
       "use": "@vercel/python"
     }
   ],
@@ -28,16 +20,8 @@
       "dest": "/api/live-data.py"
     },
     {
-      "src": "/api/portfolio",
-      "dest": "/api/portfolio.py"
-    },
-    {
-      "src": "/api/trading-bot",
-      "dest": "/api/trading-bot.py"
-    },
-    {
-      "src": "/api/cron/trading-scheduler",
-      "dest": "/api/cron/trading-scheduler.py"
+      "src": "/api/test-python",
+      "dest": "/api/test-python.py"
     },
     {
       "src": "/",
