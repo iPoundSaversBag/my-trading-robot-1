@@ -621,14 +621,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 const positionPercent = btcPosition.percentage;
                 document.getElementById('position-1-pnl').textContent = '$' + positionValue.toFixed(2) + ' (' + positionPercent.toFixed(2) + '%)';
             } else {
-                document.getElementById('position-1-current').textContent = 'No Position';
+                document.getElementById('position-1-current').textContent = 'No Active Position';
                 document.getElementById('position-1-pnl').textContent = '$0.00 (0.00%)';
             }
+            
+            // ETH Position - Set to Not Active since you're still developing
+            document.getElementById('position-2-current').textContent = 'Development Mode';
+            document.getElementById('position-2-pnl').textContent = 'Not Active';
             
             // Update daily P&L (mock calculation based on portfolio performance)
             const performancePercent = portfolio.performance && portfolio.performance.total_volume ? 
                 ((portfolio.performance.total_volume / portfolio.total_value_usdt) * 100).toFixed(2) : '0.00';
             document.getElementById('daily-pnl').textContent = '+$' + (portfolio.total_value_usdt * 0.01).toFixed(2) + ' (+' + performancePercent + '%)';
+        } else {
+            // Fallback to Binance data if portfolio API not available
+            console.log('Portfolio API not available, using Binance fallback');
+            fetchBinanceData();
         }
     }
     
@@ -667,6 +675,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const pnlSymbol = positionPnl >= 0 ? '+' : '';
         document.getElementById('position-1-pnl').textContent = pnlSymbol + '$' + Math.abs(positionPnl).toFixed(2) + ' (' + pnlSymbol + positionPercent.toFixed(2) + '%)';
         document.getElementById('position-1-pnl').className = 'live-data-value ' + pnlColor;
+        
+        // ETH Position - Set to Development Mode
+        document.getElementById('position-2-current').textContent = 'Development Mode';
+        document.getElementById('position-2-pnl').textContent = 'Not Active';
     }
     
     function updateRealMarketData(botState) {
@@ -1048,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class='comprehensive-section'>
         <h3>📊 Live Trading Data</h3>
         <div class='update-indicator'>
-            🔴 Real-time data from Google Cloud bot • Updates every 5 seconds • Live BTC: $<span id="live-btc-indicator">Loading...</span>
+            � Real-time data from Vercel serverless system • Updates every 5 seconds • Live BTC: $<span id="live-btc-indicator">Loading...</span>
         </div>
         <div class='live-data-grid'>
             <div class='live-data-card'>
@@ -1103,11 +1115,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class='live-data-item'>
                     <span class='live-data-label'>ETH Position:</span>
-                    <span class='live-data-value' id='position-2-current'>Loading...</span>
+                    <span class='live-data-value' id='position-2-current'>Not Active</span>
                 </div>
                 <div class='live-data-item'>
-                    <span class='live-data-label'>P&L:</span>
-                    <span class='live-data-value loss' id='position-2-pnl'>Loading...</span>
+                    <span class='live-data-label'>ETH P&L:</span>
+                    <span class='live-data-value' id='position-2-pnl'>Not Active</span>
                 </div>
             </div>
             
