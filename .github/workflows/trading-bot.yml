@@ -1,0 +1,23 @@
+name: Automated Trading Bot
+on:
+  schedule:
+    # Run every 5 minutes (like your Google Cloud bot)
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  trading-cycle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Trading Cycle
+        run: |
+          # Call your Vercel live bot endpoint
+          curl -X GET "${{ secrets.VERCEL_BOT_URL }}/api/live-bot" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --max-time 30 \
+            --retry 3 \
+            --retry-delay 5
+      
+      - name: Log Result
+        run: echo "Trading cycle completed at $(date)"
