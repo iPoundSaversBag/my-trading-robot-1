@@ -24,6 +24,10 @@
     {
       "src": "api/auto-trader.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "api/live-bot.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
@@ -46,6 +50,10 @@
     {
       "src": "/api/auto-trader",
       "dest": "/api/auto-trader.py"
+    },
+    {
+      "src": "/api/live-bot",
+      "dest": "/api/live-bot.py"
     },
     {
       "src": "/",
