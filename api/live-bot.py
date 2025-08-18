@@ -109,9 +109,9 @@ class VercelLiveBot:
         except Exception as e:
             return {"error": str(e)}
     
-    def calculate_indicators(self, prices):
+    def calculate_indicators(self, prices, volumes=None):
         """Calculate trading indicators using your backtest parameters"""
-        if len(prices) < max(self.config['RSI_PERIOD'], self.config['MA_SLOW']):
+        if len(prices) < max(self.config['RSI_PERIOD'], self.config['MA_SLOW'], self.config.get('ADX_PERIOD', 14)):
             return None
         
         # RSI calculation
@@ -129,15 +129,115 @@ class VercelLiveBot:
         ma_fast = sum(prices[-self.config['MA_FAST']:]) / self.config['MA_FAST']
         ma_slow = sum(prices[-self.config['MA_SLOW']:]) / self.config['MA_SLOW']
         
+        # ADX calculation for trend strength
+        adx_period = self.config.get('ADX_PERIOD', 14)
+        adx = self._calculate_adx(prices, adx_period)
+        
+        # ATR for volatility measurement
+        atr_period = self.config.get('ATR_PERIOD', 14)
+        atr = self._calculate_atr(prices, atr_period)
+        
+        # Volume analysis if available
+        volume_ratio = 1.0
+        if volumes and len(volumes) >= 20:
+            avg_volume = sum(volumes[-20:]) / 20
+            current_volume = volumes[-1]
+            volume_ratio = current_volume / avg_volume if avg_volume > 0 else 1.0
+        
         return {
             'rsi': rsi,
             'ma_fast': ma_fast,
             'ma_slow': ma_slow,
-            'current_price': prices[-1]
+            'current_price': prices[-1],
+            'adx': adx,
+            'atr': atr,
+            'volume_ratio': volume_ratio,
+            'price_change_pct': ((prices[-1] - prices[-2]) / prices[-2] * 100) if len(prices) > 1 else 0
         }
     
-    def generate_signal(self, indicators):
-        """Generate trading signals using your backtest logic"""
+    def _calculate_adx(self, prices, period=14):
+        """Calculate ADX for trend strength measurement"""
+        if len(prices) < period + 1:
+            return 25  # Default neutral value
+        
+        # Simplified ADX calculation
+        price_changes = [abs(prices[i] - prices[i-1]) for i in range(1, len(prices))]
+        avg_change = sum(price_changes[-period:]) / period
+        recent_change = sum(price_changes[-5:]) / 5
+        
+        # Simple ADX approximation: trend strength based on price momentum
+        adx = min(100, max(0, (recent_change / avg_change) * 25)) if avg_change > 0 else 25
+        return adx
+    
+    def _calculate_atr(self, prices, period=14):
+        """Calculate ATR for volatility measurement"""
+        if len(prices) < period + 1:
+            return 0.01  # Default low volatility
+        
+        # Simplified ATR calculation
+        price_ranges = [abs(prices[i] - prices[i-1]) for i in range(1, len(prices))]
+        atr = sum(price_ranges[-period:]) / period
+        return atr
+    
+    def detect_market_regime(self, indicators):
+        """Detect current market regime based on indicators"""
+        adx = indicators['adx']
+        atr = indicators['atr']
+        volume_ratio = indicators['volume_ratio']
+        price_change_pct = indicators['price_change_pct']
+        ma_fast = indicators['ma_fast']
+        ma_slow = indicators['ma_slow']
+        current_price = indicators['current_price']
+        
+        # Volatility regime
+        volatility_threshold = self.config.get('volatility_threshold', 0.03)
+        price_volatility = abs(price_change_pct) / 100
+        
+        if price_volatility > volatility_threshold:
+            volatility_regime = 'high_volatility'
+        else:
+            volatility_regime = 'low_volatility'
+        
+        # Trend regime based on ADX and MA
+        adx_threshold = 25
+        if adx > adx_threshold:
+            if ma_fast > ma_slow and current_price > ma_slow:
+                trend_regime = 'trending_bull'
+            elif ma_fast < ma_slow and current_price < ma_slow:
+                trend_regime = 'trending_bear'
+            else:
+                trend_regime = 'trending_bull' if price_change_pct > 0 else 'trending_bear'
+        else:
+            trend_regime = 'ranging'
+        
+        # Breakout detection
+        volume_threshold = self.config.get('volume_threshold_multiplier', 2.0)
+        if volume_ratio > volume_threshold and abs(price_change_pct) > 1.0:
+            if price_change_pct > 0:
+                breakout_regime = 'breakout_bullish'
+            else:
+                breakout_regime = 'breakout_bearish'
+        else:
+            breakout_regime = None
+        
+        # Primary regime priority: breakout > trending > ranging
+        if breakout_regime:
+            primary_regime = breakout_regime
+        else:
+            primary_regime = trend_regime
+        
+        return {
+            'primary': primary_regime,
+            'trend': trend_regime,
+            'volatility': volatility_regime,
+            'breakout': breakout_regime,
+            'adx': adx,
+            'volume_ratio': volume_ratio,
+            'volatility_level': price_volatility
+        }
+    
+    def generate_signal(self, indicators, market_regime):
+        """Generate trading signals using regime-aware backtest logic"""
         if not indicators:
             return {'signal': 'HOLD', 'confidence': 0, 'reason': 'Insufficient data'}
         
@@ -145,9 +245,91 @@ class VercelLiveBot:
         ma_fast = indicators['ma_fast']
         ma_slow = indicators['ma_slow']
         current_price = indicators['current_price']
+        adx = indicators['adx']
         
         confidence = 0
         reasons = []
+        signal = 'HOLD'
+        
+        # Get regime-specific filter settings
+        regime = market_regime['primary']
+        
+        # Apply regime-specific filters based on optimized parameters
+        filters_active = {
+            'ichimoku_cloud': self.config.get(f'USE_ICHIMOKU_CLOUD_FILTER_{regime}', True),
+            'rsi': self.config.get(f'USE_RSI_FILTER_{regime}', True),
+            'adx': self.config.get(f'USE_ADX_FILTER_{regime}', True),
+            'bbands': self.config.get(f'USE_BBANDS_FILTER_{regime}', False),
+            'macd': self.config.get(f'USE_MACD_FILTER_{regime}', False),
+            'volume_breakout': self.config.get(f'USE_VOLUME_BREAKOUT_FILTER_{regime}', True)
+        }
+        
+        # RSI signals (if RSI filter is active for this regime)
+        if filters_active['rsi']:
+            if rsi < self.config['RSI_OVERSOLD']:
+                confidence += 0.3
+                reasons.append(f"RSI oversold ({rsi:.1f})")
+                signal = 'BUY'
+            elif rsi > self.config['RSI_OVERBOUGHT']:
+                confidence += 0.3
+                reasons.append(f"RSI overbought ({rsi:.1f})")
+                signal = 'SELL'
+        
+        # Moving average signals (Ichimoku substitute)
+        if filters_active['ichimoku_cloud']:
+            if ma_fast > ma_slow and current_price > ma_fast:
+                confidence += 0.25
+                reasons.append(f"Bullish MA cross")
+                if signal != 'SELL':
+                    signal = 'BUY'
+            elif ma_fast < ma_slow and current_price < ma_fast:
+                confidence += 0.25
+                reasons.append(f"Bearish MA cross")
+                if signal != 'BUY':
+                    signal = 'SELL'
+        
+        # ADX trend strength filter
+        if filters_active['adx']:
+            if adx > 25:
+                confidence += 0.2
+                reasons.append(f"Strong trend (ADX: {adx:.1f})")
+            else:
+                confidence -= 0.1
+                reasons.append(f"Weak trend (ADX: {adx:.1f})")
+        
+        # Volume breakout confirmation
+        if filters_active['volume_breakout'] and market_regime['breakout']:
+            confidence += 0.25
+            reasons.append(f"Volume breakout ({market_regime['volume_ratio']:.1f}x)")
+        
+        # Regime-specific confidence adjustments
+        regime_adjustments = {
+            'trending_bull': 0.1,
+            'trending_bear': 0.1,
+            'ranging': -0.1,
+            'breakout_bullish': 0.2,
+            'breakout_bearish': 0.2,
+            'high_volatility': -0.05,
+            'low_volatility': 0.05
+        }
+        
+        confidence += regime_adjustments.get(regime, 0)
+        
+        # Apply minimum confidence threshold from backtest optimization
+        min_confidence = self.config.get('min_confidence_for_trade', 0.04)
+        
+        if confidence < min_confidence:
+            signal = 'HOLD'
+            reasons.append(f"Below confidence threshold ({confidence:.3f} < {min_confidence:.3f})")
+        
+        return {
+            'signal': signal,
+            'confidence': round(confidence, 4),
+            'reason': ' | '.join(reasons),
+            'regime': regime,
+            'regime_details': market_regime,
+            'filters_used': [k for k, v in filters_active.items() if v]
+        }
         
         # RSI signals (from your backtest parameters)
         if rsi < self.config['RSI_OVERSOLD']:
@@ -200,23 +382,27 @@ class VercelLiveBot:
         return max(min_qty, min(quantity, max_qty))
     
     def execute_live_trading_cycle(self):
-        """Execute one live trading cycle using your backtest strategy"""
+        """Execute one live trading cycle using regime-aware backtest strategy"""
         try:
-            # Get market data
+            # Get market data with volume
             klines = self.get_market_data(self.config['SYMBOL'], self.config['TIMEFRAME'])
             if "error" in klines:
                 return {"error": "Failed to get market data", "details": klines["error"]}
             
-            # Extract closing prices
+            # Extract closing prices and volumes
             closes = [float(kline[4]) for kline in klines]
+            volumes = [float(kline[5]) for kline in klines]
             
-            # Calculate indicators
-            indicators = self.calculate_indicators(closes)
+            # Calculate indicators including regime detection data
+            indicators = self.calculate_indicators(closes, volumes)
             if not indicators:
                 return {"error": "Insufficient market data for analysis"}
             
-            # Generate trading signal
-            signal_data = self.generate_signal(indicators)
+            # Detect current market regime
+            market_regime = self.detect_market_regime(indicators)
+            
+            # Generate regime-aware trading signal
+            signal_data = self.generate_signal(indicators, market_regime)
             
             # Get account information
             account = self._make_request('/api/v3/account')
@@ -259,6 +445,7 @@ class VercelLiveBot:
                 'status': 'success',
                 'timestamp': int(time.time()),
                 'signal': signal_data,
+                'market_regime': market_regime,
                 'account_balance': balances,
                 'trade_executed': trade_result,
                 'config_source': 'optimized' if OPTIMIZED_CONFIG else 'default',
@@ -271,6 +458,7 @@ class VercelLiveBot:
                     'source_window': self.config.get('source_window', 'N/A'),
                     'optimization_timestamp': self.config.get('optimization_timestamp', 'N/A')
                 },
+                'regime_integration': 'active',
                 'backtest_integration': 'active'
             }
             
