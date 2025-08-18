@@ -12,6 +12,18 @@
     {
       "src": "api/test-python.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "api/portfolio-vercel.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "api/trading-engine.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "api/auto-trader.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
@@ -24,8 +36,26 @@
       "dest": "/api/test-python.py"
     },
     {
+      "src": "/api/portfolio",
+      "dest": "/api/portfolio-vercel.py"
+    },
+    {
+      "src": "/api/trading-engine",
+      "dest": "/api/trading-engine.py"
+    },
+    {
+      "src": "/api/auto-trader",
+      "dest": "/api/auto-trader.py"
+    },
+    {
       "src": "/",
       "dest": "/public/index.html"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/auto-trader",
+      "schedule": "*/5 * * * *"
     }
   ]
 }
