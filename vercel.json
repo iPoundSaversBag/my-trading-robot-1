@@ -51,11 +51,5 @@
       "src": "/",
       "dest": "/public/index.html"
     }
-  ],
-  "crons": [
-    {
-      "path": "/api/auto-trader",
-      "schedule": "*/5 * * * *"
-    }
   ]
 }
