@@ -1,0 +1,36 @@
+{
+  "version": 2,
+  "name": "trading-dashboard",
+  "builds": [
+    {
+      "src": "plots_output/*/performance_report.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/live-data.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/live-data",
+      "dest": "/api/live-data.py"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/plots_output/20250817_133240/performance_report.html"
+    },
+    {
+      "src": "/",
+      "dest": "/plots_output/20250817_133240/performance_report.html"
+    }
+  ],
+  "functions": {
+    "api/live-data.py": {
+      "runtime": "python3.9"
+    }
+  },
+  "env": {
+    "PYTHON_VERSION": "3.9"
+  }
+}

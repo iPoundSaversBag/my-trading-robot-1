@@ -1,0 +1,23 @@
+{
+  "name": "trading-dashboard",
+  "version": "1.0.0",
+  "description": "Professional Trading System Analysis Dashboard",
+  "main": "index.js",
+  "scripts": {
+    "dev": "python scripts/dashboard_server.py",
+    "build": "echo 'Build complete - static files ready'",
+    "start": "python scripts/dashboard_server.py --port $PORT"
+  },
+  "keywords": [
+    "trading",
+    "dashboard",
+    "crypto",
+    "analytics",
+    "real-time"
+  ],
+  "author": "Trading Bot System",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
