@@ -1,0 +1,17 @@
+[
+  {
+    "timestamp": "2025-07-20T03:38:39.821329",
+    "cpu_percent": 20.6,
+    "memory_percent": 73.2,
+    "disk_percent": 78.2,
+    "processes_running": 295,
+    "backtest_status": "running",
+    "live_bot_status": "stale",
+    "last_trade_time": null,
+    "portfolio_value": null,
+    "network_connectivity": true,
+    "python_memory_mb": 399.75,
+    "system_uptime_hours": 87.21500019788742,
+    "errors_last_hour": 6
+  }
+]

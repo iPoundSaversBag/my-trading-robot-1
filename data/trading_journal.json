@@ -1,0 +1,2916 @@
+{
+  "metadata": {
+    "created": "2025-07-23T22:01:49.613864",
+    "total_sessions": 186,
+    "total_trades": 4784,
+    "last_updated": "2025-08-17T18:59:45.575469"
+  },
+  "sessions": [
+    {
+      "timestamp": "2025-07-23T22:01:49.613870",
+      "session_id": "session_1",
+      "backtest_run": "plots_output\\20250723_203850",
+      "trades_count": 2392,
+      "total_pnl": -9900.882433870474,
+      "win_rate": 48.70401337792642,
+      "parameters_used": {
+        "TENKAN_SEN_PERIOD": 10,
+        "KIJUN_SEN_PERIOD": 28,
+        "SENKOU_SPAN_B_PERIOD": 43,
+        "RSI_PERIOD": 19,
+        "RSI_OVERBOUGHT": 80,
+        "RSI_OVERSOLD": 20,
+        "min_confidence": 0.3522507914820745,
+        "strong_signal_threshold": 0.8763563253484663,
+        "confluence_threshold": 0.5223683086636804,
+        "volatility_threshold": 0.02374304222375117,
+        "volatility_window": 30,
+        "trend_window": 50,
+        "momentum_window": 19,
+        "TRENDING_TSL_ATR_MULTIPLIER": 2.9491827514089812,
+        "RANGING_TSL_ATR_MULTIPLIER": 2.3822990998601483,
+        "TRENDING_TP_ATR_MULTIPLIER": 2.2128202733205207,
+        "RANGING_TP_ATR_MULTIPLIER": 3.063774972797818
+      },
+      "market_conditions": {},
+      "notes": "Automated backtest integration - 2025-07-23",
+      "performance_metrics": {
+        "avg_trade_pnl": -4.139164897103041,
+        "max_win": 245.80701201418265,
+        "max_loss": -170.79290813942998,
+        "total_windows": 2
+      }
+    },
+    {
+      "timestamp": "2025-07-23T22:02:05.709594",
+      "session_id": "session_2",
+      "backtest_run": "plots_output\\20250723_203850",
+      "trades_count": 2392,
+      "total_pnl": -9900.882433870474,
+      "win_rate": 48.70401337792642,
+      "parameters_used": {
+        "TENKAN_SEN_PERIOD": 10,
+        "KIJUN_SEN_PERIOD": 28,
+        "SENKOU_SPAN_B_PERIOD": 43,
+        "RSI_PERIOD": 19,
+        "RSI_OVERBOUGHT": 80,
+        "RSI_OVERSOLD": 20,
+        "min_confidence": 0.3522507914820745,
+        "strong_signal_threshold": 0.8763563253484663,
+        "confluence_threshold": 0.5223683086636804,
+        "volatility_threshold": 0.02374304222375117,
+        "volatility_window": 30,
+        "trend_window": 50,
+        "momentum_window": 19,
+        "TRENDING_TSL_ATR_MULTIPLIER": 2.9491827514089812,
+        "RANGING_TSL_ATR_MULTIPLIER": 2.3822990998601483,
+        "TRENDING_TP_ATR_MULTIPLIER": 2.2128202733205207,
+        "RANGING_TP_ATR_MULTIPLIER": 3.063774972797818
+      },
+      "market_conditions": {},
+      "notes": "Automated backtest integration - 2025-07-23",
+      "performance_metrics": {
+        "avg_trade_pnl": -4.139164897103041,
+        "max_win": 245.80701201418265,
+        "max_loss": -170.79290813942998,
+        "total_windows": 2
+      }
+    },
+    {
+      "timestamp": "2025-07-25T00:04:05.923147",
+      "run_directory": "plots_output\\20250724_175612",
+      "trades_count": 2038,
+      "total_pnl": -9900.193960558714,
+      "win_rate": 47.742885181550534,
+      "metrics": {
+        "avg_trade_pnl": -4.85779880302194,
+        "max_win": 655.8719749134723,
+        "max_loss": -321.5462336219145,
+        "total_windows": 1,
+        "volatility": 38.39874268535452,
+        "sharpe_ratio": -0.12650931940213578
+      }
+    },
+    {
+      "timestamp": "2025-07-25T00:04:25.951146",
+      "run_directory": "plots_output\\20250724_175612",
+      "trades_count": 2038,
+      "total_pnl": -9900.193960558714,
+      "win_rate": 47.742885181550534,
+      "metrics": {
+        "avg_trade_pnl": -4.85779880302194,
+        "max_win": 655.8719749134723,
+        "max_loss": -321.5462336219145,
+        "total_windows": 1,
+        "volatility": 38.39874268535452,
+        "sharpe_ratio": -0.12650931940213578
+      }
+    },
+    {
+      "timestamp": "2025-07-25T00:09:14.757480",
+      "run_directory": "plots_output\\20250724_175612",
+      "trades_count": 2038,
+      "total_pnl": -9900.193960558714,
+      "win_rate": 47.742885181550534,
+      "metrics": {
+        "avg_trade_pnl": -4.85779880302194,
+        "max_win": 655.8719749134723,
+        "max_loss": -321.5462336219145,
+        "total_windows": 1,
+        "volatility": 38.39874268535452,
+        "sharpe_ratio": -0.12650931940213578
+      }
+    },
+    {
+      "timestamp": "2025-07-25T00:10:09.114544",
+      "run_directory": "plots_output\\20250724_175612",
+      "trades_count": 2038,
+      "total_pnl": -9900.193960558714,
+      "win_rate": 47.742885181550534,
+      "metrics": {
+        "avg_trade_pnl": -4.85779880302194,
+        "max_win": 655.8719749134723,
+        "max_loss": -321.5462336219145,
+        "total_windows": 1,
+        "volatility": 38.39874268535452,
+        "sharpe_ratio": -0.12650931940213578
+      }
+    },
+    {
+      "timestamp": "2025-07-25T21:10:44.567651",
+      "run_directory": "plots_output\\20250725_210453",
+      "trades_count": 790,
+      "total_pnl": -9960.882258985794,
+      "win_rate": 47.59493670886076,
+      "metrics": {
+        "avg_trade_pnl": -12.608711720235181,
+        "max_win": 508.5494133107827,
+        "max_loss": -376.20536546782,
+        "total_windows": 1,
+        "volatility": 80.55105248033193,
+        "sharpe_ratio": -0.15653068869973905
+      }
+    },
+    {
+      "timestamp": "2025-07-26T20:07:43.676888",
+      "run_directory": "plots_output\\20250726_200656",
+      "trades_count": 87,
+      "total_pnl": -859.2011007959127,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -9.8758747217921,
+        "max_win": 318.41355500323783,
+        "max_loss": -208.81813928504252,
+        "total_windows": 2,
+        "volatility": 82.14436255336892,
+        "sharpe_ratio": -0.12022583674413173
+      }
+    },
+    {
+      "timestamp": "2025-07-26T20:15:48.663269",
+      "run_directory": "plots_output\\20250726_201501",
+      "trades_count": 87,
+      "total_pnl": -859.2011007959127,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -9.8758747217921,
+        "max_win": 318.41355500323783,
+        "max_loss": -208.81813928504252,
+        "total_windows": 2,
+        "volatility": 82.14436255336892,
+        "sharpe_ratio": -0.12022583674413173
+      }
+    },
+    {
+      "timestamp": "2025-07-26T20:27:35.951416",
+      "run_directory": "plots_output\\20250726_202649",
+      "trades_count": 87,
+      "total_pnl": -859.2011007959127,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -9.8758747217921,
+        "max_win": 318.41355500323783,
+        "max_loss": -208.81813928504252,
+        "total_windows": 2,
+        "volatility": 82.14436255336892,
+        "sharpe_ratio": -0.12022583674413173
+      }
+    },
+    {
+      "timestamp": "2025-07-26T20:35:17.646502",
+      "run_directory": "plots_output\\20250726_203425",
+      "trades_count": 87,
+      "total_pnl": -855.4751941091365,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -9.833048208150995,
+        "max_win": 317.2674094197978,
+        "max_loss": -208.2372915664656,
+        "total_windows": 2,
+        "volatility": 81.92955405689658,
+        "sharpe_ratio": -0.1200183294214242
+      }
+    },
+    {
+      "timestamp": "2025-07-26T21:34:50.236695",
+      "run_directory": "plots_output\\20250726_203425",
+      "trades_count": 87,
+      "total_pnl": -855.4751941091365,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -9.833048208150995,
+        "max_win": 317.2674094197978,
+        "max_loss": -208.2372915664656,
+        "total_windows": 2,
+        "volatility": 81.92955405689658,
+        "sharpe_ratio": -0.1200183294214242
+      }
+    },
+    {
+      "timestamp": "2025-07-26T21:55:51.880053",
+      "run_directory": "plots_output\\20250726_203425",
+      "trades_count": 87,
+      "total_pnl": -855.4751941091365,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -9.833048208150995,
+        "max_win": 317.2674094197978,
+        "max_loss": -208.2372915664656,
+        "total_windows": 2,
+        "volatility": 81.92955405689658,
+        "sharpe_ratio": -0.1200183294214242
+      }
+    },
+    {
+      "timestamp": "2025-07-26T21:59:01.352032",
+      "run_directory": "plots_output\\20250726_203425",
+      "trades_count": 87,
+      "total_pnl": -855.4751941091365,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -9.833048208150995,
+        "max_win": 317.2674094197978,
+        "max_loss": -208.2372915664656,
+        "total_windows": 2,
+        "volatility": 81.92955405689658,
+        "sharpe_ratio": -0.1200183294214242
+      }
+    },
+    {
+      "timestamp": "2025-07-26T21:59:30.066260",
+      "run_directory": "plots_output\\20250726_203425",
+      "trades_count": 87,
+      "total_pnl": -855.4751941091365,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -9.833048208150995,
+        "max_win": 317.2674094197978,
+        "max_loss": -208.2372915664656,
+        "total_windows": 2,
+        "volatility": 81.92955405689658,
+        "sharpe_ratio": -0.1200183294214242
+      }
+    },
+    {
+      "timestamp": "2025-07-26T22:01:16.681877",
+      "run_directory": "plots_output\\20250726_203425",
+      "trades_count": 87,
+      "total_pnl": -855.4751941091365,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -9.833048208150995,
+        "max_win": 317.2674094197978,
+        "max_loss": -208.2372915664656,
+        "total_windows": 2,
+        "volatility": 81.92955405689658,
+        "sharpe_ratio": -0.1200183294214242
+      }
+    },
+    {
+      "timestamp": "2025-07-26T22:24:55.796428",
+      "run_directory": "plots_output\\20250726_220214",
+      "trades_count": 1103,
+      "total_pnl": -17862.280525818504,
+      "win_rate": 37.805983680870355,
+      "metrics": {
+        "avg_trade_pnl": -16.194270648974165,
+        "max_win": 274.52191739017184,
+        "max_loss": -368.6316618759398,
+        "total_windows": 16,
+        "volatility": 61.949244782567,
+        "sharpe_ratio": -0.2614119139920711
+      }
+    },
+    {
+      "timestamp": "2025-07-27T06:48:34.883723",
+      "run_directory": "plots_output\\20250726_220214",
+      "trades_count": 1103,
+      "total_pnl": -17862.280525818504,
+      "win_rate": 37.805983680870355,
+      "metrics": {
+        "avg_trade_pnl": -16.194270648974165,
+        "max_win": 274.52191739017184,
+        "max_loss": -368.6316618759398,
+        "total_windows": 16,
+        "volatility": 61.949244782567,
+        "sharpe_ratio": -0.2614119139920711
+      }
+    },
+    {
+      "timestamp": "2025-07-27T07:41:42.911639",
+      "run_directory": "plots_output\\20250727_074054",
+      "trades_count": 87,
+      "total_pnl": -1745.380975039854,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -20.061850287814416,
+        "max_win": 155.28715476833003,
+        "max_loss": -193.8706769837408,
+        "total_windows": 2,
+        "volatility": 56.40139416361122,
+        "sharpe_ratio": -0.355697772817783
+      }
+    },
+    {
+      "timestamp": "2025-07-27T07:45:37.212253",
+      "run_directory": "plots_output\\20250727_074448",
+      "trades_count": 59,
+      "total_pnl": -1674.1291423451753,
+      "win_rate": 32.20338983050847,
+      "metrics": {
+        "avg_trade_pnl": -28.37507020924026,
+        "max_win": 155.28715476833003,
+        "max_loss": -193.8706769837408,
+        "total_windows": 1,
+        "volatility": 62.024767847584876,
+        "sharpe_ratio": -0.45747966810560386
+      }
+    },
+    {
+      "timestamp": "2025-07-27T07:47:28.077297",
+      "run_directory": "plots_output\\20250727_074639",
+      "trades_count": 87,
+      "total_pnl": -1745.380975039854,
+      "win_rate": 36.7816091954023,
+      "metrics": {
+        "avg_trade_pnl": -20.061850287814416,
+        "max_win": 155.28715476833003,
+        "max_loss": -193.8706769837408,
+        "total_windows": 2,
+        "volatility": 56.40139416361122,
+        "sharpe_ratio": -0.355697772817783
+      }
+    },
+    {
+      "timestamp": "2025-07-27T07:57:45.356972",
+      "run_directory": "plots_output\\20250727_075137",
+      "trades_count": 1007,
+      "total_pnl": -16937.013167123754,
+      "win_rate": 38.03376365441907,
+      "metrics": {
+        "avg_trade_pnl": -16.819278219586646,
+        "max_win": 294.6806460691286,
+        "max_loss": -395.7010693931118,
+        "total_windows": 14,
+        "volatility": 65.89551156497059,
+        "sharpe_ratio": -0.2552416366477927
+      }
+    },
+    {
+      "timestamp": "2025-07-27T08:19:20.557133",
+      "run_directory": "plots_output\\20250727_081333",
+      "trades_count": 1007,
+      "total_pnl": -16995.879865017945,
+      "win_rate": 38.03376365441907,
+      "metrics": {
+        "avg_trade_pnl": -16.877735715012854,
+        "max_win": 294.6806460691286,
+        "max_loss": -395.7010693931118,
+        "total_windows": 14,
+        "volatility": 66.09552224418252,
+        "sharpe_ratio": -0.2553536932904463
+      }
+    },
+    {
+      "timestamp": "2025-07-27T08:40:58.031092",
+      "run_directory": "plots_output\\20250727_083507",
+      "trades_count": 1103,
+      "total_pnl": -17879.951807441234,
+      "win_rate": 37.805983680870355,
+      "metrics": {
+        "avg_trade_pnl": -16.210291756519705,
+        "max_win": 271.29618524030315,
+        "max_loss": -367.9731729724847,
+        "total_windows": 16,
+        "volatility": 61.889647603915755,
+        "sharpe_ratio": -0.2619225085956715
+      }
+    },
+    {
+      "timestamp": "2025-07-27T09:02:34.254769",
+      "run_directory": "plots_output\\20250727_085634",
+      "trades_count": 1144,
+      "total_pnl": -18246.35480465299,
+      "win_rate": 37.58741258741259,
+      "metrics": {
+        "avg_trade_pnl": -15.949610843228138,
+        "max_win": 259.78990341581647,
+        "max_loss": -348.8493186452983,
+        "total_windows": 16,
+        "volatility": 58.778438911914435,
+        "sharpe_ratio": -0.2713513856182924
+      }
+    },
+    {
+      "timestamp": "2025-07-27T09:23:58.699314",
+      "run_directory": "plots_output\\20250727_091812",
+      "trades_count": 1043,
+      "total_pnl": -17508.56892933009,
+      "win_rate": 38.15915627996165,
+      "metrics": {
+        "avg_trade_pnl": -16.786739146049943,
+        "max_win": 291.1603273659368,
+        "max_loss": -390.9739388738893,
+        "total_windows": 15,
+        "volatility": 65.75214844017086,
+        "sharpe_ratio": -0.25530327972970374
+      }
+    },
+    {
+      "timestamp": "2025-07-27T09:46:08.094309",
+      "run_directory": "plots_output\\20250727_093935",
+      "trades_count": 1007,
+      "total_pnl": -16937.013167123754,
+      "win_rate": 38.03376365441907,
+      "metrics": {
+        "avg_trade_pnl": -16.819278219586646,
+        "max_win": 294.6806460691286,
+        "max_loss": -395.7010693931118,
+        "total_windows": 14,
+        "volatility": 65.89551156497059,
+        "sharpe_ratio": -0.2552416366477927
+      }
+    },
+    {
+      "timestamp": "2025-07-27T10:07:37.619136",
+      "run_directory": "plots_output\\20250727_100145",
+      "trades_count": 1144,
+      "total_pnl": -18284.224083532907,
+      "win_rate": 37.58741258741259,
+      "metrics": {
+        "avg_trade_pnl": -15.982713359731562,
+        "max_win": 259.78990341581647,
+        "max_loss": -348.8493186452983,
+        "total_windows": 16,
+        "volatility": 58.880270116165825,
+        "sharpe_ratio": -0.27144429412771054
+      }
+    },
+    {
+      "timestamp": "2025-07-27T10:28:58.614907",
+      "run_directory": "plots_output\\20250727_102314",
+      "trades_count": 1103,
+      "total_pnl": -17916.120292957916,
+      "win_rate": 37.805983680870355,
+      "metrics": {
+        "avg_trade_pnl": -16.24308276786756,
+        "max_win": 274.623630662342,
+        "max_loss": -368.7682438032095,
+        "total_windows": 16,
+        "volatility": 62.125685793967506,
+        "sharpe_ratio": -0.2614551865348549
+      }
+    },
+    {
+      "timestamp": "2025-07-27T10:50:20.888068",
+      "run_directory": "plots_output\\20250727_104435",
+      "trades_count": 943,
+      "total_pnl": -15214.423443020612,
+      "win_rate": 38.3881230116649,
+      "metrics": {
+        "avg_trade_pnl": -16.134065156967775,
+        "max_win": 291.1603273659368,
+        "max_loss": -305.60544761194944,
+        "total_windows": 14,
+        "volatility": 63.60093132589654,
+        "sharpe_ratio": -0.2536765550538162
+      }
+    },
+    {
+      "timestamp": "2025-07-27T11:11:42.234804",
+      "run_directory": "plots_output\\20250727_110558",
+      "trades_count": 1043,
+      "total_pnl": -17491.12636382322,
+      "win_rate": 38.15915627996165,
+      "metrics": {
+        "avg_trade_pnl": -16.77001568918813,
+        "max_win": 291.4138850319794,
+        "max_loss": -391.31441946175374,
+        "total_windows": 15,
+        "volatility": 65.71481468591176,
+        "sharpe_ratio": -0.25519383672222945
+      }
+    },
+    {
+      "timestamp": "2025-07-27T11:32:31.295837",
+      "run_directory": "plots_output\\20250727_112718",
+      "trades_count": 991,
+      "total_pnl": -16462.61549749485,
+      "win_rate": 38.74873864783047,
+      "metrics": {
+        "avg_trade_pnl": -16.61212461906645,
+        "max_win": 291.4138850319794,
+        "max_loss": -391.31441946175374,
+        "total_windows": 14,
+        "volatility": 67.43598486313992,
+        "sharpe_ratio": -0.24633917118257334
+      }
+    },
+    {
+      "timestamp": "2025-07-27T12:03:33.780685",
+      "run_directory": "plots_output\\20250727_120026",
+      "trades_count": 340,
+      "total_pnl": -5078.830000801053,
+      "win_rate": 36.470588235294116,
+      "metrics": {
+        "avg_trade_pnl": -14.937735296473685,
+        "max_win": 121.3411415367964,
+        "max_loss": -180.7414766974406,
+        "total_windows": 4,
+        "volatility": 46.9312747093631,
+        "sharpe_ratio": -0.31828957105853994
+      }
+    },
+    {
+      "timestamp": "2025-07-27T16:20:46.702433",
+      "run_directory": "plots_output\\20250727_161511",
+      "trades_count": 580,
+      "total_pnl": -8440.090118976183,
+      "win_rate": 37.58620689655172,
+      "metrics": {
+        "avg_trade_pnl": -14.551879515476177,
+        "max_win": 378.12859726463233,
+        "max_loss": -304.5434325956182,
+        "total_windows": 8,
+        "volatility": 58.47360399947063,
+        "sharpe_ratio": -0.24886236729324768
+      }
+    },
+    {
+      "timestamp": "2025-07-27T16:26:49.915039",
+      "run_directory": "plots_output\\20250727_162338",
+      "trades_count": 354,
+      "total_pnl": -4127.8958245215445,
+      "win_rate": 36.72316384180791,
+      "metrics": {
+        "avg_trade_pnl": -11.660722668139956,
+        "max_win": 133.74964371724857,
+        "max_loss": -211.95144090830013,
+        "total_windows": 4,
+        "volatility": 39.149924966868895,
+        "sharpe_ratio": -0.297847893144316
+      }
+    },
+    {
+      "timestamp": "2025-07-27T16:35:10.520147",
+      "run_directory": "plots_output\\20250727_163336",
+      "trades_count": 321,
+      "total_pnl": -5959.059579960509,
+      "win_rate": 37.69470404984423,
+      "metrics": {
+        "avg_trade_pnl": -18.56404853570252,
+        "max_win": 163.01251364938193,
+        "max_loss": -258.0976986507821,
+        "total_windows": 3,
+        "volatility": 59.11799081915944,
+        "sharpe_ratio": -0.3140169054880351
+      }
+    },
+    {
+      "timestamp": "2025-07-27T16:38:40.636111",
+      "run_directory": "plots_output\\20250727_163728",
+      "trades_count": 321,
+      "total_pnl": -5598.75321231819,
+      "win_rate": 37.69470404984423,
+      "metrics": {
+        "avg_trade_pnl": -17.441598792268504,
+        "max_win": 152.63507341967951,
+        "max_loss": -230.0976851043812,
+        "total_windows": 3,
+        "volatility": 56.673281705254155,
+        "sharpe_ratio": -0.307756993550834
+      }
+    },
+    {
+      "timestamp": "2025-07-27T22:34:21.762392",
+      "run_directory": "plots_output\\20250727_223313",
+      "trades_count": 5249,
+      "total_pnl": -18514.714608185295,
+      "win_rate": 38.78834063631168,
+      "metrics": {
+        "avg_trade_pnl": -3.527284169972432,
+        "max_win": 786.4138122626803,
+        "max_loss": -851.6204500574194,
+        "total_windows": 2,
+        "volatility": 29.452995571641996,
+        "sharpe_ratio": -0.11975977660379579
+      }
+    },
+    {
+      "timestamp": "2025-07-27T22:50:06.229450",
+      "run_directory": "plots_output\\20250727_224915",
+      "trades_count": 5249,
+      "total_pnl": -17910.759859929916,
+      "win_rate": 38.78834063631168,
+      "metrics": {
+        "avg_trade_pnl": -3.412223253939782,
+        "max_win": 666.2623329602487,
+        "max_loss": -726.254510256138,
+        "total_windows": 2,
+        "volatility": 25.915513922652643,
+        "sharpe_ratio": -0.13166720382717056
+      }
+    },
+    {
+      "timestamp": "2025-07-27T22:56:29.993237",
+      "run_directory": "plots_output\\20250727_225531",
+      "trades_count": 1763,
+      "total_pnl": -12693.628871139175,
+      "win_rate": 31.366988088485538,
+      "metrics": {
+        "avg_trade_pnl": -7.200016376142471,
+        "max_win": 289.3755355310025,
+        "max_loss": -259.6988261093375,
+        "total_windows": 1,
+        "volatility": 21.767595878109578,
+        "sharpe_ratio": -0.33076764271350306
+      }
+    },
+    {
+      "timestamp": "2025-07-27T23:14:55.129920",
+      "run_directory": "plots_output\\20250727_231354",
+      "trades_count": 2472,
+      "total_pnl": -16647.965359187332,
+      "win_rate": 29.328478964401295,
+      "metrics": {
+        "avg_trade_pnl": -6.734613818441478,
+        "max_win": 196.9200993692851,
+        "max_loss": -317.98752101203536,
+        "total_windows": 1,
+        "volatility": 24.167982174968927,
+        "sharpe_ratio": -0.2786585065184548
+      }
+    },
+    {
+      "timestamp": "2025-07-27T23:22:40.303290",
+      "run_directory": "plots_output\\20250727_231949",
+      "trades_count": 1973,
+      "total_pnl": -16631.04784276708,
+      "win_rate": 54.08008109477952,
+      "metrics": {
+        "avg_trade_pnl": -8.42931973784444,
+        "max_win": 83.8671642596477,
+        "max_loss": -141.91768529250905,
+        "total_windows": 1,
+        "volatility": 20.969693741098194,
+        "sharpe_ratio": -0.4019762921631964
+      }
+    },
+    {
+      "timestamp": "2025-07-27T23:39:35.595294",
+      "run_directory": "plots_output\\20250727_232934",
+      "trades_count": 2148,
+      "total_pnl": -17406.370899795773,
+      "win_rate": 45.11173184357542,
+      "metrics": {
+        "avg_trade_pnl": -8.103524627465443,
+        "max_win": 163.9239001273576,
+        "max_loss": -301.13991074935905,
+        "total_windows": 1,
+        "volatility": 24.58666243865156,
+        "sharpe_ratio": -0.3295902665799106
+      }
+    },
+    {
+      "timestamp": "2025-07-28T06:43:34.589579",
+      "run_directory": "plots_output\\20250728_063401",
+      "trades_count": 2186,
+      "total_pnl": -17278.828286208973,
+      "win_rate": 43.54986276303751,
+      "metrics": {
+        "avg_trade_pnl": -7.904313031202641,
+        "max_win": 277.7811083612528,
+        "max_loss": -388.1984325065481,
+        "total_windows": 1,
+        "volatility": 32.70657070480029,
+        "sharpe_ratio": -0.2416735494083009
+      }
+    },
+    {
+      "timestamp": "2025-07-28T14:29:39.079489",
+      "run_directory": "plots_output\\20250728_142055",
+      "trades_count": 2120,
+      "total_pnl": -18402.91308515702,
+      "win_rate": 45.14150943396226,
+      "metrics": {
+        "avg_trade_pnl": -8.680619379791047,
+        "max_win": 259.2610442653659,
+        "max_loss": -359.53971540854866,
+        "total_windows": 1,
+        "volatility": 38.19733393342088,
+        "sharpe_ratio": -0.2272572058280725
+      }
+    },
+    {
+      "timestamp": "2025-07-28T14:54:56.293278",
+      "run_directory": "plots_output\\20250728_144606",
+      "trades_count": 1739,
+      "total_pnl": -17245.573850340654,
+      "win_rate": 37.95284646348476,
+      "metrics": {
+        "avg_trade_pnl": -9.916948735101009,
+        "max_win": 189.349274836816,
+        "max_loss": -351.0100357053688,
+        "total_windows": 1,
+        "volatility": 31.981067193744323,
+        "sharpe_ratio": -0.3100881116637915
+      }
+    },
+    {
+      "timestamp": "2025-07-28T15:32:50.240642",
+      "run_directory": "plots_output\\20250728_152826",
+      "trades_count": 1660,
+      "total_pnl": -23132.94479972045,
+      "win_rate": 47.83132530120482,
+      "metrics": {
+        "avg_trade_pnl": -13.935508915494248,
+        "max_win": 182.4091392600548,
+        "max_loss": -381.1059261745005,
+        "total_windows": 1,
+        "volatility": 37.904925490318824,
+        "sharpe_ratio": -0.3676437490703806
+      }
+    },
+    {
+      "timestamp": "2025-07-28T15:54:29.195539",
+      "run_directory": "plots_output\\20250728_154959",
+      "trades_count": 1618,
+      "total_pnl": -13946.176519934908,
+      "win_rate": 42.52163164400494,
+      "metrics": {
+        "avg_trade_pnl": -8.619392163124171,
+        "max_win": 269.81650684202566,
+        "max_loss": -261.7597470154046,
+        "total_windows": 1,
+        "volatility": 39.50688970763197,
+        "sharpe_ratio": -0.2181744051964453
+      }
+    },
+    {
+      "timestamp": "2025-07-28T17:01:43.873403",
+      "run_directory": "plots_output\\20250728_155714",
+      "trades_count": 19098,
+      "total_pnl": -16615.887826538954,
+      "win_rate": 27.877264635040316,
+      "metrics": {
+        "avg_trade_pnl": -0.8700328739417192,
+        "max_win": 588.8692103592028,
+        "max_loss": -564.6504245481611,
+        "total_windows": 7,
+        "volatility": 10.963791907828549,
+        "sharpe_ratio": -0.07935510645003066
+      }
+    },
+    {
+      "timestamp": "2025-07-28T21:47:15.157617",
+      "run_directory": "plots_output\\20250728_213734",
+      "trades_count": 2692,
+      "total_pnl": -11906.465893099607,
+      "win_rate": 23.179791976225854,
+      "metrics": {
+        "avg_trade_pnl": -4.422907092533286,
+        "max_win": 97.3569857890254,
+        "max_loss": -74.9429624599854,
+        "total_windows": 1,
+        "volatility": 10.219017717562947,
+        "sharpe_ratio": -0.43281137334088804
+      }
+    },
+    {
+      "timestamp": "2025-08-02T19:43:41.477439",
+      "run_directory": "plots_output\\20250802_193634",
+      "trades_count": 21393,
+      "total_pnl": -17240.02656276936,
+      "win_rate": 38.568690693217405,
+      "metrics": {
+        "avg_trade_pnl": -0.805872320982067,
+        "max_win": 77.46662096018747,
+        "max_loss": -135.21194909504746,
+        "total_windows": 8,
+        "volatility": 4.604668403189571,
+        "sharpe_ratio": -0.17501202050159653
+      }
+    },
+    {
+      "timestamp": "2025-08-02T19:57:43.582201",
+      "run_directory": "plots_output\\20250802_195023",
+      "trades_count": 13150,
+      "total_pnl": -25434.04059754256,
+      "win_rate": 41.79467680608365,
+      "metrics": {
+        "avg_trade_pnl": -1.934147573957609,
+        "max_win": 207.14874985362917,
+        "max_loss": -252.69926779428465,
+        "total_windows": 7,
+        "volatility": 12.162293797748623,
+        "sharpe_ratio": -0.15902819041549887
+      }
+    },
+    {
+      "timestamp": "2025-08-02T20:45:06.100818",
+      "run_directory": "plots_output\\20250802_200931",
+      "trades_count": 17067,
+      "total_pnl": -12978.017155960999,
+      "win_rate": 39.24532723970235,
+      "metrics": {
+        "avg_trade_pnl": -0.760415840860198,
+        "max_win": 98.11954749515937,
+        "max_loss": -135.2888687963012,
+        "total_windows": 8,
+        "volatility": 4.770829096726967,
+        "sharpe_ratio": -0.15938861473404742
+      }
+    },
+    {
+      "timestamp": "2025-08-02T21:50:22.120408",
+      "run_directory": "plots_output\\20250802_211515",
+      "trades_count": 15473,
+      "total_pnl": -15485.97813089949,
+      "win_rate": 37.48465068183287,
+      "metrics": {
+        "avg_trade_pnl": -1.000838759833225,
+        "max_win": 96.22518581600468,
+        "max_loss": -135.46992836586105,
+        "total_windows": 8,
+        "volatility": 6.046600150462865,
+        "sharpe_ratio": -0.16552091008640799
+      }
+    },
+    {
+      "timestamp": "2025-08-03T18:44:25.013077",
+      "run_directory": "plots_output\\20250803_184347",
+      "trades_count": 11464,
+      "total_pnl": -24987.369263333418,
+      "win_rate": 43.05652477320307,
+      "metrics": {
+        "avg_trade_pnl": -2.1796379329495306,
+        "max_win": 207.14874985362917,
+        "max_loss": -252.69926779428465,
+        "total_windows": 6,
+        "volatility": 13.041213422422317,
+        "sharpe_ratio": -0.1671345957119286
+      }
+    },
+    {
+      "timestamp": "2025-08-03T18:55:02.361309",
+      "run_directory": "plots_output\\20250803_185439",
+      "trades_count": 11464,
+      "total_pnl": -24987.369263333418,
+      "win_rate": 43.05652477320307,
+      "metrics": {
+        "avg_trade_pnl": -2.1796379329495306,
+        "max_win": 207.14874985362917,
+        "max_loss": -252.69926779428465,
+        "total_windows": 6,
+        "volatility": 13.041213422422317,
+        "sharpe_ratio": -0.1671345957119286
+      }
+    },
+    {
+      "timestamp": "2025-08-03T19:54:41.010950",
+      "run_directory": "plots_output\\20250803_195424",
+      "trades_count": 5331,
+      "total_pnl": -20068.21434396934,
+      "win_rate": 43.61283061339336,
+      "metrics": {
+        "avg_trade_pnl": -3.7644371307389495,
+        "max_win": 207.14874985362917,
+        "max_loss": -252.69926779428465,
+        "total_windows": 3,
+        "volatility": 18.48845275543616,
+        "sharpe_ratio": -0.20361017660777977
+      }
+    },
+    {
+      "timestamp": "2025-08-03T20:05:52.623049",
+      "run_directory": "plots_output\\20250803_200531",
+      "trades_count": 11464,
+      "total_pnl": -24987.369263333418,
+      "win_rate": 43.05652477320307,
+      "metrics": {
+        "avg_trade_pnl": -2.1796379329495306,
+        "max_win": 207.14874985362917,
+        "max_loss": -252.69926779428465,
+        "total_windows": 6,
+        "volatility": 13.041213422422317,
+        "sharpe_ratio": -0.1671345957119286
+      }
+    },
+    {
+      "timestamp": "2025-08-03T20:07:08.873807",
+      "run_directory": "plots_output\\20250803_200647",
+      "trades_count": 11464,
+      "total_pnl": -24987.369263333418,
+      "win_rate": 43.05652477320307,
+      "metrics": {
+        "avg_trade_pnl": -2.1796379329495306,
+        "max_win": 207.14874985362917,
+        "max_loss": -252.69926779428465,
+        "total_windows": 6,
+        "volatility": 13.041213422422317,
+        "sharpe_ratio": -0.1671345957119286
+      }
+    },
+    {
+      "timestamp": "2025-08-04T18:33:43.500184",
+      "run_directory": "plots_output\\20250804_183333",
+      "trades_count": 6755,
+      "total_pnl": -19647.272352119646,
+      "win_rate": 41.924500370096226,
+      "metrics": {
+        "avg_trade_pnl": -2.9085525317719685,
+        "max_win": 169.82321685558315,
+        "max_loss": -128.13671282940902,
+        "total_windows": 3,
+        "volatility": 13.461196737273356,
+        "sharpe_ratio": -0.2160693873315392
+      }
+    },
+    {
+      "timestamp": "2025-08-04T18:39:58.106417",
+      "run_directory": "plots_output\\20250804_183855",
+      "trades_count": 9465,
+      "total_pnl": -16141.725506228162,
+      "win_rate": 39.69360802958267,
+      "metrics": {
+        "avg_trade_pnl": -1.7054120978582317,
+        "max_win": 129.8049983266309,
+        "max_loss": -478.8036436991956,
+        "total_windows": 4,
+        "volatility": 7.820126538126142,
+        "sharpe_ratio": -0.2180798596472433
+      }
+    },
+    {
+      "timestamp": "2025-08-04T18:55:28.495701",
+      "run_directory": "plots_output\\20250804_185522",
+      "trades_count": 6755,
+      "total_pnl": -19647.272352119646,
+      "win_rate": 41.924500370096226,
+      "metrics": {
+        "avg_trade_pnl": -2.9085525317719685,
+        "max_win": 169.82321685558315,
+        "max_loss": -128.13671282940902,
+        "total_windows": 3,
+        "volatility": 13.461196737273356,
+        "sharpe_ratio": -0.2160693873315392
+      }
+    },
+    {
+      "timestamp": "2025-08-04T19:02:43.228588",
+      "run_directory": "plots_output\\20250804_190237",
+      "trades_count": 6755,
+      "total_pnl": -6685.234608938874,
+      "win_rate": 55.292376017764624,
+      "metrics": {
+        "avg_trade_pnl": -0.989672036852535,
+        "max_win": 139.15941052793585,
+        "max_loss": -110.03094174818916,
+        "total_windows": 3,
+        "volatility": 7.09514560817765,
+        "sharpe_ratio": -0.13948579655812404
+      }
+    },
+    {
+      "timestamp": "2025-08-04T19:22:14.209115",
+      "run_directory": "plots_output\\20250804_192200",
+      "trades_count": 6755,
+      "total_pnl": -6685.234608938874,
+      "win_rate": 55.292376017764624,
+      "metrics": {
+        "avg_trade_pnl": -0.989672036852535,
+        "max_win": 139.15941052793585,
+        "max_loss": -110.03094174818916,
+        "total_windows": 3,
+        "volatility": 7.09514560817765,
+        "sharpe_ratio": -0.13948579655812404
+      }
+    },
+    {
+      "timestamp": "2025-08-04T19:30:03.607949",
+      "run_directory": "plots_output\\20250804_192957",
+      "trades_count": 6755,
+      "total_pnl": -6685.234608938874,
+      "win_rate": 55.292376017764624,
+      "metrics": {
+        "avg_trade_pnl": -0.989672036852535,
+        "max_win": 139.15941052793585,
+        "max_loss": -110.03094174818916,
+        "total_windows": 3,
+        "volatility": 7.09514560817765,
+        "sharpe_ratio": -0.13948579655812404
+      }
+    },
+    {
+      "timestamp": "2025-08-04T19:36:23.198193",
+      "run_directory": "plots_output\\20250804_193112",
+      "trades_count": 7846,
+      "total_pnl": -6493.70195828803,
+      "win_rate": 59.508029569207245,
+      "metrics": {
+        "avg_trade_pnl": -0.827644909289833,
+        "max_win": 71.23331078324078,
+        "max_loss": -69.78156124573258,
+        "total_windows": 3,
+        "volatility": 4.931381502466155,
+        "sharpe_ratio": -0.1678322613806968
+      }
+    },
+    {
+      "timestamp": "2025-08-05T16:19:27.235268",
+      "run_directory": "plots_output\\20250805_145745",
+      "trades_count": 1627,
+      "total_pnl": -5836.781707731339,
+      "win_rate": 39.15181315304241,
+      "metrics": {
+        "avg_trade_pnl": -3.587450342797381,
+        "max_win": 50.39841250400831,
+        "max_loss": -84.93933180257662,
+        "total_windows": 1,
+        "volatility": 9.620005657931848,
+        "sharpe_ratio": -0.372915616722062
+      }
+    },
+    {
+      "timestamp": "2025-08-05T17:48:32.058118",
+      "run_directory": "plots_output\\20250805_174152",
+      "trades_count": 19670,
+      "total_pnl": -4730.461246280095,
+      "win_rate": 85.16014234875445,
+      "metrics": {
+        "avg_trade_pnl": -0.24049116656228242,
+        "max_win": 23.32869494495922,
+        "max_loss": -40.68804294281526,
+        "total_windows": 5,
+        "volatility": 1.6158375865110224,
+        "sharpe_ratio": -0.14883374948689
+      }
+    },
+    {
+      "timestamp": "2025-08-05T18:19:41.496665",
+      "run_directory": "plots_output\\20250805_181557",
+      "trades_count": 6529,
+      "total_pnl": -6523.796358106716,
+      "win_rate": 64.1139531321795,
+      "metrics": {
+        "avg_trade_pnl": -0.9992029955746233,
+        "max_win": 125.14694781976912,
+        "max_loss": -95.34483937101488,
+        "total_windows": 3,
+        "volatility": 6.720956027222484,
+        "sharpe_ratio": -0.14866977131340584
+      }
+    },
+    {
+      "timestamp": "2025-08-07T12:40:42.132978",
+      "run_directory": "plots_output\\20250807_121735",
+      "trades_count": 4578,
+      "total_pnl": -6156.184970773378,
+      "win_rate": 61.35867190913062,
+      "metrics": {
+        "avg_trade_pnl": -1.3447324095179944,
+        "max_win": 75.75282116174016,
+        "max_loss": -91.1870516504025,
+        "total_windows": 3,
+        "volatility": 6.770590795182074,
+        "sharpe_ratio": -0.19861374733721918
+      }
+    },
+    {
+      "timestamp": "2025-08-07T16:06:36.289196",
+      "run_directory": "plots_output\\20250807_155155",
+      "trades_count": 14209,
+      "total_pnl": -7768.014609127327,
+      "win_rate": 61.91850235766064,
+      "metrics": {
+        "avg_trade_pnl": -0.5466967843709851,
+        "max_win": 236.8489333476324,
+        "max_loss": -119.19751935204192,
+        "total_windows": 28,
+        "volatility": 7.125114537931445,
+        "sharpe_ratio": -0.07672813980190436
+      }
+    },
+    {
+      "timestamp": "2025-08-07T17:33:33.903823",
+      "run_directory": "plots_output\\20250807_165754",
+      "trades_count": 10889,
+      "total_pnl": -6507.919694895348,
+      "win_rate": 62.117733492515384,
+      "metrics": {
+        "avg_trade_pnl": -0.5976599958577783,
+        "max_win": 87.88078783790817,
+        "max_loss": -201.293791605228,
+        "total_windows": 10,
+        "volatility": 6.867606148729652,
+        "sharpe_ratio": -0.08702595677655911
+      }
+    },
+    {
+      "timestamp": "2025-08-07T23:25:59.597523",
+      "run_directory": "plots_output\\20250807_224823",
+      "trades_count": 17662,
+      "total_pnl": -6217.679746391277,
+      "win_rate": 69.12580681689504,
+      "metrics": {
+        "avg_trade_pnl": -0.3520371275275324,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 4.179596896624168,
+        "sharpe_ratio": -0.08422753108364839
+      }
+    },
+    {
+      "timestamp": "2025-08-08T00:05:23.083939",
+      "run_directory": "plots_output\\20250807_232847",
+      "trades_count": 19859,
+      "total_pnl": -6161.25375784387,
+      "win_rate": 74.25852258421874,
+      "metrics": {
+        "avg_trade_pnl": -0.3102499500399753,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.9532145022574006,
+        "sharpe_ratio": -0.07848042393419673
+      }
+    },
+    {
+      "timestamp": "2025-08-08T00:43:36.147557",
+      "run_directory": "plots_output\\20250808_000802",
+      "trades_count": 21173,
+      "total_pnl": -6288.096802821744,
+      "win_rate": 72.95612336466255,
+      "metrics": {
+        "avg_trade_pnl": -0.2969865773778748,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.8442365474868176,
+        "sharpe_ratio": -0.07725502156521319
+      }
+    },
+    {
+      "timestamp": "2025-08-08T01:21:18.787344",
+      "run_directory": "plots_output\\20250808_004615",
+      "trades_count": 17868,
+      "total_pnl": -6391.02506569561,
+      "win_rate": 69.44817550929035,
+      "metrics": {
+        "avg_trade_pnl": -0.35767993427891254,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 4.207481019042421,
+        "sharpe_ratio": -0.0850104688910318
+      }
+    },
+    {
+      "timestamp": "2025-08-08T01:58:21.110767",
+      "run_directory": "plots_output\\20250808_012404",
+      "trades_count": 19164,
+      "total_pnl": -6158.676325591748,
+      "win_rate": 72.10916301398456,
+      "metrics": {
+        "avg_trade_pnl": -0.32136695499852574,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 4.072502361978124,
+        "sharpe_ratio": -0.07891142261791818
+      }
+    },
+    {
+      "timestamp": "2025-08-08T02:34:04.377990",
+      "run_directory": "plots_output\\20250808_020058",
+      "trades_count": 20880,
+      "total_pnl": -6326.6824622871345,
+      "win_rate": 72.02586206896552,
+      "metrics": {
+        "avg_trade_pnl": -0.3030020336344413,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.8764810486652888,
+        "sharpe_ratio": -0.07816419836200873
+      }
+    },
+    {
+      "timestamp": "2025-08-08T03:09:06.555303",
+      "run_directory": "plots_output\\20250808_023641",
+      "trades_count": 19908,
+      "total_pnl": -6265.742646719408,
+      "win_rate": 72.36789230460117,
+      "metrics": {
+        "avg_trade_pnl": -0.31473491293547357,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.9951528483570593,
+        "sharpe_ratio": -0.07877919190623786
+      }
+    },
+    {
+      "timestamp": "2025-08-08T03:42:56.524692",
+      "run_directory": "plots_output\\20250808_031143",
+      "trades_count": 21988,
+      "total_pnl": -6529.790977192334,
+      "win_rate": 73.21266145170094,
+      "metrics": {
+        "avg_trade_pnl": -0.2969706647804409,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.8128639784589415,
+        "sharpe_ratio": -0.07788650905413849
+      }
+    },
+    {
+      "timestamp": "2025-08-08T04:16:45.481576",
+      "run_directory": "plots_output\\20250808_034533",
+      "trades_count": 22197,
+      "total_pnl": -6270.811197518048,
+      "win_rate": 77.44289768887688,
+      "metrics": {
+        "avg_trade_pnl": -0.28250714950299805,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.8034032355263263,
+        "sharpe_ratio": -0.07427746468325856
+      }
+    },
+    {
+      "timestamp": "2025-08-08T04:49:14.107057",
+      "run_directory": "plots_output\\20250808_041918",
+      "trades_count": 22272,
+      "total_pnl": -6212.966574686032,
+      "win_rate": 74.02119252873564,
+      "metrics": {
+        "avg_trade_pnl": -0.2789586285329576,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.737899034943598,
+        "sharpe_ratio": -0.07462979227772719
+      }
+    },
+    {
+      "timestamp": "2025-08-08T05:23:04.862649",
+      "run_directory": "plots_output\\20250808_045148",
+      "trades_count": 20319,
+      "total_pnl": -6232.010010794917,
+      "win_rate": 73.0596978197746,
+      "metrics": {
+        "avg_trade_pnl": -0.30670849996529936,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.90459577900089,
+        "sharpe_ratio": -0.07855064066165131
+      }
+    },
+    {
+      "timestamp": "2025-08-08T05:56:26.884455",
+      "run_directory": "plots_output\\20250808_052541",
+      "trades_count": 19246,
+      "total_pnl": -6240.36965786865,
+      "win_rate": 71.0173542554297,
+      "metrics": {
+        "avg_trade_pnl": -0.32424242221077887,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 4.102102277710065,
+        "sharpe_ratio": -0.07904298826790399
+      }
+    },
+    {
+      "timestamp": "2025-08-08T06:29:34.904019",
+      "run_directory": "plots_output\\20250808_055900",
+      "trades_count": 17606,
+      "total_pnl": -6311.778459993933,
+      "win_rate": 69.83414744973304,
+      "metrics": {
+        "avg_trade_pnl": -0.35850155969521375,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 4.2286375760286194,
+        "sharpe_ratio": -0.0847794480490582
+      }
+    },
+    {
+      "timestamp": "2025-08-08T07:02:40.617545",
+      "run_directory": "plots_output\\20250808_063211",
+      "trades_count": 20238,
+      "total_pnl": -6270.114384192039,
+      "win_rate": 71.37068880324142,
+      "metrics": {
+        "avg_trade_pnl": -0.30981887460184004,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.9345536977171442,
+        "sharpe_ratio": -0.07874307949630961
+      }
+    },
+    {
+      "timestamp": "2025-08-08T07:35:30.142392",
+      "run_directory": "plots_output\\20250808_070516",
+      "trades_count": 19801,
+      "total_pnl": -6124.4252896372955,
+      "win_rate": 74.62249381344377,
+      "metrics": {
+        "avg_trade_pnl": -0.30929878741666056,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.9845264460662264,
+        "sharpe_ratio": -0.0776249804345055
+      }
+    },
+    {
+      "timestamp": "2025-08-08T08:08:44.465929",
+      "run_directory": "plots_output\\20250808_073802",
+      "trades_count": 19183,
+      "total_pnl": -6346.511731845404,
+      "win_rate": 71.90741802637753,
+      "metrics": {
+        "avg_trade_pnl": -0.3308404176534121,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 4.0552216026472845,
+        "sharpe_ratio": -0.0815838072665219
+      }
+    },
+    {
+      "timestamp": "2025-08-08T10:53:47.179317",
+      "run_directory": "plots_output\\20250808_104009",
+      "trades_count": 20228,
+      "total_pnl": -6544.43580995796,
+      "win_rate": 68.43484279216926,
+      "metrics": {
+        "avg_trade_pnl": -0.3235335085009868,
+        "max_win": 72.93850882742822,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 3.9772288944702097,
+        "sharpe_ratio": -0.08134646435633003
+      }
+    },
+    {
+      "timestamp": "2025-08-08T12:00:31.972072",
+      "run_directory": "plots_output\\20250808_112812",
+      "trades_count": 14019,
+      "total_pnl": -5672.153660535165,
+      "win_rate": 67.46558242385335,
+      "metrics": {
+        "avg_trade_pnl": -0.40460472648085916,
+        "max_win": 72.78217595806217,
+        "max_loss": -93.22015240036856,
+        "total_windows": 18,
+        "volatility": 4.832243846991981,
+        "sharpe_ratio": -0.08373019642473573
+      }
+    },
+    {
+      "timestamp": "2025-08-08T17:59:33.835620",
+      "run_directory": "plots_output\\20250808_172511",
+      "trades_count": 12735,
+      "total_pnl": -5684.3816327228615,
+      "win_rate": 65.18256772673735,
+      "metrics": {
+        "avg_trade_pnl": -0.44635898176072725,
+        "max_win": 73.35232792418061,
+        "max_loss": -93.46761638533124,
+        "total_windows": 18,
+        "volatility": 5.107267070071061,
+        "sharpe_ratio": -0.08739683584914167
+      }
+    },
+    {
+      "timestamp": "2025-08-09T21:57:11.631749",
+      "run_directory": "plots_output\\20250809_214950",
+      "trades_count": 3019,
+      "total_pnl": -5918.197738692388,
+      "win_rate": 36.5021530308049,
+      "metrics": {
+        "avg_trade_pnl": -1.960317237062732,
+        "max_win": 58.25115969515667,
+        "max_loss": -124.64619591077329,
+        "total_windows": 3,
+        "volatility": 7.697041485759752,
+        "sharpe_ratio": -0.2546845097157788
+      }
+    },
+    {
+      "timestamp": "2025-08-13T12:13:42.410438",
+      "run_directory": "plots_output\\20250813_114850",
+      "trades_count": 986,
+      "total_pnl": -5334.0691792036905,
+      "win_rate": 38.43813387423935,
+      "metrics": {
+        "avg_trade_pnl": -5.409806469780619,
+        "max_win": 80.59927292840622,
+        "max_loss": -73.22483711465524,
+        "total_windows": 1,
+        "volatility": 15.674478176066671,
+        "sharpe_ratio": -0.34513470936728485
+      }
+    },
+    {
+      "timestamp": "2025-08-13T12:13:44.303747",
+      "run_directory": "plots_output\\20250813_114850",
+      "trades_count": 986,
+      "total_pnl": -5334.0691792036905,
+      "win_rate": 38.43813387423935,
+      "metrics": {
+        "avg_trade_pnl": -5.409806469780619,
+        "max_win": 80.59927292840622,
+        "max_loss": -73.22483711465524,
+        "total_windows": 1,
+        "volatility": 15.674478176066671,
+        "sharpe_ratio": -0.34513470936728485
+      }
+    },
+    {
+      "timestamp": "2025-08-13T12:44:59.078673",
+      "run_directory": "plots_output\\20250813_122024",
+      "trades_count": 746,
+      "total_pnl": -5202.504009073387,
+      "win_rate": 43.297587131367294,
+      "metrics": {
+        "avg_trade_pnl": -6.973865963905345,
+        "max_win": 109.92096925885984,
+        "max_loss": -75.04861578445473,
+        "total_windows": 1,
+        "volatility": 19.457769603022495,
+        "sharpe_ratio": -0.35841034744403855
+      }
+    },
+    {
+      "timestamp": "2025-08-13T12:45:00.704394",
+      "run_directory": "plots_output\\20250813_122024",
+      "trades_count": 746,
+      "total_pnl": -5202.504009073387,
+      "win_rate": 43.297587131367294,
+      "metrics": {
+        "avg_trade_pnl": -6.973865963905345,
+        "max_win": 109.92096925885984,
+        "max_loss": -75.04861578445473,
+        "total_windows": 1,
+        "volatility": 19.457769603022495,
+        "sharpe_ratio": -0.35841034744403855
+      }
+    },
+    {
+      "timestamp": "2025-08-13T13:12:06.475326",
+      "run_directory": "plots_output\\20250813_124715",
+      "trades_count": 982,
+      "total_pnl": -5604.941714689183,
+      "win_rate": 37.169042769857434,
+      "metrics": {
+        "avg_trade_pnl": -5.707679953858638,
+        "max_win": 61.08358373848792,
+        "max_loss": -79.14367284082574,
+        "total_windows": 1,
+        "volatility": 14.429337512752166,
+        "sharpe_ratio": -0.39556077670332274
+      }
+    },
+    {
+      "timestamp": "2025-08-13T13:12:08.236115",
+      "run_directory": "plots_output\\20250813_124715",
+      "trades_count": 982,
+      "total_pnl": -5604.941714689183,
+      "win_rate": 37.169042769857434,
+      "metrics": {
+        "avg_trade_pnl": -5.707679953858638,
+        "max_win": 61.08358373848792,
+        "max_loss": -79.14367284082574,
+        "total_windows": 1,
+        "volatility": 14.429337512752166,
+        "sharpe_ratio": -0.39556077670332274
+      }
+    },
+    {
+      "timestamp": "2025-08-13T15:58:43.903843",
+      "run_directory": "plots_output\\20250813_155035",
+      "trades_count": 781,
+      "total_pnl": -5569.214782956024,
+      "win_rate": 45.45454545454545,
+      "metrics": {
+        "avg_trade_pnl": -7.130876802760594,
+        "max_win": 79.02712468241874,
+        "max_loss": -74.37322113238669,
+        "total_windows": 1,
+        "volatility": 16.948543040284004,
+        "sharpe_ratio": -0.42073686132262983
+      }
+    },
+    {
+      "timestamp": "2025-08-13T15:58:45.615623",
+      "run_directory": "plots_output\\20250813_155035",
+      "trades_count": 781,
+      "total_pnl": -5569.214782956024,
+      "win_rate": 45.45454545454545,
+      "metrics": {
+        "avg_trade_pnl": -7.130876802760594,
+        "max_win": 79.02712468241874,
+        "max_loss": -74.37322113238669,
+        "total_windows": 1,
+        "volatility": 16.948543040284004,
+        "sharpe_ratio": -0.42073686132262983
+      }
+    },
+    {
+      "timestamp": "2025-08-15T11:18:25.401788",
+      "run_directory": "plots_output\\20250815_110802",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T11:18:27.622174",
+      "run_directory": "plots_output\\20250815_110802",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T13:02:14.527782",
+      "run_directory": "plots_output\\20250815_125146",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T13:02:16.652089",
+      "run_directory": "plots_output\\20250815_125146",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T13:24:01.078764",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T13:24:03.461945",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:12:01.224912",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:14:48.427201",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:17:17.673048",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:19:20.403217",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:21:54.627148",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:23:55.223516",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:29:29.722825",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:34:28.718316",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:40:00.120499",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:43:31.854940",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:44:19.485000",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:45:50.514257",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:46:21.958944",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:47:19.655885",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:48:22.721959",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:53:53.129453",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T14:58:52.751247",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:08:18.760746",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:14:14.057866",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:18:59.081241",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:21:26.060763",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:22:28.433565",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:30:12.340067",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:32:38.243169",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:42:44.926721",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:45:02.671367",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:49:20.514022",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:50:52.883584",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:53:29.873354",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T15:59:08.854467",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T16:06:53.453059",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T16:12:55.672304",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T16:17:25.065540",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T16:19:50.406324",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T16:21:46.335227",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T16:22:15.128320",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T16:47:38.400106",
+      "run_directory": "plots_output\\20250815_131312",
+      "trades_count": 4361,
+      "total_pnl": -4717.115533999893,
+      "win_rate": 62.646182068332955,
+      "metrics": {
+        "avg_trade_pnl": -1.0816591456087807,
+        "max_win": 39.26916975251592,
+        "max_loss": -104.00713516320144,
+        "total_windows": 3,
+        "volatility": 6.7698567129015155,
+        "sharpe_ratio": -0.15977578130234737
+      }
+    },
+    {
+      "timestamp": "2025-08-15T18:41:35.186998",
+      "run_directory": "plots_output\\20250815_181745",
+      "trades_count": 2562,
+      "total_pnl": -5498.548313423131,
+      "win_rate": 26.89305230288837,
+      "metrics": {
+        "avg_trade_pnl": -2.146193721086312,
+        "max_win": 59.47177514922143,
+        "max_loss": -47.13748573824206,
+        "total_windows": 2,
+        "volatility": 6.846043258931067,
+        "sharpe_ratio": -0.3134940344244065
+      }
+    },
+    {
+      "timestamp": "2025-08-15T18:41:37.180345",
+      "run_directory": "plots_output\\20250815_181745",
+      "trades_count": 2562,
+      "total_pnl": -5498.548313423131,
+      "win_rate": 26.89305230288837,
+      "metrics": {
+        "avg_trade_pnl": -2.146193721086312,
+        "max_win": 59.47177514922143,
+        "max_loss": -47.13748573824206,
+        "total_windows": 2,
+        "volatility": 6.846043258931067,
+        "sharpe_ratio": -0.3134940344244065
+      }
+    },
+    {
+      "timestamp": "2025-08-15T19:17:28.111352",
+      "run_directory": "plots_output\\20250815_185302",
+      "trades_count": 1903,
+      "total_pnl": -5939.524822101017,
+      "win_rate": 30.63583815028902,
+      "metrics": {
+        "avg_trade_pnl": -3.121137583868112,
+        "max_win": 46.394382385982816,
+        "max_loss": -64.25502208729652,
+        "total_windows": 2,
+        "volatility": 7.93063239610162,
+        "sharpe_ratio": -0.3935546912251711
+      }
+    },
+    {
+      "timestamp": "2025-08-15T19:44:15.912020",
+      "run_directory": "plots_output\\20250815_191943",
+      "trades_count": 2243,
+      "total_pnl": -5620.07978342659,
+      "win_rate": 28.44404814979938,
+      "metrics": {
+        "avg_trade_pnl": -2.5056084634090907,
+        "max_win": 61.32622041927385,
+        "max_loss": -58.27476928090383,
+        "total_windows": 2,
+        "volatility": 7.528544538515928,
+        "sharpe_ratio": -0.3328144571092637
+      }
+    },
+    {
+      "timestamp": "2025-08-15T20:18:57.843223",
+      "run_directory": "plots_output\\20250815_195413",
+      "trades_count": 2393,
+      "total_pnl": -5535.828063810766,
+      "win_rate": 29.335562055996654,
+      "metrics": {
+        "avg_trade_pnl": -2.3133422748895804,
+        "max_win": 65.52093090941835,
+        "max_loss": -51.38771500092261,
+        "total_windows": 2,
+        "volatility": 7.162123266966382,
+        "sharpe_ratio": -0.3229967132176195
+      }
+    },
+    {
+      "timestamp": "2025-08-15T21:17:21.331640",
+      "run_directory": "plots_output\\20250815_205210",
+      "trades_count": 1732,
+      "total_pnl": -5889.7291366453255,
+      "win_rate": 31.12009237875289,
+      "metrics": {
+        "avg_trade_pnl": -3.400536453028479,
+        "max_win": 63.42992086109591,
+        "max_loss": -57.7434467786136,
+        "total_windows": 2,
+        "volatility": 8.485633960926506,
+        "sharpe_ratio": -0.40074041240605085
+      }
+    },
+    {
+      "timestamp": "2025-08-15T21:57:57.875967",
+      "run_directory": "plots_output\\20250815_213314",
+      "trades_count": 1961,
+      "total_pnl": -5793.909072952661,
+      "win_rate": 28.709841917389088,
+      "metrics": {
+        "avg_trade_pnl": -2.9545686246571448,
+        "max_win": 60.6278735754431,
+        "max_loss": -56.27664928386423,
+        "total_windows": 2,
+        "volatility": 8.053734838797013,
+        "sharpe_ratio": -0.3668569531770764
+      }
+    },
+    {
+      "timestamp": "2025-08-15T22:59:49.403573",
+      "run_directory": "plots_output\\20250815_225157",
+      "trades_count": 2075,
+      "total_pnl": -6303.444035459137,
+      "win_rate": 36.57831325301205,
+      "metrics": {
+        "avg_trade_pnl": -3.0378043544381383,
+        "max_win": 64.81088031874076,
+        "max_loss": -70.95310383926117,
+        "total_windows": 2,
+        "volatility": 9.523076851810835,
+        "sharpe_ratio": -0.3189939976028328
+      }
+    },
+    {
+      "timestamp": "2025-08-16T04:56:26.378949",
+      "run_directory": "plots_output\\20250816_001137",
+      "trades_count": 13312,
+      "total_pnl": -6218.148280823482,
+      "win_rate": 78.06490384615384,
+      "metrics": {
+        "avg_trade_pnl": -0.4671084946532063,
+        "max_win": 76.22246266469993,
+        "max_loss": -126.95210416446874,
+        "total_windows": 15,
+        "volatility": 3.9615544269243252,
+        "sharpe_ratio": -0.11791040695504476
+      }
+    },
+    {
+      "timestamp": "2025-08-17T07:49:41.210310",
+      "run_directory": "plots_output\\20250817_072921",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T13:53:37.824054",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T17:53:37.491373",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T17:54:20.922470",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T17:54:40.113703",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T17:55:32.013768",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T17:56:25.398071",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T17:56:47.981605",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:00:51.100829",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:01:15.508264",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:01:33.708313",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:02:41.803807",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:04:24.075614",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:04:58.397718",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:07:33.042568",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:08:25.674988",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:10:03.113634",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:10:59.386222",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:12:10.938471",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:14:20.194069",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:15:22.531963",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:16:36.247229",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:19:16.934306",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:20:12.933321",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:21:38.675309",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:22:49.566549",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:23:34.278801",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:29:06.330272",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:33:48.351534",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:41:43.693013",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:49:34.577475",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:50:54.191487",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:58:08.525934",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    {
+      "timestamp": "2025-08-17T18:59:45.573925",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    }
+  ],
+  "analysis": {
+    "session_statistics": {
+      "total_sessions": 2,
+      "avg_trades_per_session": 2392.0,
+      "avg_pnl_per_session": -9900.882433870474,
+      "avg_win_rate": 48.70401337792642,
+      "best_session_pnl": -9900.882433870474,
+      "worst_session_pnl": -9900.882433870474
+    },
+    "performance_trends": {
+      "rolling_avg_pnl": [
+        NaN,
+        -9900.882433870474
+      ],
+      "rolling_avg_win_rate": [
+        NaN,
+        48.70401337792642
+      ],
+      "trend_direction": "declining",
+      "consistency_score": 1
+    },
+    "parameter_analysis": {
+      "parameter_correlations": {
+        "TENKAN_SEN_PERIOD": 0,
+        "KIJUN_SEN_PERIOD": 0,
+        "SENKOU_SPAN_B_PERIOD": 0,
+        "RSI_PERIOD": 0,
+        "RSI_OVERBOUGHT": 0,
+        "RSI_OVERSOLD": 0,
+        "min_confidence": 0,
+        "strong_signal_threshold": 0,
+        "confluence_threshold": 0,
+        "volatility_threshold": 0,
+        "volatility_window": 0,
+        "trend_window": 0,
+        "momentum_window": 0,
+        "TRENDING_TSL_ATR_MULTIPLIER": 0,
+        "RANGING_TSL_ATR_MULTIPLIER": 0,
+        "TRENDING_TP_ATR_MULTIPLIER": 0,
+        "RANGING_TP_ATR_MULTIPLIER": 0
+      },
+      "most_influential_params": [
+        [
+          "TENKAN_SEN_PERIOD",
+          0
+        ],
+        [
+          "KIJUN_SEN_PERIOD",
+          0
+        ],
+        [
+          "SENKOU_SPAN_B_PERIOD",
+          0
+        ],
+        [
+          "RSI_PERIOD",
+          0
+        ],
+        [
+          "RSI_OVERBOUGHT",
+          0
+        ]
+      ]
+    },
+    "time_analysis": {
+      "best_hours": {
+        "22": -9900.882433870474
+      },
+      "best_days": {
+        "Wednesday": -9900.882433870474
+      },
+      "most_active_hour": "22",
+      "most_active_day": "Wednesday"
+    },
+    "generated_at": "2025-07-23T22:02:05.753725"
+  }
+}

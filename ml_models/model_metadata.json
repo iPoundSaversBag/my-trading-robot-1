@@ -1,0 +1,37 @@
+{
+    "features": [
+        "volatility_1d",
+        "volatility_5d",
+        "volatility_ratio",
+        "sma_trend_short",
+        "sma_trend_medium",
+        "sma_trend_long",
+        "momentum",
+        "rsi",
+        "stochastic_oscillator",
+        "macd_signal_diff",
+        "atr_ratio",
+        "volume_ratio",
+        "bb_bandwidth",
+        "adx",
+        "ichimoku_a",
+        "ichimoku_b",
+        "ichimoku_span_a_trend",
+        "ichimoku_span_b_trend",
+        "price_vs_ichimoku_a",
+        "price_vs_ichimoku_b"
+    ],
+    "regime_distribution": {
+        "RANGING": 122577,
+        "TRENDING_BEAR": 98432,
+        "LOW_VOLATILITY": 91128,
+        "DISTRIBUTION": 88672,
+        "ACCUMULATION": 87791,
+        "TRENDING_BULL": 86986,
+        "HIGH_VOLATILITY": 19770,
+        "BREAKOUT_BULLISH": 4442,
+        "BREAKOUT_BEARISH": 4060
+    },
+    "model_class": "RandomForestClassifier",
+    "training_date": "2025-08-13T07:19:24.511635"
+}

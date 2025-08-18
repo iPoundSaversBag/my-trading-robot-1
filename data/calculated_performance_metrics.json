@@ -1,0 +1,23 @@
+{
+  "cumulative_return": -100.0,
+  "cagr": -100,
+  "max_drawdown": 100.0,
+  "max_drawdown_date": "2025-07-23T22:02:05.709594",
+  "daily_var_95": NaN,
+  "expected_shortfall": NaN,
+  "volatility_annualized": NaN,
+  "sharpe_ratio": 0,
+  "total_trades": 4784,
+  "total_sessions": 186,
+  "win_rate": 0.0,
+  "profit_factor": 0.0,
+  "initial_capital": 10000.0,
+  "final_equity": 0.0,
+  "total_pnl": -10000.0,
+  "gross_profit": 0,
+  "gross_loss": 1476596.47,
+  "calculation_date": "2025-08-18T06:51:52.321940",
+  "data_quality": "complete",
+  "estimated_period_days": 372,
+  "estimated_period_years": 1.02
+}

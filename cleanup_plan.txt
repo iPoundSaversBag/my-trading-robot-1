@@ -1,0 +1,101 @@
+This file will contain a list of files that have been identified as unnecessary and can be safely deleted from the project.
+The analysis is based on the user's request to clean up the workspace by removing debug, test, and other non-essential files from the `watcher.py` pipeline.
+
+**Identified Unnecessary Files:**
+
+### Category 1: Debug & Analysis Scripts
+These files appear to be for debugging specific components or running one-off analyses. They are not part of the main pipeline.
+
+- `add_regime_exit_parameters.py`
+- `analyze_missing_exit_parameters.py`
+- `analyze_regime_system_deep.py`
+- `analyze_regime_volume_confirmation.py`
+- `analyze_system_status.py`
+- `analyze_volume_distribution.py`
+- `analyze_volume_fix_concerns.py`
+- `backtest_safety_integration.py`
+- `debug_backtest_sizing.py`
+- `debug_check_for_entry_logic.py`
+- `debug_complete_backtest.py`
+- `debug_confidence_test.py`
+- `debug_deep_entry.py`
+- `debug_individual_volume_indicators.py`
+- `debug_ml_in_backtest.py`
+- `debug_ml_realistic.py`
+- `debug_ml_training.py`
+- `debug_optimization_params.py`
+- `debug_performance_regression.py`
+- `debug_position_logic.py`
+- `debug_position_manager.py`
+- `debug_position_sizing.py`
+- `debug_processed_dataframe.py`
+- `debug_signal_processing.py`
+- `debug_signal_to_trade.py`
+- `debug_trade_execution.py`
+- `debug_volume_calculation.py`
+- `debug_volume_confirmation.py`
+- `examine_volume_fix.py`
+- `honest_parameter_assessment.py`
+- `problem_descriptions.py`
+- `quick_optimization_test.py`
+- `quick_performance_test.py`
+- `quick_volume_test.py`
+- `run_intensity_1_backtest.py`
+- `show_problems.py`
+- `simple_backtest_test.py`
+- `simple_watcher_test.py`
+- `validate_regime_parameters_empirically.py`
+- `why_no_auto_fix.py`
+
+### Category 2: One-Time Fix & Test Scripts
+These scripts seem to be for testing specific fixes or features. They are not required for the robot's operation.
+
+- `complete_fix_all_issues.py`
+- `detailed_auto_fix_test.py`
+- `enable_auto_fix.py`
+- `enhanced_health_diagnostics.py`
+- `fixed_import_test.py`
+- `fix_42_issues_directly.py`
+- `fix_watcher_issues.py`
+- `regime_optimization_runner_fixed.py`
+- `targeted_problem_resolver.py`
+- `test_auto_fix_capabilities.py`
+- `test_config_loading.py`
+- `test_enhanced_health.py`
+- `test_enhanced_pretraining.py`
+- `test_enhanced_stopping.py`
+- `test_fixed_volume_confirmation.py`
+- `test_health_stopping.py`
+- `test_ml_quick.py`
+- `test_ml_training.py`
+- `test_new_parameter_workflow.py`
+- `test_objective_function_fix.py`
+- `test_performance_improvements.py`
+- `test_problem_descriptions.py`
+- `test_regime_detection_accuracy.py`
+- `test_regime_mapping.py`
+- `test_safety_system.py`
+- `test_signal_generation.py`
+- `test_trades_execution.py`
+- `test_volume_fix.py`
+- `test_volume_oscillator_fix.py`
+- `ultimate_watcher_fix.py`
+- `validate_systematic_fixes.py`
+
+### Category 3: Redundant/Unused Files
+- `core/config.py`: The `Config` class has been consolidated into `utilities/utils.py`.
+- `utilities/system_monitor.py`: This functionality appears to be integrated into `health_utils.py`.
+
+### Category 4: Obsolete Documentation & Config
+These files are no longer relevant to the current version of the robot.
+
+- `COMPREHENSIVE_SAFETY_SYSTEM_COMPLETE.md`
+- `OBJECTIVE_FUNCTION_BUG_FIX.md`
+- `PROBLEM_DESCRIPTIONS_README.md`
+- `REGIME_ANALYSIS_AND_ACTION_PLAN.md`
+- `live_trading/cloud_dashboard_config.py`
+- `live_trading/README.md`
+- `scripts/monitoring_config.json`
+- `utilities/README.md`
+
+Please review this list. Once you confirm, I will proceed with deleting these files.

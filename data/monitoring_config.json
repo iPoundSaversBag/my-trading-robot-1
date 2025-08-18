@@ -1,0 +1,7 @@
+{
+  "monitoring": {
+    "enabled": true,
+    "interval": 60,
+    "alerts": true
+  }
+}

@@ -1,0 +1,2151 @@
+{
+  "repairs": [
+    {
+      "timestamp": "2025-07-30T23:39:46.572001",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Resolved PositionManager import conflicts",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:18:31.931090",
+      "type": "config_missing_key",
+      "problem_signature": "KeyError: best_parameters_so_far",
+      "solution": "Added missing key structure",
+      "success": true,
+      "hash": "bd951e8d157c683a53ed449de59cf947"
+    },
+    {
+      "timestamp": "2025-07-31T00:51:06.881984",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:51:06.882785",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:51:06.883398",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.586902",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in analyze_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.587702",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in analyze_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.588697",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in analyze_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.589321",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_backtest_calls.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.589997",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_backtest_calls.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.590827",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_backtest_calls.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.591743",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_enhanced_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.592375",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_enhanced_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.593160",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_enhanced_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.593953",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_position_manager.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.594722",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_position_manager.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.595536",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_position_manager.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.596212",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.598056",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.598746",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.599412",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_backtest_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.600081",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_backtest_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.600907",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_backtest_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.601733",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_corrected_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.602479",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_corrected_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.603328",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_corrected_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.604019",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.604758",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.605507",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.606289",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk_only.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.607019",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk_only.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.607870",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk_only.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.608739",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_enhanced_features.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.609695",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_enhanced_features.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.610528",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_enhanced_features.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.611373",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_full_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.612649",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_full_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.613528",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_full_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.614437",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_live_bot_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.615268",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_live_bot_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.616099",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_live_bot_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.616995",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_parameter_implementation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.617868",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_parameter_implementation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.618746",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_parameter_implementation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.619761",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_position_sizing_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.620755",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_position_sizing_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.621681",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_position_sizing_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.622661",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_signal_detection.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.623666",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_signal_detection.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.624713",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_signal_detection.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.625688",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_silent_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.626661",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_silent_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.627740",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_silent_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.629069",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_ultra_aggressive_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.630205",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_ultra_aggressive_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.631271",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_ultra_aggressive_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.632376",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_validation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.633612",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_validation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.634822",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_validation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.635978",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_warning_reduction.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.637089",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_warning_reduction.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.638214",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_warning_reduction.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.639768",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in validate_enhanced_system.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.641198",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in validate_enhanced_system.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.642621",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in validate_enhanced_system.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.644289",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in verify_backtest_imports.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.645682",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in verify_backtest_imports.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.646905",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in verify_backtest_imports.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.648100",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in core\\backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.649491",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.650926",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.652155",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.653709",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed aliased PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.655075",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\debug_position_entry.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.656368",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\debug_position_entry.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.658059",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\debug_position_entry.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.659405",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\minimal_backtest_test.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.660837",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\minimal_backtest_test.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.662128",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\minimal_backtest_test.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.663656",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\test_position_multiplier.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.664934",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\test_position_multiplier.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.666361",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\test_position_multiplier.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.667668",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in tests\\test_strategy.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.668984",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in tests\\test_strategy.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.670438",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in tests\\test_strategy.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.671896",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in utilities\\utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.673211",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in utilities\\utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T00:58:08.674511",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in utilities\\utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.489973",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in analyze_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.491529",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in analyze_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.492841",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in analyze_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.494288",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_backtest_calls.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.495623",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_backtest_calls.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.497016",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_backtest_calls.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.498458",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_enhanced_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.500012",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_enhanced_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.501446",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_enhanced_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.502874",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_position_manager.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.504339",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_position_manager.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.505799",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_position_manager.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.507329",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.508820",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.510429",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.511979",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_backtest_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.513450",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_backtest_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.515192",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_backtest_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.516743",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_corrected_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.518367",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_corrected_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.519907",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_corrected_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.521410",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.522877",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.524469",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.526138",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk_only.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.527710",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk_only.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.529352",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk_only.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.530929",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_enhanced_features.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.532962",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_enhanced_features.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.534892",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_enhanced_features.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.536583",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_full_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.538157",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_full_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.539859",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_full_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.541622",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_live_bot_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.543294",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_live_bot_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.545061",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_live_bot_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.546644",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_parameter_implementation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.548548",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_parameter_implementation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.550243",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_parameter_implementation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.552127",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_position_sizing_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.553810",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_position_sizing_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.555635",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_position_sizing_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.557542",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_signal_detection.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.559263",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_signal_detection.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.560945",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_signal_detection.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.562738",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_silent_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.564549",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_silent_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.566531",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_silent_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.568510",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_ultra_aggressive_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.570267",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_ultra_aggressive_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.572028",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_ultra_aggressive_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.573816",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_validation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.575641",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_validation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.577571",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_validation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.579728",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_warning_reduction.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.581829",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_warning_reduction.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.583887",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_warning_reduction.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.585826",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in validate_enhanced_system.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.587594",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in validate_enhanced_system.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.589532",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in validate_enhanced_system.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.591380",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in verify_backtest_imports.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.593221",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in verify_backtest_imports.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.595422",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in verify_backtest_imports.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.597332",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.599365",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.601335",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.603275",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed aliased PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.605233",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\debug_position_entry.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.607260",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\debug_position_entry.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.609418",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\debug_position_entry.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.611795",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\minimal_backtest_test.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.613725",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\minimal_backtest_test.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.615688",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\minimal_backtest_test.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.617836",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\test_position_multiplier.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.620142",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\test_position_multiplier.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.622271",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\test_position_multiplier.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.624822",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in tests\\test_strategy.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.627008",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in tests\\test_strategy.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.629068",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in tests\\test_strategy.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.631137",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in utilities\\utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.633456",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in utilities\\utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:03:58.635618",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in utilities\\utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.145965",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in analyze_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.148874",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in analyze_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.151194",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in analyze_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.153635",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_backtest_calls.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.156137",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_backtest_calls.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.161199",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_backtest_calls.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.164591",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_enhanced_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.167201",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_enhanced_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.169654",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_enhanced_backtest.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.172316",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_position_manager.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.174915",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_position_manager.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.177391",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug_position_manager.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.179860",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.182301",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.184753",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in health_utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.187536",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_backtest_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.190776",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_backtest_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.193732",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_backtest_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.196311",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_corrected_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.199021",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_corrected_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.201834",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_corrected_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.204711",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.208619",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.211453",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.213771",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk_only.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.216159",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk_only.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.218849",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_dynamic_risk_only.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.221478",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_enhanced_features.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.224108",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_enhanced_features.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.226962",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_enhanced_features.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.229464",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_full_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.231964",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_full_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.234750",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_full_integration.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.237886",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_live_bot_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.242104",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_live_bot_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.245709",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_live_bot_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.249173",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_parameter_implementation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.253007",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_parameter_implementation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.256122",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_parameter_implementation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.259017",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_position_sizing_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.262140",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_position_sizing_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.266058",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_position_sizing_fix.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.270946",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_signal_detection.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.273727",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_signal_detection.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.276457",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_signal_detection.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.279746",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_silent_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.282409",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_silent_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.285122",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_silent_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.288086",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_ultra_aggressive_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.290987",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_ultra_aggressive_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.293750",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_ultra_aggressive_warnings.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.296880",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_validation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.299761",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_validation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.302616",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_validation.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.305517",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_warning_reduction.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.308366",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_warning_reduction.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.311631",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in test_warning_reduction.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.314646",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in validate_enhanced_system.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.317997",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in validate_enhanced_system.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.321066",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in validate_enhanced_system.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.324117",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in verify_backtest_imports.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.327223",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in verify_backtest_imports.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.330376",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in verify_backtest_imports.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.333677",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.336680",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.339974",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.343004",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed aliased PositionManager import in debug\\compare_position_managers.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.346179",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\debug_position_entry.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.349229",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\debug_position_entry.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.352279",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\debug_position_entry.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.355571",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\minimal_backtest_test.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.358782",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\minimal_backtest_test.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.362075",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\minimal_backtest_test.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.365170",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\test_position_multiplier.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.368558",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\test_position_multiplier.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.371472",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in debug\\test_position_multiplier.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.374553",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in tests\\test_strategy.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.377583",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in tests\\test_strategy.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.380675",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in tests\\test_strategy.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.384048",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in utilities\\utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.387245",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in utilities\\utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T01:10:38.390374",
+      "type": "import_conflict",
+      "problem_signature": "position_manager_import",
+      "solution": "Fixed PositionManager import in utilities\\utils.py",
+      "success": true,
+      "hash": "cf15767ac3ab86db3ed938a01b6351c7"
+    },
+    {
+      "timestamp": "2025-07-31T07:32:57.957940",
+      "type": "intelligent_redundancy_scan",
+      "problem_signature": "AI-guided redundancy scan",
+      "solution": "Intelligent analysis found no redundancy issues - system clean",
+      "success": true,
+      "hash": "ac9897e8334cbc6b128fe97bafedb7b6"
+    },
+    {
+      "timestamp": "2025-07-31T07:34:04.557585",
+      "type": "intelligent_redundancy_scan",
+      "problem_signature": "AI-guided redundancy scan",
+      "solution": "Intelligent analysis found no redundancy issues - system clean",
+      "success": true,
+      "hash": "ac9897e8334cbc6b128fe97bafedb7b6"
+    },
+    {
+      "timestamp": "2025-07-31T07:35:04.496697",
+      "type": "intelligent_redundancy_scan",
+      "problem_signature": "AI-guided redundancy scan",
+      "solution": "Intelligent analysis found no redundancy issues - system clean",
+      "success": true,
+      "hash": "ac9897e8334cbc6b128fe97bafedb7b6"
+    },
+    {
+      "timestamp": "2025-07-31T13:39:10.247218",
+      "type": "test_learning",
+      "problem_signature": "Sample problem for learning test",
+      "solution": "Applied test solution",
+      "success": true,
+      "hash": "15b1c6fb2601ed5988a04b2c09c30cca"
+    },
+    {
+      "timestamp": "2025-07-31T14:06:01.493943",
+      "type": "performance_optimization",
+      "problem_signature": "Rate limiting optimization",
+      "solution": "Optimized rate limits in data/data_manager.py",
+      "success": true,
+      "hash": "838b7d8d85e6cc345151af7721e7381b"
+    },
+    {
+      "timestamp": "2025-07-31T14:06:01.497444",
+      "type": "performance_optimization",
+      "problem_signature": "Rate limiting optimization",
+      "solution": "Optimized rate limits in download_with_retry.py",
+      "success": true,
+      "hash": "838b7d8d85e6cc345151af7721e7381b"
+    },
+    {
+      "timestamp": "2025-08-14T23:13:22.005681",
+      "type": "config_creation",
+      "problem_signature": "Missing config file: data/monitoring_config.json",
+      "solution": "Auto-created data/monitoring_config.json",
+      "success": true,
+      "hash": "d018c04814f34cc4b1190b6e5a41afba"
+    }
+  ],
+  "patterns": {
+    "position_manager_import": {
+      "count": 251,
+      "solutions": [
+        "Resolved PositionManager import conflicts",
+        "Fixed PositionManager import in health_utils.py",
+        "Fixed PositionManager import in analyze_backtest.py",
+        "Fixed PositionManager import in debug_backtest_calls.py",
+        "Fixed PositionManager import in debug_enhanced_backtest.py",
+        "Fixed PositionManager import in debug_position_manager.py",
+        "Fixed PositionManager import in test_backtest_integration.py",
+        "Fixed PositionManager import in test_corrected_risk.py",
+        "Fixed PositionManager import in test_dynamic_risk.py",
+        "Fixed PositionManager import in test_dynamic_risk_only.py",
+        "Fixed PositionManager import in test_enhanced_features.py",
+        "Fixed PositionManager import in test_full_integration.py",
+        "Fixed PositionManager import in test_live_bot_fix.py",
+        "Fixed PositionManager import in test_parameter_implementation.py",
+        "Fixed PositionManager import in test_position_sizing_fix.py",
+        "Fixed PositionManager import in test_signal_detection.py",
+        "Fixed PositionManager import in test_silent_warnings.py",
+        "Fixed PositionManager import in test_ultra_aggressive_warnings.py",
+        "Fixed PositionManager import in test_validation.py",
+        "Fixed PositionManager import in test_warning_reduction.py",
+        "Fixed PositionManager import in validate_enhanced_system.py",
+        "Fixed PositionManager import in verify_backtest_imports.py",
+        "Fixed PositionManager import in core\\backtest.py",
+        "Fixed PositionManager import in debug\\compare_position_managers.py",
+        "Fixed aliased PositionManager import in debug\\compare_position_managers.py",
+        "Fixed PositionManager import in debug\\debug_position_entry.py",
+        "Fixed PositionManager import in debug\\minimal_backtest_test.py",
+        "Fixed PositionManager import in debug\\test_position_multiplier.py",
+        "Fixed PositionManager import in tests\\test_strategy.py",
+        "Fixed PositionManager import in utilities\\utils.py"
+      ],
+      "success_rate": 0
+    },
+    "KeyError: best_parameters_so_far": {
+      "count": 1,
+      "solutions": [
+        "Added missing key structure"
+      ],
+      "success_rate": 0
+    },
+    "AI-guided redundancy scan": {
+      "count": 3,
+      "solutions": [
+        "Intelligent analysis found no redundancy issues - system clean"
+      ],
+      "success_rate": 0
+    },
+    "Sample problem for learning test": {
+      "count": 1,
+      "solutions": [
+        "Applied test solution"
+      ],
+      "success_rate": 0
+    },
+    "Rate limiting optimization": {
+      "count": 2,
+      "solutions": [
+        "Optimized rate limits in data/data_manager.py",
+        "Optimized rate limits in download_with_retry.py"
+      ],
+      "success_rate": 0
+    },
+    "Missing config file: data/monitoring_config.json": {
+      "count": 1,
+      "solutions": [
+        "Auto-created data/monitoring_config.json"
+      ],
+      "success_rate": 0
+    }
+  },
+  "prevention_rules": []
+}

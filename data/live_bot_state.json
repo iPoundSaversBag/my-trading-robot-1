@@ -1,0 +1,76 @@
+{
+  "timestamp": "2025-08-18T13:51:18.815079+00:00",
+  "updater_version": "1.0.0",
+  "position_state": {
+    "in_position": false,
+    "position_details": null
+  },
+  "market_data": {
+    "symbol": "BTCUSDT",
+    "current_price": 115204.92,
+    "volume_24h": 1823117483.6747744,
+    "high_24h": 118473.66,
+    "low_24h": 114640.14,
+    "change_24h": -2.723186922501646,
+    "bid": 115204.91,
+    "ask": 115204.92,
+    "timestamp": "2025-08-18T13:51:17.811545+00:00"
+  },
+  "position_metrics": null,
+  "trading_summary": {
+    "total_sessions": 186,
+    "total_trades": 0,
+    "total_pnl": 0,
+    "last_session": {
+      "timestamp": "2025-08-17T18:59:45.573925",
+      "run_directory": "plots_output\\20250817_133240",
+      "trades_count": 1017,
+      "total_pnl": -5524.560671549419,
+      "win_rate": 45.23107177974435,
+      "metrics": {
+        "avg_trade_pnl": -5.432213049704443,
+        "max_win": 94.01648123502925,
+        "max_loss": -175.43644344923206,
+        "total_windows": 1,
+        "volatility": 19.729969486076115,
+        "sharpe_ratio": -0.27532800055966017
+      }
+    },
+    "last_update": "2025-08-18T13:51:17.813049+00:00"
+  },
+  "system_status": {
+    "system_metrics": {
+      "cpu_percent": 5.5,
+      "memory_percent": 56.3,
+      "disk_percent": 77.5,
+      "timestamp": "2025-08-18T13:51:18.813942+00:00"
+    },
+    "file_status": {
+      "trading_journal.json": {
+        "exists": true,
+        "size_mb": 0.09,
+        "last_modified": "2025-08-17T18:59:45.579995",
+        "age_hours": 21.9
+      },
+      "live_bot_state.json": {
+        "exists": true,
+        "size_mb": 0.0,
+        "last_modified": "2025-08-18T16:42:36.399005",
+        "age_hours": 0.1
+      },
+      "live_bot.log": {
+        "exists": true,
+        "size_mb": 2.23,
+        "last_modified": "2025-08-13T06:33:33.812061",
+        "age_hours": 130.3
+      },
+      "strategy.log": {
+        "exists": true,
+        "size_mb": 0.63,
+        "last_modified": "2025-08-17T13:53:43.898242",
+        "age_hours": 27.0
+      }
+    },
+    "last_update": "2025-08-18T13:51:18.815083+00:00"
+  }
+}
