@@ -28,6 +28,10 @@
     {
       "src": "api/live-bot.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "api/backtest-sync.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
@@ -54,6 +58,14 @@
     {
       "src": "/api/live-bot",
       "dest": "/api/live-bot.py"
+    },
+    {
+      "src": "/api/backtest-sync",
+      "dest": "/api/backtest-sync.py"
+    },
+    {
+      "src": "/api/backtest-sync/update",
+      "dest": "/api/backtest-sync.py"
     },
     {
       "src": "/",
