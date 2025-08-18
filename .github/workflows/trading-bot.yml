@@ -12,9 +12,9 @@ jobs:
       - name: Execute Trading Cycle
         run: |
           # Call your Vercel live bot endpoint
-          curl -X GET "${{ secrets.VERCEL_BOT_URL }}/api/live-bot" \
+          curl -X GET "${{ secrets.VERCEL_URL }}/api/live-bot" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Authorization: Bearer ${{ secrets.BOT_SECRET }}" \
             --max-time 30 \
             --retry 3 \
             --retry-delay 5

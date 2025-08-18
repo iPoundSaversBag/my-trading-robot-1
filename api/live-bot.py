@@ -252,7 +252,7 @@ class handler(BaseHTTPRequestHandler):
         try:
             # Security check for automated requests
             auth_header = self.headers.get('Authorization')
-            cron_secret = os.environ.get('CRON_SECRET')
+            cron_secret = os.environ.get('BOT_SECRET')
             if cron_secret and auth_header != f'Bearer {cron_secret}':
                 self.send_response(401)
                 self.send_header('Content-Type', 'application/json')
