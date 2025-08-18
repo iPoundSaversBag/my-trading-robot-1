@@ -3679,24 +3679,65 @@ class IchimokuBacktester:
             log_to_file(f"Saved {len(self.all_trial_data)} optimization trial records to {trial_data_path}")
 
         if self.all_optimized_params:
-            # --- GCP INTEGRATION: Upload the latest parameters to the cloud ---
-            if not self.debug_mode and GCP_AVAILABLE:
-                log_to_file("Attempting to upload latest parameters to Google Cloud Storage...")
+            # --- VERCEL INTEGRATION: Update live trading config for Vercel deployment ---
+            if not self.debug_mode:
+                log_to_file("Syncing optimized parameters to Vercel live bot configuration...")
                 
-                # Use the enhanced sync function for better reliability
-                upload_success = sync_parameters_to_cloud(
-                    local_params_file=params_save_path,
-                    cloud_blob_name="latest_live_parameters.json"
-                )
-                
-                if upload_success:
-                    log_to_file("Successfully uploaded parameters to GCS. Live bot will receive updated parameters.")
-                else:
-                    self.log_problem("Failed to upload parameters to GCS. Live bot will not be updated with latest parameters.")
-            elif not GCP_AVAILABLE:
-                log_to_file("GCP utilities not available - parameters not uploaded to cloud", print_to_console=False)
-            elif self.debug_mode:
-                log_to_file("Debug mode enabled - skipping GCP parameter upload", print_to_console=False)
+                try:
+                    # Get the latest optimized parameters from the most recent window
+                    latest_window_key = sorted(self.all_optimized_params.keys())[-1]
+                    latest_params = self.all_optimized_params[latest_window_key]
+                    
+                    # Create live trading config with optimized parameters
+                    live_config = {
+                        # Fixed parameters from main config
+                        "INITIAL_CAPITAL": self.config["fixed_parameters"]["INITIAL_CAPITAL"],
+                        "POSITION_SIZE": self.config["fixed_parameters"]["POSITION_SIZE"],
+                        "COMMISSION_RATE": self.config["fixed_parameters"]["COMMISSION_RATE"],
+                        "SLIPPAGE_RATE": self.config["fixed_parameters"]["SLIPPAGE_RATE"],
+                        "MAX_PORTFOLIO_RISK": self.config["fixed_parameters"]["MAX_PORTFOLIO_RISK"],
+                        "min_confidence_for_trade": self.config["fixed_parameters"]["min_confidence_for_trade"],
+                        "USE_ML_REGIME_DETECTION": self.config["fixed_parameters"]["USE_ML_REGIME_DETECTION"],
+                        "BLOCK_LOW_CONFIDENCE_SIGNALS": self.config["fixed_parameters"]["BLOCK_LOW_CONFIDENCE_SIGNALS"],
+                        "VOLUME_CONFIRMATION": self.config.get("VOLUME_CONFIRMATION", True),
+                        "SYMBOL": "BTCUSDT",
+                        "TIMEFRAME": "5m"
+                    }
+                    
+                    # Add optimized parameters
+                    optimized_keys = [
+                        "RSI_PERIOD", "RSI_OVERBOUGHT", "RSI_OVERSOLD",
+                        "TENKAN_SEN_PERIOD", "KIJUN_SEN_PERIOD", "SENKOU_SPAN_B_PERIOD",
+                        "ADX_THRESHOLD", "ATR_PERIOD", "volatility_threshold", 
+                        "volatility_window", "trend_window", "momentum_window",
+                        "MA_FAST", "MA_SLOW", "MA_SIGNAL"
+                    ]
+                    
+                    for key in optimized_keys:
+                        if key in latest_params:
+                            live_config[key] = latest_params[key]
+                        elif key == "MA_FAST" and "TENKAN_SEN_PERIOD" in latest_params:
+                            live_config[key] = latest_params["TENKAN_SEN_PERIOD"]  # Map Ichimoku to MA
+                        elif key == "MA_SLOW" and "KIJUN_SEN_PERIOD" in latest_params:
+                            live_config[key] = latest_params["KIJUN_SEN_PERIOD"]
+                        elif key == "MA_SIGNAL":
+                            live_config[key] = 9  # Default signal line
+                    
+                    # Save to Vercel live bot config
+                    vercel_config_path = "api/live_trading_config.json"
+                    with open(vercel_config_path, 'w') as f:
+                        json.dump(live_config, f, indent=2)
+                    
+                    log_to_file(f"Successfully updated Vercel live bot config: {vercel_config_path}")
+                    log_to_file(f"Live bot will use optimized parameters: RSI={live_config.get('RSI_PERIOD', 'N/A')}, MA_FAST={live_config.get('MA_FAST', 'N/A')}, MA_SLOW={live_config.get('MA_SLOW', 'N/A')}")
+                    
+                    # Note: Auto git commit/push would happen here in production
+                    # For now, user can manually commit or add automated deployment
+                    
+                except Exception as sync_error:
+                    self.log_problem(f"Failed to sync parameters to Vercel config: {sync_error}")
+            else:
+                log_to_file("Debug mode enabled - skipping Vercel parameter sync", print_to_console=False)
 
         # =============================
         # Ensemble / Top-K Adoption (Item 12)

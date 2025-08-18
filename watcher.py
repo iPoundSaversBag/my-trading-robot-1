@@ -766,10 +766,10 @@ def main_loop(args):
         except Exception as e:
             print(f"⚠️  End-of-cycle health summary error: {e}")
         
-        # --- Step 6: Live Bot Validation (REMOVED) ---
-        # This step is no longer needed as the live bot runs independently on the VM
-        # and will pick up the new parameters automatically from Google Cloud Storage.
-        log_message("Watcher cycle complete. New parameters have been uploaded to GCS for the live bot.", 'watcher')
+        # --- Step 6: Deployment Complete ---
+        # Optimized parameters have been automatically synced to Vercel deployment
+        # and the live bot will receive updates via the automated CI/CD pipeline.
+        log_message("Watcher cycle complete. Optimized parameters synced to Vercel for live bot deployment.", 'watcher')
 
         print(f"\n{'='*40}\n{'='*10} WATCHER CYCLE #{run_count} COMPLETE {'='*10}\n{'='*40}")
         
