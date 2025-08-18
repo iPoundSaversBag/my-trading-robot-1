@@ -12,8 +12,28 @@ import time
 from urllib.parse import urlencode
 from http.server import BaseHTTPRequestHandler
 
-# Optimized trading parameters from your backtest results
-TRADING_CONFIG = {
+def load_trading_config():
+    """Load optimized trading parameters from backtest results"""
+    try:
+        # Try to load optimized parameters from backtest
+        config_path = os.path.join(os.path.dirname(__file__), 'live_trading_config.json')
+        if os.path.exists(config_path):
+            with open(config_path, 'r') as f:
+                config = json.load(f)
+            print(f"✅ Loaded optimized parameters: RSI={config.get('RSI_PERIOD')}, MA_FAST={config.get('MA_FAST')}, MA_SLOW={config.get('MA_SLOW')}")
+            return config
+        else:
+            print("⚠️ No optimized config found, using defaults")
+            return None
+    except Exception as e:
+        print(f"❌ Error loading config: {e}")
+        return None
+
+# Load optimized parameters or use defaults
+OPTIMIZED_CONFIG = load_trading_config()
+
+# Default trading parameters (fallback if optimized config not available)
+DEFAULT_CONFIG = {
     "INITIAL_CAPITAL": 10000,
     "POSITION_SIZE": 0.02,
     "COMMISSION_RATE": 0.001,
@@ -28,15 +48,16 @@ TRADING_CONFIG = {
     "VOLUME_CONFIRMATION": True,
     "SYMBOL": "BTCUSDT",
     "TIMEFRAME": "5m",
-    # RSI parameters from your backtest
     "RSI_OVERSOLD": 30,
     "RSI_OVERBOUGHT": 70,
     "RSI_PERIOD": 14,
-    # Moving average parameters
     "MA_FAST": 12,
     "MA_SLOW": 26,
     "MA_SIGNAL": 9
 }
+
+# Use optimized config if available, otherwise use defaults
+TRADING_CONFIG = OPTIMIZED_CONFIG if OPTIMIZED_CONFIG else DEFAULT_CONFIG
 
 class VercelLiveBot:
     def __init__(self):
@@ -240,7 +261,16 @@ class VercelLiveBot:
                 'signal': signal_data,
                 'account_balance': balances,
                 'trade_executed': trade_result,
-                'config_used': self.config['SYMBOL'],
+                'config_source': 'optimized' if OPTIMIZED_CONFIG else 'default',
+                'parameters_used': {
+                    'RSI_PERIOD': self.config['RSI_PERIOD'],
+                    'MA_FAST': self.config['MA_FAST'], 
+                    'MA_SLOW': self.config['MA_SLOW'],
+                    'RSI_OVERBOUGHT': self.config['RSI_OVERBOUGHT'],
+                    'RSI_OVERSOLD': self.config['RSI_OVERSOLD'],
+                    'source_window': self.config.get('source_window', 'N/A'),
+                    'optimization_timestamp': self.config.get('optimization_timestamp', 'N/A')
+                },
                 'backtest_integration': 'active'
             }
             
