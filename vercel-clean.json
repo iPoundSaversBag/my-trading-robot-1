@@ -19,5 +19,10 @@
       "src": "/",
       "dest": "/public/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/live-data.py": {
+      "runtime": "python3.9"
+    }
+  }
 }

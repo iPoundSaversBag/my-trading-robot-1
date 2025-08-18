@@ -36,3 +36,4 @@ backups/
 
 # Environment variables
 .env
+.vercel

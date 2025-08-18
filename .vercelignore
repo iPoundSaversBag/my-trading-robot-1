@@ -1,0 +1,30 @@
+# Vercel Build
+.vercel
+
+# Large data files - exclude from deployment
+data/crypto_data_*.parquet
+data/trading_journal.json
+plots_output/
+backups/
+logs/
+*.log
+__pycache__/
+*.pyc
+
+# Development files
+venv/
+.env
+tests/
+coverage_check*.py
+*_tmp.py
+
+# Large binary files
+*.pkl
+ml_models/
+
+# Exclude analysis scripts (keep only essential files)
+analysis/
+enhancements/
+scripts/preflight_check.py
+scripts/data_*
+scripts/train_*
