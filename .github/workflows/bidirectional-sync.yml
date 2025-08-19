@@ -95,7 +95,7 @@ jobs:
         
         # Get live bot results from Vercel
         try:
-            vercel_url = "https://my-trading-robot-1-f22n1sboq-aidan-lanes-projects.vercel.app"
+            vercel_url = "https://my-trading-robot-1-9swf26oe0-aidan-lanes-projects.vercel.app"
             bot_secret = "93699b3917045092715b8e16c01f2e1d"
             
             if not vercel_url:
@@ -238,7 +238,7 @@ jobs:
         import json
         
         try:
-            vercel_url = "https://my-trading-robot-1-f22n1sboq-aidan-lanes-projects.vercel.app"
+            vercel_url = "https://my-trading-robot-1-9swf26oe0-aidan-lanes-projects.vercel.app"
             bot_secret = "93699b3917045092715b8e16c01f2e1d"
             
             if not vercel_url:
