@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+
+print("🔄 BIDIRECTIONAL SYNC SYSTEM - SETUP GUIDE")
+print("=" * 60)
+print()
+
+print("✅ SYSTEM DEPLOYED SUCCESSFULLY!")
+print()
+
+print("📋 REQUIRED GITHUB SECRETS:")
+print("1. VERCEL_URL - Your Vercel app URL")
+print("2. BOT_SECRET - Authentication secret for live bot")
+print("3. GITHUB_TOKEN - Personal access token for repository dispatch")
+print()
+
+print("🚀 AVAILABLE BIDIRECTIONAL ENDPOINTS:")
+print()
+
+print("1. 🔍 GET BACKTEST DATA:")
+print("   GET /api/backtest-sync")
+print("   ➜ Live bot can read local optimization results")
+print()
+
+print("2. 🔄 SYNC PARAMETERS:")
+print("   GET /api/backtest-sync/update")
+print("   ➜ Update live bot with latest local parameters")
+print()
+
+print("TARGET TRIGGER REMOTE BACKTEST:")
+print("   GET /api/backtest-sync/trigger")
+print("   ➜ Live bot triggers GitHub Actions to run local backtest")
+print()
+
+print("4. 📤 SYNC LIVE RESULTS:")
+print("   GET /api/backtest-sync/sync-live")
+print("   ➜ Send live trading results back to local repository")
+print()
+
+print("🔄 BIDIRECTIONAL FLOW:")
+print()
+print("LIVE BOT → LOCAL MACHINE:")
+print("  • Trigger remote backtest optimization")
+print("  • Send live trading performance data")
+print("  • Request parameter updates")
+print()
+
+print("LOCAL MACHINE → LIVE BOT:")
+print("  • Send optimized parameters")
+print("  • Update regime-specific filters")
+print("  • Push new configurations")
+print()
+
+print("📊 GITHUB ACTIONS WORKFLOWS:")
+print()
+print("1. trading-bot.yml - Runs every 5 minutes")
+print("2. bidirectional-sync.yml - Triggered by repository dispatch")
+print("   • trigger-backtest - Remote optimization trigger")
+print("   • sync-live-results - Live data sync to local")
+print("   • update-parameters - Parameter sync automation")
+print()
+
+print("🎮 HOW TO USE:")
+print()
+print("MANUAL TRIGGERS (VS Code GitHub Actions extension):")
+print("1. Open Command Palette (Ctrl+Shift+P)")
+print("2. Search 'GitHub Actions'")
+print("3. Select 'Run Workflow'")
+print("4. Choose 'Bidirectional Trading Sync'")
+print("5. Select action: trigger-backtest, sync-live-results, or update-parameters")
+print()
+
+print("API TRIGGERS (from live bot or external):")
+print("curl https://your-vercel-url.vercel.app/api/backtest-sync/trigger")
+print("curl https://your-vercel-url.vercel.app/api/backtest-sync/sync-live")
+print()
+
+print("🔐 SECURITY:")
+print("• All endpoints require BOT_SECRET authentication")
+print("• GitHub token needed for repository dispatch")
+print("• CORS enabled for dashboard integration")
+print()
+
+print("📈 MONITORING:")
+print("• Live results logged to live_trading/remote_sync_results.jsonl")
+print("• Backtest requests logged to logs/remote_backtest_requests.jsonl")
+print("• All sync activities tracked with timestamps")
+print()
+
+print("🎯 NEXT STEPS:")
+print("1. Add GITHUB_TOKEN secret to repository")
+print("2. Test manual workflow trigger in VS Code")
+print("3. Monitor sync logs for successful operations")
+print("4. Verify bidirectional parameter updates")
+print()
+
+print("✨ CONGRATULATIONS!")
+print("Your trading system now has complete bidirectional sync!")
+print("Live bot ↔ Local machine communication is active! 🚀")

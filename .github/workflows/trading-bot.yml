@@ -11,10 +11,13 @@ jobs:
     steps:
       - name: Execute Trading Cycle
         run: |
-          # Call your Vercel live bot endpoint
-          curl -X GET "${{ secrets.VERCEL_URL }}/api/live-bot" \
+          # Call your Vercel live bot endpoint with hardcoded values
+          VERCEL_URL="https://my-trading-robot-1-f22n1sboq-aidan-lanes-projects.vercel.app"
+          BOT_SECRET="93699b3917045092715b8e16c01f2e1d"
+          
+          curl -X GET "$VERCEL_URL/api/live-bot" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.BOT_SECRET }}" \
+            -H "Authorization: Bearer $BOT_SECRET" \
             --max-time 30 \
             --retry 3 \
             --retry-delay 5

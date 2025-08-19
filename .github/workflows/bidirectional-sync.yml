@@ -45,18 +45,18 @@ jobs:
       run: |
         if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
           echo "action_type=${{ github.event.action }}" >> $GITHUB_OUTPUT
-          echo "source=${{ github.event.client_payload.source || 'api' }}" >> $GITHUB_OUTPUT
-          echo "parameters=${{ github.event.client_payload.parameters || '{}' }}" >> $GITHUB_OUTPUT
+          echo "source=${{ github.event.client_payload.source }}" >> $GITHUB_OUTPUT
+          echo "parameters=${{ github.event.client_payload.parameters }}" >> $GITHUB_OUTPUT
         else
           echo "action_type=${{ github.event.inputs.action_type }}" >> $GITHUB_OUTPUT
-          echo "source=${{ github.event.inputs.source || 'manual' }}" >> $GITHUB_OUTPUT
-          echo "parameters=${{ github.event.inputs.parameters || '{}' }}" >> $GITHUB_OUTPUT
+          echo "source=${{ github.event.inputs.source }}" >> $GITHUB_OUTPUT
+          echo "parameters=${{ github.event.inputs.parameters }}" >> $GITHUB_OUTPUT
         fi
 
     - name: Trigger Remote Backtest Optimization
       if: steps.action.outputs.action_type == 'trigger-backtest'
       run: |
-        echo "🚀 Triggering remote backtest optimization..."
+        echo "LAUNCH Triggering remote backtest optimization..."
         python3 << 'EOF'
         import json
         import os
@@ -64,7 +64,7 @@ jobs:
         from datetime import datetime
         
         # Simulate backtest optimization trigger
-        print("📊 Starting remote backtest optimization...")
+        print("ANALYTICS Starting remote backtest optimization...")
         
         # Create optimization request log
         request_data = {
@@ -80,26 +80,35 @@ jobs:
         with open('logs/remote_backtest_requests.jsonl', 'a') as f:
             f.write(json.dumps(request_data) + '\n')
         
-        print("✅ Backtest optimization request logged")
+        print("SUCCESS Backtest optimization request logged")
         print(f"Request ID: {request_data['timestamp']}")
         EOF
 
     - name: Sync Live Trading Results to Local
       if: steps.action.outputs.action_type == 'sync-live-results'
       run: |
-        echo "📥 Syncing live trading results to local..."
+        echo "DOWNLOAD Syncing live trading results to local..."
         python3 << 'EOF'
         import json
         import requests
-        import os
         from datetime import datetime
         
         # Get live bot results from Vercel
         try:
-            vercel_url = "${{ secrets.VERCEL_URL }}"
+            vercel_url = "https://my-trading-robot-1-f22n1sboq-aidan-lanes-projects.vercel.app"
+            bot_secret = "93699b3917045092715b8e16c01f2e1d"
+            
+            if not vercel_url:
+                print("WARNING Vercel URL not configured - skipping sync")
+                exit(0)
+            
+            if not bot_secret:
+                print("WARNING Bot secret not configured - skipping sync")
+                exit(0)
+                
             if vercel_url:
                 response = requests.get(f"{vercel_url}/api/live-bot", 
-                                      headers={"Authorization": "Bearer ${{ secrets.BOT_SECRET }}"}, 
+                                      headers={"Authorization": f"Bearer {bot_secret}"}, 
                                       timeout=30)
                 
                 if response.status_code == 200:
@@ -123,22 +132,22 @@ jobs:
                     with open('live_trading/live_bot_state.json', 'w') as f:
                         json.dump(live_data, f, indent=2)
                     
-                    print("✅ Live trading results synced successfully")
+                    print("SUCCESS Live trading results synced successfully")
                     print(f"Signal: {live_data.get('signal', {}).get('signal', 'N/A')}")
                     print(f"Regime: {live_data.get('market_regime', {}).get('primary', 'N/A')}")
                     print(f"Confidence: {live_data.get('signal', {}).get('confidence', 'N/A')}")
                 else:
-                    print(f"❌ Failed to get live bot data: {response.status_code}")
+                    print(f"ERROR Failed to get live bot data: {response.status_code}")
             else:
-                print("⚠️ VERCEL_URL not configured")
+                print("WARNING Vercel URL not configured")
         except Exception as e:
-            print(f"❌ Error syncing live results: {e}")
+            print(f"ERROR Error syncing live results: {e}")
         EOF
 
     - name: Update Remote Parameters
       if: steps.action.outputs.action_type == 'update-parameters'
       run: |
-        echo "🔄 Updating remote parameters..."
+        echo "SYNC Updating remote parameters..."
         python3 << 'EOF'
         import json
         import requests
@@ -191,15 +200,15 @@ jobs:
                 with open('api/live_trading_config.json', 'w') as f:
                     json.dump(live_config, f, indent=2)
                 
-                print("✅ Parameters updated successfully")
+                print("SUCCESS Parameters updated successfully")
                 print(f"Updated {len(live_config)} parameters")
                 print(f"Source window: {latest_window}")
                 print(f"RSI Period: {live_config['RSI_PERIOD']}")
                 print(f"MA Fast/Slow: {live_config['MA_FAST']}/{live_config['MA_SLOW']}")
             else:
-                print("❌ No optimization parameters found")
+                print("ERROR No optimization parameters found")
         else:
-            print("❌ No latest run directory found")
+            print("ERROR No latest run directory found")
         EOF
 
     - name: Commit and Push Changes
@@ -215,42 +224,52 @@ jobs:
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
-          git commit -m "🔄 Bidirectional sync: ${{ steps.action.outputs.action_type }} from ${{ steps.action.outputs.source }}"
+          git commit -m "SYNC Bidirectional sync: ${{ steps.action.outputs.action_type }} from ${{ steps.action.outputs.source }}"
           git push
-          echo "✅ Changes committed and pushed"
+          echo "SUCCESS Changes committed and pushed"
         fi
 
     - name: Notify Live Bot of Update
       if: steps.action.outputs.action_type == 'update-parameters'
       run: |
-        echo "📢 Notifying live bot of parameter update..."
+        echo "NOTIFY Notifying live bot of parameter update..."
         python3 << 'EOF'
         import requests
         import json
         
         try:
-            vercel_url = "${{ secrets.VERCEL_URL }}"
+            vercel_url = "https://my-trading-robot-1-f22n1sboq-aidan-lanes-projects.vercel.app"
+            bot_secret = "93699b3917045092715b8e16c01f2e1d"
+            
+            if not vercel_url:
+                print("WARNING Vercel URL not configured - skipping notification")
+                exit(0)
+            
+            if not bot_secret:
+                print("WARNING Bot secret not configured - skipping notification")
+                exit(0)
+                
             if vercel_url:
                 # Trigger live bot to reload config
                 response = requests.get(f"{vercel_url}/api/backtest-sync/update",
-                                      headers={"Authorization": "Bearer ${{ secrets.BOT_SECRET }}"},
+                                      headers={"Authorization": f"Bearer {bot_secret}"},
                                       timeout=30)
                 
                 if response.status_code == 200:
                     result = response.json()
-                    print("✅ Live bot notified successfully")
+                    print("SUCCESS Live bot notified successfully")
                     print(f"Status: {result.get('status', 'unknown')}")
                 else:
-                    print(f"⚠️ Live bot notification failed: {response.status_code}")
+                    print(f"WARNING Live bot notification failed: {response.status_code}")
             else:
-                print("⚠️ VERCEL_URL not configured for notification")
+                print("WARNING Vercel URL not configured for notification")
         except Exception as e:
-            print(f"❌ Error notifying live bot: {e}")
+            print(f"ERROR Error notifying live bot: {e}")
         EOF
 
     - name: Summary Report
       run: |
-        echo "📊 BIDIRECTIONAL SYNC SUMMARY"
+        echo "ANALYTICS BIDIRECTIONAL SYNC SUMMARY"
         echo "===================================="
         echo "Action: ${{ steps.action.outputs.action_type }}"
         echo "Source: ${{ steps.action.outputs.source }}"
