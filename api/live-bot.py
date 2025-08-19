@@ -247,7 +247,7 @@ class VercelLiveBot:
         return atr
     
     def detect_market_regime(self, indicators):
-        """Detect current market regime based on indicators"""
+        """Detect current market regime based on indicators - Enhanced with all 9 regimes"""
         adx = indicators['adx']
         atr = indicators['atr']
         volume_ratio = indicators['volume_ratio']
@@ -287,17 +287,49 @@ class VercelLiveBot:
         else:
             breakout_regime = None
         
-        # Primary regime priority: breakout > trending > ranging
+        # Enhanced: Accumulation/Distribution detection
+        accumulation_regime = None
+        distribution_regime = None
+        
+        # Accumulation: Low volatility + rising volume + sideways price
+        if (adx < adx_threshold * 0.8 and 
+            volume_ratio > 1.2 and 
+            abs(price_change_pct) < 0.5 and
+            price_change_pct >= 0):  # Slight positive bias
+            accumulation_regime = 'accumulation'
+        
+        # Distribution: Low volatility + high volume + sideways/declining price  
+        elif (adx < adx_threshold * 0.8 and 
+              volume_ratio > 1.3 and 
+              abs(price_change_pct) < 0.5 and
+              price_change_pct <= 0):  # Slight negative bias
+            distribution_regime = 'distribution'
+        
+        # Primary regime priority: breakout > accumulation/distribution > trending > ranging/volatility
         if breakout_regime:
             primary_regime = breakout_regime
-        else:
+        elif accumulation_regime:
+            primary_regime = accumulation_regime
+        elif distribution_regime:
+            primary_regime = distribution_regime
+        elif trend_regime != 'ranging':
             primary_regime = trend_regime
+        else:
+            # Choose between ranging and volatility regimes
+            if price_volatility > volatility_threshold * 1.5:
+                primary_regime = 'high_volatility'
+            elif price_volatility < volatility_threshold * 0.5:
+                primary_regime = 'low_volatility'
+            else:
+                primary_regime = 'ranging'
         
         return {
             'primary': primary_regime,
             'trend': trend_regime,
             'volatility': volatility_regime,
             'breakout': breakout_regime,
+            'accumulation': accumulation_regime,
+            'distribution': distribution_regime,
             'adx': adx,
             'volume_ratio': volume_ratio,
             'volatility_level': price_volatility
@@ -369,7 +401,7 @@ class VercelLiveBot:
             confidence += 0.25
             reasons.append(f"Volume breakout ({market_regime['volume_ratio']:.1f}x)")
         
-        # Regime-specific confidence adjustments
+        # Regime-specific confidence adjustments (enhanced with all 9 regimes)
         regime_adjustments = {
             'trending_bull': 0.1,
             'trending_bear': 0.1,
@@ -377,7 +409,9 @@ class VercelLiveBot:
             'breakout_bullish': 0.2,
             'breakout_bearish': 0.2,
             'high_volatility': -0.05,
-            'low_volatility': 0.05
+            'low_volatility': 0.05,
+            'accumulation': 0.15,  # Positive for accumulation (building position)
+            'distribution': -0.05   # Cautious for distribution (smart money exiting)
         }
         
         confidence += regime_adjustments.get(regime, 0)
