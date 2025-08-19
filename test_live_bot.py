@@ -107,7 +107,7 @@ def test_strategy_components():
     
     try:
         # Test imports
-        from core.strategy import DynamicMultiStrategy
+        from core.strategy import MultiTimeframeStrategy
         from core.portfolio import Portfolio
         from core.position_manager import PositionManager
         print("✅ Core strategy modules imported successfully")
@@ -118,7 +118,7 @@ def test_strategy_components():
             config = json.load(f)
         
         # Test strategy initialization
-        strategy = DynamicMultiStrategy(config)
+        strategy = MultiTimeframeStrategy(config)
         print("✅ Strategy initialized successfully")
         
         # Test portfolio

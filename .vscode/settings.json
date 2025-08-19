@@ -1,106 +1,22 @@
 {
-    "python.defaultInterpreterPath": ".\\venv\\Scripts\\python.exe",
-    
-    // File corruption prevention settings
-    "files.autoSave": "onFocusChange",
-    "files.autoSaveDelay": 2000,
-    "editor.formatOnSave": false,
-    "editor.formatOnPaste": false,
-    "editor.codeActionsOnSave": {},
-    "files.trimTrailingWhitespace": false,
-    "files.insertFinalNewline": false,
-    
-    // Python-specific corruption prevention
-    "python.analysis.autoImportCompletions": false,
-    "python.analysis.autoSearchPaths": false,
-    "python.linting.enabled": false,
-    "python.formatting.provider": "none",
-    
-    // Git integration safety
-    "git.autofetch": false,
-    "git.autoStash": false,
-    
-    // Extension safety
-    "extensions.autoUpdate": false,
-    "workbench.settings.enableNaturalLanguageSearch": false,
-    
-    "files.watcherExclude": {
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
-        "**/node_modules/*/**": true,
-        "**/__pycache__/**": true,
-        "**/venv/**": true,
-        "**/logs/**": true,
-        "**/backups/**": true,
-        "**/plots_output/**": true,
-        "**/data/**": true,
-        "**/analysis/**": true
-    },
-    "files.exclude": {
-        "**/.git": true,
-        "**/__pycache__": true,
-        "**/venv/": true,
-        "**/logs/": true,
-        "**/backups/": true,
-        "**/plots_output/": true,
-        "**/data/": true,
-        "**/analysis/": true
-    },
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "**/__pycache__": true,
-        "**/venv": true,
-        "**/logs": true,
-        "**/backups": true,
-        "**/plots_output": true,
-        "**/data": true,
-        "**/analysis": true
-    },
-    
-    // Aggressive performance optimizations
-    "python.analysis.indexing": false,
-    "python.analysis.packageIndexDepths": [],
-    "python.analysis.userFileIndexingLimit": 500,
-    "python.analysis.memory.keepLibraryAst": false,
-    "editor.semanticHighlighting.enabled": false,
-    "editor.minimap.enabled": false,
-    "editor.hover.enabled": false,
-    "editor.quickSuggestions": {
-        "comments": "off",
-        "strings": "off",
-        "other": "off"
-    },
-    "editor.parameterHints.enabled": false,
-    "editor.suggestOnTriggerCharacters": false,
-    "workbench.editor.enablePreview": false,
-    "workbench.editor.enablePreviewFromQuickOpen": false,
-    "extensions.autoCheckUpdates": false,
-    "telemetry.telemetryLevel": "off",
-    "workbench.startupEditor": "none",
-    "git.enabled": false,
-    "git.autoRepositoryDetection": false,
-    "typescript.disableAutomaticTypeAcquisition": true,
-    "typescript.surveys.enabled": false,
-    "javascript.validate.enable": false,
-    "html.validate.scripts": false,
-    "css.validate": false,
-    "json.validate.enable": false,
-    "editor.renderWhitespace": "none",
-    "editor.renderControlCharacters": false,
-    "editor.renderLineHighlight": "none",
-    "editor.occurrencesHighlight": "off",
-    "editor.selectionHighlight": false,
-    "editor.wordHighlight": false,
-    "editor.links": false,
-    "breadcrumbs.enabled": false,
-    "outline.icons": false,
-    "problems.decorations.enabled": false,
-    "scm.diffDecorations": "none",
-    "workbench.list.smoothScrolling": false,
-    "workbench.tree.renderIndentGuides": "none",
-    "editor.smoothScrolling": false,
-    "editor.cursorSmoothCaretAnimation": "off",
-    "workbench.reduceMotion": "on",
-    "files.hotExit": "off"
+  "github.gitAuthentication": true,
+  "github.gitProtocol": "https",
+  "git.autofetch": true,
+  "git.fetchOnPull": true,
+  "github-actions.workflows.pinned.refreshInterval": 30,
+  "github-actions.workflows.pinned.repositories": [
+    "iPoundSaversBag/my-trading-robot-1"
+  ],
+  "github-actions.workflows.pinned.workflows": [
+    ".github/workflows/bidirectional-sync.yml",
+    ".github/workflows/trading-bot.yml",
+    ".github/workflows/deploy.yml"
+  ],
+  "github.enableExperimentalApi": true,
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "plaintext": false,
+    "markdown": true
+  }
 }

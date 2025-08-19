@@ -1,0 +1,24 @@
+{
+  "folders": [
+    {
+      "name": "Trading Robot",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "git.enabled": true,
+    "git.autoRepositoryDetection": "openEditors",
+    "github.gitAuthentication": true,
+    "github-actions.workflows.pinned.workflows": [
+      "bidirectional-sync.yml",
+      "trading-bot.yml",
+      "deploy.yml"
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "github.vscode-github-actions",
+      "github.vscode-pull-request-github"
+    ]
+  }
+}
