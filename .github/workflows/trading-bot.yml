@@ -12,7 +12,7 @@ jobs:
       - name: Execute Trading Cycle
         run: |
           # Call your Vercel live bot endpoint with hardcoded values
-          VERCEL_URL="https://my-trading-robot-1-9swf26oe0-aidan-lanes-projects.vercel.app"
+          VERCEL_URL="https://my-trading-robot-1.vercel.app"
           BOT_SECRET="93699b3917045092715b8e16c01f2e1d"
           
           curl -X GET "$VERCEL_URL/api/live-bot" \

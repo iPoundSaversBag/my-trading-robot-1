@@ -9,7 +9,7 @@ import time
 from datetime import datetime
 
 # Your bot configuration
-BOT_URL = "https://my-trading-robot-1-9swf26oe0-aidan-lanes-projects.vercel.app"
+BOT_URL = "https://my-trading-robot-1.vercel.app"
 BOT_SECRET = "93699b3917045092715b8e16c01f2e1d"
 
 def check_bot_status():
