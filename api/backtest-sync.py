@@ -1,10 +1,12 @@
 """
 Remote Parameter Sync API - Allows live bot to access local backtest data
+Enhanced with bidirectional sync capabilities via GitHub Actions
 """
 
 import json
 import os
 import requests
+import time
 from http.server import BaseHTTPRequestHandler
 
 def get_latest_backtest_results():
@@ -29,7 +31,8 @@ def get_latest_backtest_results():
                 'latest_window': latest_window,
                 'optimization_timestamp': latest_dir.split('/')[-1],
                 'parameters': latest_params,
-                'total_windows': len(all_params)
+                'total_windows': len(all_params),
+                'bidirectional_sync': 'enabled'
             }
         else:
             return {'status': 'error', 'message': 'No optimization results found'}
@@ -80,8 +83,111 @@ def sync_parameters_to_vercel():
             'status': 'success',
             'message': 'Parameters synced successfully',
             'synced_parameters': len(live_config),
-            'regime_filters': len([k for k in live_config.keys() if '_FILTER_' in k])
+            'regime_filters': len([k for k in live_config.keys() if '_FILTER_' in k]),
+            'bidirectional_sync': 'active'
         }
+    
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}
+
+def trigger_remote_backtest():
+    """Trigger remote backtest optimization via GitHub Actions"""
+    try:
+        # GitHub repository dispatch endpoint
+        github_token = os.environ.get('GITHUB_TOKEN')
+        repo_owner = 'iPoundSaversBag'  # Replace with your GitHub username
+        repo_name = 'my-trading-robot-1'
+        
+        if not github_token:
+            return {
+                'status': 'error',
+                'message': 'GitHub token not configured for remote triggers'
+            }
+        
+        # Trigger GitHub Actions workflow
+        dispatch_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dispatches"
+        
+        payload = {
+            "event_type": "trigger-backtest",
+            "client_payload": {
+                "source": "live-bot",
+                "timestamp": time.time(),
+                "parameters": {
+                    "optimization_mode": "full",
+                    "triggered_by": "remote_api"
+                }
+            }
+        }
+        
+        headers = {
+            "Authorization": f"Bearer {github_token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+        
+        response = requests.post(dispatch_url, json=payload, headers=headers, timeout=30)
+        
+        if response.status_code == 204:
+            return {
+                'status': 'success',
+                'message': 'Remote backtest optimization triggered successfully',
+                'github_dispatch': 'sent',
+                'workflow': 'bidirectional-sync.yml'
+            }
+        else:
+            return {
+                'status': 'error',
+                'message': f'GitHub dispatch failed: {response.status_code}',
+                'response': response.text
+            }
+    
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}
+
+def trigger_live_results_sync():
+    """Trigger syncing of live trading results back to local repository"""
+    try:
+        github_token = os.environ.get('GITHUB_TOKEN')
+        repo_owner = 'iPoundSaversBag'
+        repo_name = 'my-trading-robot-1'
+        
+        if not github_token:
+            return {
+                'status': 'error',
+                'message': 'GitHub token not configured'
+            }
+        
+        dispatch_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/dispatches"
+        
+        payload = {
+            "event_type": "sync-live-results",
+            "client_payload": {
+                "source": "live-bot",
+                "timestamp": time.time(),
+                "parameters": {
+                    "sync_type": "live_trading_results",
+                    "triggered_by": "remote_api"
+                }
+            }
+        }
+        
+        headers = {
+            "Authorization": f"Bearer {github_token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+        
+        response = requests.post(dispatch_url, json=payload, headers=headers, timeout=30)
+        
+        if response.status_code == 204:
+            return {
+                'status': 'success',
+                'message': 'Live results sync triggered successfully',
+                'github_dispatch': 'sent'
+            }
+        else:
+            return {
+                'status': 'error',
+                'message': f'GitHub dispatch failed: {response.status_code}'
+            }
     
     except Exception as e:
         return {'status': 'error', 'message': str(e)}
@@ -97,10 +203,17 @@ class handler(BaseHTTPRequestHandler):
             elif path == '/api/backtest-sync/update':
                 # Sync parameters to live bot
                 result = sync_parameters_to_vercel()
+            elif path == '/api/backtest-sync/trigger':
+                # Trigger remote backtest optimization
+                result = trigger_remote_backtest()
+            elif path == '/api/backtest-sync/sync-live':
+                # Trigger live results sync to local
+                result = trigger_live_results_sync()
             else:
                 result = {
                     'status': 'error', 
-                    'message': 'Available endpoints: /api/backtest-sync, /api/backtest-sync/update'
+                    'message': 'Available endpoints: /api/backtest-sync, /api/backtest-sync/update, /api/backtest-sync/trigger, /api/backtest-sync/sync-live',
+                    'bidirectional_sync': 'enabled'
                 }
             
             self.send_response(200)

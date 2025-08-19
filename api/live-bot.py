@@ -459,7 +459,8 @@ class VercelLiveBot:
                     'optimization_timestamp': self.config.get('optimization_timestamp', 'N/A')
                 },
                 'regime_integration': 'active',
-                'backtest_integration': 'active'
+                'backtest_integration': 'active',
+                'bidirectional_sync': 'enabled'
             }
             
         except Exception as e:

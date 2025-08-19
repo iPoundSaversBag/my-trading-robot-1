@@ -68,6 +68,14 @@
       "dest": "/api/backtest-sync.py"
     },
     {
+      "src": "/api/backtest-sync/trigger",
+      "dest": "/api/backtest-sync.py"
+    },
+    {
+      "src": "/api/backtest-sync/sync-live",
+      "dest": "/api/backtest-sync.py"
+    },
+    {
       "src": "/",
       "dest": "/public/index.html"
     }
