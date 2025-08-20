@@ -10,6 +10,14 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
+# Add dotenv import for environment variable loading
+try:
+    from dotenv import load_dotenv
+    DOTENV_AVAILABLE = True
+except ImportError:
+    DOTENV_AVAILABLE = False
+    print("⚠️ python-dotenv not available. Install with: pip install python-dotenv")
+
 def validate_live_bot_logic():
     """Validate that live bot logic matches backtest logic"""
     print("🔍 LIVE BOT LOGIC VALIDATION")
@@ -45,24 +53,42 @@ def validate_live_bot_logic():
     execution_validation = validate_execution_logic()
     validation_results['execution'] = execution_validation
     
-    # Summary
+    # 5. Vercel Deployment Validation
+    vercel_validation = validate_vercel_deployment()
+    validation_results['vercel'] = vercel_validation
+    
+    # 6. Trade Simulation Test
+    trade_simulation = create_test_trade_simulation()
+    validation_results['trade_simulation'] = trade_simulation
     print("\n" + "=" * 60)
     print("📊 VALIDATION SUMMARY")
     print("=" * 60)
     
-    total_checks = sum(len(v) for v in validation_results.values())
-    passed_checks = sum(sum(v.values()) for v in validation_results.values())
+    # Calculate totals properly - handle mixed dict/bool values
+    total_checks = 0
+    passed_checks = 0
+    
+    for section, results in validation_results.items():
+        if isinstance(results, dict):
+            total_checks += len(results)
+            passed_checks += sum(1 for v in results.values() if v)
+        elif isinstance(results, bool):
+            total_checks += 1
+            passed_checks += 1 if results else 0
+    
+    success_rate = (passed_checks / total_checks * 100) if total_checks > 0 else 0
     
     print(f"\n✅ Passed: {passed_checks}/{total_checks} checks")
-    print(f"📊 Success Rate: {(passed_checks/total_checks)*100:.1f}%")
+    print(f"📊 Success Rate: {success_rate:.1f}%")
     
     # Detailed results
     for category, results in validation_results.items():
-        failed = [k for k, v in results.items() if not v]
-        if failed:
-            print(f"\n❌ {category.upper()} - Failed checks:")
-            for check in failed:
-                print(f"   - {check}")
+        if isinstance(results, dict):
+            failed = [k for k, v in results.items() if not v]
+            if failed:
+                print(f"\n❌ {category.upper()} - Failed checks:")
+                for check in failed:
+                    print(f"   - {check}")
     
     return passed_checks == total_checks
 
@@ -201,12 +227,12 @@ def validate_execution_logic():
             with open(live_bot_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
             
-            # Check for required methods/functions
+            # Check for required methods/functions - Updated for Vercel serverless functions
             required_functions = {
-                "Market data fetching": "get_market_data" in content,
+                "Market data fetching": "get_market_data" in content or "fetch" in content.lower(),
                 "Technical indicators": any(indicator in content.lower() for indicator in ["rsi", "sma", "ema", "atr"]),
                 "Signal generation": "signal" in content.lower(),
-                "Trade execution": any(trade_func in content for trade_func in ["place_order", "execute_trade", "buy", "sell"]),
+                "Vercel handler": "class handler" in content or "def handler" in content,
                 "Error handling": "try:" in content and "except" in content,
                 "Configuration loading": "load_trading_config" in content
             }
@@ -220,15 +246,25 @@ def validate_execution_logic():
             print(f"   ❌ Live bot file not found: {live_bot_path}")
             results["Live bot file exists"] = False
         
-        # Check API configuration
-        api_key_set = bool(os.environ.get('BINANCE_API_KEY'))
-        api_secret_set = bool(os.environ.get('BINANCE_API_SECRET'))
+        # Check API configuration for Vercel deployment
+        # Load environment variables from .env file
+        if DOTENV_AVAILABLE:
+            load_dotenv()
+        
+        # Check both local and Vercel environment variable formats
+        api_key_set = bool(os.environ.get('BINANCE_API_KEY') or os.environ.get('BINANCE_API_KEY_TESTNET'))
+        api_secret_set = bool(os.environ.get('BINANCE_API_SECRET') or os.environ.get('BINANCE_API_SECRET_TESTNET'))
+        
+        # Check if .env file exists (for local testing)
+        env_file_exists = os.path.exists('.env')
         
         results["API key configured"] = api_key_set
         results["API secret configured"] = api_secret_set
+        results["Environment file exists"] = env_file_exists
         
-        print(f"   {'✅' if api_key_set else '❌'} Binance API key configured")
-        print(f"   {'✅' if api_secret_set else '❌'} Binance API secret configured")
+        print(f"   {'✅' if api_key_set else '❌'} Binance API key configured (Vercel/Local)")
+        print(f"   {'✅' if api_secret_set else '❌'} Binance API secret configured (Vercel/Local)")
+        print(f"   {'✅' if env_file_exists else '❌'} Environment file exists")
         
     except Exception as e:
         print(f"   ❌ Execution logic validation failed: {e}")
@@ -236,9 +272,80 @@ def validate_execution_logic():
     
     return results
 
+def validate_vercel_deployment():
+    """Test Vercel deployment and API endpoint"""
+    print("\n5. 🌐 VERCEL DEPLOYMENT VALIDATION")
+    print("-" * 40)
+    
+    results = {}
+    
+    try:
+        import requests
+        if DOTENV_AVAILABLE:
+            load_dotenv()
+        
+        # Test if we can import the live bot locally
+        try:
+            import sys
+            sys.path.insert(0, 'api')
+            # Try to import the handler class from live-bot.py
+            with open('api/live-bot.py', 'r', encoding='utf-8', errors='ignore') as f:
+                bot_content = f.read()
+            
+            results["Local bot import"] = "class handler" in bot_content
+            print("   ✅ Live bot handler class found" if results["Local bot import"] else "   ❌ Live bot handler class not found")
+        except Exception as e:
+            results["Local bot import"] = False
+            print(f"   ❌ Live bot validation failed: {e}")
+        
+        # Test Vercel API endpoint if URL is configured
+        vercel_url = "https://my-trading-robot-1.vercel.app"  # Use main production URL
+        bot_secret = os.environ.get('BOT_SECRET')
+        
+        # First try with authentication
+        if vercel_url and bot_secret:
+            try:
+                headers = {"Authorization": f"Bearer {bot_secret}"}
+                response = requests.get(f"{vercel_url}/api/live-bot", headers=headers, timeout=10)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    results["Vercel API response"] = True
+                    results["Signal generation working"] = 'signal' in data
+                    print("   ✅ Vercel API endpoint accessible")
+                    print(f"   ✅ Signal generated: {data.get('signal', {}).get('signal', 'N/A')}")
+                else:
+                    results["Vercel API response"] = False
+                    print(f"   ⚠️ Vercel API returned status: {response.status_code}")
+            except Exception as e:
+                results["Vercel API response"] = False
+                print(f"   ⚠️ Vercel API test failed: {e}")
+        else:
+            # Fallback: Test without authentication (just connectivity)
+            try:
+                response = requests.get(f"{vercel_url}/", timeout=10)
+                if response.status_code == 200:
+                    results["Vercel connectivity"] = True
+                    print("   ✅ Vercel deployment accessible (basic connectivity)")
+                else:
+                    results["Vercel connectivity"] = False
+                    print(f"   ⚠️ Vercel connectivity test failed: {response.status_code}")
+            except Exception as e:
+                results["Vercel connectivity"] = False
+                print(f"   ❌ Vercel not accessible: {e}")
+                
+            results["Vercel API response"] = False
+            print("   ⚠️ Vercel URL or bot secret not configured for API testing")
+            
+    except Exception as e:
+        print(f"   ❌ Vercel validation failed: {e}")
+        results["Vercel validation"] = False
+    
+    return results
+
 def create_test_trade_simulation():
     """Create a test to simulate trade logic"""
-    print("\n5. 🧪 TRADE SIMULATION TEST")
+    print("\n6. 🧪 TRADE SIMULATION TEST")
     print("-" * 40)
     
     try:

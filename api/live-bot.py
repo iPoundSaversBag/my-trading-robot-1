@@ -63,7 +63,7 @@ class VercelLiveBot:
     def __init__(self):
         self.api_key = os.environ.get('BINANCE_API_KEY', '')
         self.api_secret = os.environ.get('BINANCE_API_SECRET', '')
-        self.base_url = 'https://api.binance.com'
+        self.base_url = 'https://testnet.binance.vision'  # Using testnet for safe testing
         self.config = TRADING_CONFIG
         self.trade_log = []
     
@@ -540,24 +540,30 @@ class VercelLiveBot:
                 
                 quantity = self.calculate_position_size(balances, indicators['current_price'])
                 
-                # Place order (commented for safety - uncomment when ready for live trading)
-                # trade_params = {
-                #     'symbol': self.config['SYMBOL'],
-                #     'side': signal_data['signal'],
-                #     'type': 'MARKET',
-                #     'quantity': f"{quantity:.5f}"
-                # }
-                # trade_result = self._make_request('/api/v3/order', trade_params, 'POST')
-                
-                # For now, simulate the trade
-                trade_result = {
-                    'simulated': True,
+                # Place order on testnet (safe for testing)
+                trade_params = {
                     'symbol': self.config['SYMBOL'],
                     'side': signal_data['signal'],
-                    'quantity': f"{quantity:.5f}",
-                    'price': indicators['current_price'],
-                    'value': quantity * indicators['current_price']
+                    'type': 'MARKET',
+                    'quantity': f"{quantity:.5f}"
                 }
+                trade_result = self._make_request('/api/v3/order', trade_params, 'POST')
+                
+                # Log the trade for monitoring
+                if trade_result and 'orderId' in trade_result:
+                    print(f"✅ TESTNET TRADE EXECUTED: {signal_data['signal']} {quantity:.5f} {self.config['SYMBOL']} at ${indicators['current_price']}")
+                else:
+                    print(f"⚠️ Trade failed: {trade_result}")
+                    # Fallback to simulation if trade fails
+                    trade_result = {
+                        'simulated': True,
+                        'symbol': self.config['SYMBOL'],
+                        'side': signal_data['signal'],
+                        'quantity': f"{quantity:.5f}",
+                        'price': indicators['current_price'],
+                        'value': quantity * indicators['current_price'],
+                        'error': 'Trade execution failed, simulated instead'
+                    }
             
             return {
                 'status': 'success',

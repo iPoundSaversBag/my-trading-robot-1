@@ -1,0 +1,15 @@
+{
+  "generated_at": "2025-08-20T04:36:47.417326+00:00",
+  "dashboard_updated": false,
+  "live_bot_status": {
+    "error": "Status code: 401"
+  },
+  "tracking_summary": {
+    "win_rate": 0.0,
+    "total_pnl": 0.0,
+    "sharpe_ratio": 0.0,
+    "max_drawdown": 0.0,
+    "profit_factor": 0.0
+  },
+  "status": "partial"
+}
