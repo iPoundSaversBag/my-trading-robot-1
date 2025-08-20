@@ -1411,6 +1411,230 @@ class {os.path.basename(component_path).replace('.py', '').title()}:
         
         return modifications
 
+    # ============================================================================
+    # ENHANCED MONITORING CAPABILITIES - HARVESTED FROM CONSOLIDATION
+    # ============================================================================
+    
+    def enhanced_api_performance_test(self) -> Dict:
+        """Enhanced API performance testing with detailed metrics"""
+        import requests
+        import time
+        
+        try:
+            start_time = time.time()
+            response = requests.get(
+                "https://api.binance.com/api/v3/klines",
+                params={'symbol': 'BTCUSDT', 'interval': '5m', 'limit': 5},
+                timeout=10
+            )
+            response_time = time.time() - start_time
+            
+            return {
+                'status_code': response.status_code,
+                'response_time': response_time,
+                'success': response.status_code == 200,
+                'timestamp': datetime.now(),
+                'data_valid': isinstance(response.json(), list) if response.status_code == 200 else False
+            }
+        except Exception as e:
+            return {
+                'status_code': None,
+                'response_time': None,
+                'success': False,
+                'timestamp': datetime.now(),
+                'error': str(e)
+            }
+
+    def api_connection_quality_check(self) -> Dict:
+        """Check API connection quality and stability"""
+        import time
+        
+        results = []
+        for i in range(3):  # Test 3 times
+            result = self.enhanced_api_performance_test()
+            results.append(result)
+            if i < 2:  # Don't sleep after last test
+                time.sleep(1)  # Brief pause between tests
+        
+        valid_results = [r for r in results if r['response_time'] is not None]
+        avg_response_time = sum(r['response_time'] for r in valid_results) / len(valid_results) if valid_results else 0
+        success_rate = sum(1 for r in results if r['success']) / len(results)
+        
+        return {
+            'average_response_time': avg_response_time,
+            'success_rate': success_rate,
+            'all_results': results,
+            'quality_score': success_rate * (1.0 if avg_response_time < 2.0 else 0.5),
+            'status': 'HEALTHY' if success_rate >= 0.8 and avg_response_time < 3.0 else 'DEGRADED'
+        }
+
+    def comprehensive_system_health_check(self) -> Dict:
+        """Comprehensive system health verification with enhanced monitoring"""
+        import requests
+        
+        health_report = {
+            'timestamp': datetime.now(),
+            'overall_health': 'UNKNOWN',
+            'components': {},
+            'recommendations': []
+        }
+        
+        # File system health
+        required_files = [
+            "vercel.json", "api/live-bot.py", "watcher.py", 
+            "core/optimization_config.json", "health_utils.py",
+            "core/backtest.py", "core/strategy.py"
+        ]
+        
+        file_health = {'missing_files': [], 'present_files': []}
+        for file_path in required_files:
+            full_path = os.path.join(self.workspace_root, file_path)
+            if os.path.exists(full_path):
+                file_health['present_files'].append(file_path)
+            else:
+                file_health['missing_files'].append(file_path)
+        
+        health_report['components']['file_system'] = {
+            'status': 'HEALTHY' if len(file_health['missing_files']) == 0 else 'CRITICAL',
+            'details': file_health
+        }
+        
+        if file_health['missing_files']:
+            health_report['recommendations'].append(f"Restore missing files: {', '.join(file_health['missing_files'])}")
+        
+        # Configuration health
+        try:
+            config_path = os.path.join(self.workspace_root, "core/optimization_config.json")
+            if os.path.exists(config_path):
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+                config_health = {
+                    'status': 'HEALTHY' if 'bot_settings' in config else 'DEGRADED',
+                    'keys_present': list(config.keys()),
+                    'size_bytes': os.path.getsize(config_path)
+                }
+                if 'bot_settings' not in config:
+                    health_report['recommendations'].append("Add missing 'bot_settings' to optimization config")
+            else:
+                config_health = {'status': 'MISSING', 'error': 'Config file not found'}
+                health_report['recommendations'].append("Create core/optimization_config.json")
+        except Exception as e:
+            config_health = {'status': 'ERROR', 'error': str(e)}
+            health_report['recommendations'].append(f"Fix configuration error: {str(e)}")
+        
+        health_report['components']['configuration'] = config_health
+        
+        # API connectivity health
+        api_health = self.api_connection_quality_check()
+        health_report['components']['api_connectivity'] = api_health
+        
+        if api_health['status'] != 'HEALTHY':
+            health_report['recommendations'].append("Check API connectivity and credentials")
+        
+        # Environment variables health
+        env_health = self.environment_validation_check()
+        health_report['components']['environment'] = env_health
+        
+        if env_health['status'] != 'HEALTHY':
+            health_report['recommendations'].append("Review environment variable configuration")
+        
+        # Overall health determination
+        component_statuses = [comp.get('status', 'UNKNOWN') for comp in health_report['components'].values()]
+        if all(status == 'HEALTHY' for status in component_statuses):
+            health_report['overall_health'] = 'HEALTHY'
+        elif any(status in ['MISSING', 'ERROR', 'CRITICAL'] for status in component_statuses):
+            health_report['overall_health'] = 'CRITICAL'
+        else:
+            health_report['overall_health'] = 'DEGRADED'
+        
+        return health_report
+
+    def environment_validation_check(self) -> Dict:
+        """Enhanced environment variable validation"""
+        required_vars = {
+            'BINANCE_API_KEY': 'Critical - Binance API access',
+            'BINANCE_API_SECRET': 'Critical - Binance API security',
+            'BOT_SECRET': 'Important - Bot authentication',
+            'VERCEL_URL': 'Important - Deployment URL'
+        }
+        
+        validation_result = {
+            'timestamp': datetime.now(),
+            'status': 'UNKNOWN',
+            'critical_missing': [],
+            'important_missing': [],
+            'all_present': []
+        }
+        
+        for var, importance in required_vars.items():
+            value = os.getenv(var)
+            if value:
+                # Mask sensitive values for logging
+                if 'SECRET' in var or 'KEY' in var:
+                    masked_value = value[:4] + "***" + value[-4:] if len(value) > 8 else "***"
+                    validation_result['all_present'].append(f"{var}: {masked_value}")
+                else:
+                    validation_result['all_present'].append(f"{var}: {value}")
+            else:
+                if 'Critical' in importance:
+                    validation_result['critical_missing'].append(var)
+                else:
+                    validation_result['important_missing'].append(var)
+        
+        # Determine overall status
+        if len(validation_result['critical_missing']) > 0:
+            validation_result['status'] = 'CRITICAL'
+        elif len(validation_result['important_missing']) > 0:
+            validation_result['status'] = 'DEGRADED'
+        else:
+            validation_result['status'] = 'HEALTHY'
+        
+        return validation_result
+
+    def run_enhanced_health_diagnostics(self) -> Dict:
+        """Run complete enhanced health diagnostics using harvested functions"""
+        print("🔍 Running Enhanced Health Diagnostics...")
+        
+        diagnostics = {
+            'timestamp': datetime.now(),
+            'diagnostic_version': '2.0-enhanced',
+            'components': {}
+        }
+        
+        # Run comprehensive system check
+        print("   ✓ System health check...")
+        diagnostics['components']['system_health'] = self.comprehensive_system_health_check()
+        
+        # Run API quality check
+        print("   ✓ API connectivity check...")
+        diagnostics['components']['api_quality'] = self.api_connection_quality_check()
+        
+        # Run environment validation
+        print("   ✓ Environment validation...")
+        diagnostics['components']['environment'] = self.environment_validation_check()
+        
+        # Analyze results
+        critical_issues = []
+        warnings = []
+        
+        for component_name, component_data in diagnostics['components'].items():
+            status = component_data.get('status', 'UNKNOWN')
+            if status in ['CRITICAL', 'ERROR', 'MISSING']:
+                critical_issues.append(f"{component_name}: {status}")
+            elif status == 'DEGRADED':
+                warnings.append(f"{component_name}: {status}")
+        
+        diagnostics['summary'] = {
+            'overall_status': 'CRITICAL' if critical_issues else ('DEGRADED' if warnings else 'HEALTHY'),
+            'critical_issues': critical_issues,
+            'warnings': warnings,
+            'enhancement_active': True
+        }
+        
+        print(f"   ✓ Diagnostics complete - Status: {diagnostics['summary']['overall_status']}")
+        
+        return diagnostics
+
 
 # Global repair engine instance
 _repair_engine = None

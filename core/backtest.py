@@ -318,7 +318,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from analysis.generate_plots import (
+    from analysis.core_analytics import (
         plot_trades_for_window,
         plot_pnl_distribution,
         enhance_performance_report,

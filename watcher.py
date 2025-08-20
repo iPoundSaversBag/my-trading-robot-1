@@ -57,23 +57,25 @@ import subprocess
 import time
 import json
 import json5
-from utilities.utils import send_notification, send_error_alert
 from datetime import datetime
 import re
 import argparse
 
+# CONSOLIDATED UTILITIES IMPORT
+from utilities.utils import (
+    send_notification, send_error_alert, log_message,
+    download_data, check_data, analyze_limits
+)
+
 # HEALTH MONITORING INTEGRATION
-from health_utils import run_health_check, get_repair_engine, run_comprehensive_health_check, display_health_problems_with_descriptions, show_robot_problems_with_descriptions
+from health_utils import (
+    run_health_check, get_repair_engine, run_comprehensive_health_check, 
+    display_health_problems_with_descriptions, show_robot_problems_with_descriptions
+)
 
 # --- Global Settings ---
 LOG_FILE = "logs/watcher.log"  # Centralized logging path
 WATCH_INTERVAL_MINUTES = 1 # Default wait time in minutes
-
-# Import centralized logging system
-from utilities.utils import log_message
-
-# --- Import refactored functions ---
-from utilities.utils import download_data, check_data, analyze_limits
 
 # --- CONFIGURATION ---
 CONFIG_FILE = "core/optimization_config.json"  # Updated to match the default config location
