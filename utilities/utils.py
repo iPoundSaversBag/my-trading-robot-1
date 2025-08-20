@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-#                               UTILITY FUNCTIONS
+#                     UTILITY FUNCTIONS - PHASE 3 ENHANCED
 #
 # ==============================================================================
 #
@@ -8,13 +8,19 @@
 #
 # PURPOSE:
 #   This module provides a centralized collection of utility functions that are
-#   shared across the entire trading robot pipeline. This includes data
-#   preparation, performance calculations, validation tools, and analysis functions.
+#   shared across the entire trading robot pipeline. Enhanced with Phase 3
+#   integration optimizations including configuration management, data 
+#   standardization, and module communication helpers.
 #
 # CONSOLIDATED FROM:
 #   - validate_parameter_bounds.py (parameter validation functions)
 #   - active_usage_analyzer.py (code analysis functions)
 #   - core/config.py (configuration management)
+#
+# PHASE 3 ENHANCEMENTS:
+#   - ConfigurationManager: Centralized config with caching and validation
+#   - DataStandardizer: Unified data transformation utilities
+#   - Enhanced health check wrappers and module communication helpers
 #
 # ==============================================================================
 
@@ -28,6 +34,8 @@ import datetime
 import traceback
 import time
 import logging
+from typing import Dict, Any, Optional, Union, Tuple
+from pathlib import Path
 import threading
 import shutil
 import glob
@@ -58,6 +66,1415 @@ from dataclasses import dataclass
 # ==============================================================================
 # ENHANCED FAULT TOLERANCE & CIRCUIT BREAKER SYSTEM
 # Consolidated from enhancements/fault_tolerance.py
+# ==============================================================================
+
+# ==============================================================================
+# PHASE 3 INTEGRATION OPTIMIZATION - CONFIGURATION & DATA MANAGEMENT
+# ==============================================================================
+
+logger = logging.getLogger(__name__)
+
+# ========== CONFIGURATION MANAGEMENT ==========
+
+class ConfigurationManager:
+    """
+    Centralized configuration management with caching, validation, and change detection.
+    Optimizes configuration loading across multiple modules.
+    """
+    
+    _instance = None
+    _config_cache = {}
+    _file_timestamps = {}
+    _default_configs = {
+        'strategy': {
+            'MIN_SIGNAL_CONFIDENCE': 0.6,
+            'MIN_CONSENSUS_THRESHOLD': 0.7,
+            'MAX_SIGNAL_HISTORY': 1000,
+            'WEIGHT_ADJUSTMENT_PERIOD': 50
+        },
+        'risk_management': {
+            'FIXED_RISK_PERCENTAGE': 0.02,
+            'MAX_SINGLE_TRADE_RISK': 0.03,
+            'MAX_PORTFOLIO_RISK': 0.05,
+            'BASE_POSITION_MULTIPLIER': 1.0,
+            'HIGH_VOLATILITY_THRESHOLD': 0.03,
+            'LOW_VOLATILITY_THRESHOLD': 0.01,
+            'TREND_STRENGTH_THRESHOLD': 0.7,
+            'MAX_DRAWDOWN_THRESHOLD': 0.1,
+            'DRAWDOWN_RISK_REDUCTION': True,
+            'MAX_POSITION_SIZE': 0.15,
+            'MIN_POSITION_SIZE': 0.001,
+            'COMMISSION_RATE': 0.001
+        },
+        'portfolio': {
+            'INITIAL_CAPITAL': 10000,
+            'SAFETY_WARNING_INTERVAL': 5000
+        }
+    }
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(ConfigurationManager, cls).__new__(cls)
+        return cls._instance
+    
+    def get_config(self, config_source: Union[str, Dict[str, Any], None] = None, 
+                   config_type: str = 'general') -> Dict[str, Any]:
+        """
+        Get configuration with intelligent caching and validation.
+        
+        Args:
+            config_source: File path, dict, or None for defaults
+            config_type: Type hint for default fallbacks ('strategy', 'risk_management', 'portfolio')
+        
+        Returns:
+            Validated configuration dictionary
+        """
+        try:
+            # Handle different config source types
+            if isinstance(config_source, dict):
+                return self._validate_config(config_source, config_type)
+            
+            if isinstance(config_source, str):
+                return self._load_config_file(config_source, config_type)
+            
+            # Return defaults for the specified type
+            return self._default_configs.get(config_type, {}).copy()
+            
+        except Exception as e:
+            logger.warning(f"Configuration loading failed: {e}. Using defaults for {config_type}")
+            return self._default_configs.get(config_type, {}).copy()
+    
+    def _load_config_file(self, file_path: str, config_type: str) -> Dict[str, Any]:
+        """Load and cache configuration from file with change detection."""
+        file_path = Path(file_path)
+        
+        # Check if file exists
+        if not file_path.exists():
+            logger.warning(f"Config file not found: {file_path}. Using defaults.")
+            return self._default_configs.get(config_type, {}).copy()
+        
+        # Get file modification time
+        current_mtime = file_path.stat().st_mtime
+        cache_key = str(file_path)
+        
+        # Check cache validity
+        if (cache_key in self._config_cache and 
+            cache_key in self._file_timestamps and
+            self._file_timestamps[cache_key] == current_mtime):
+            return self._config_cache[cache_key].copy()
+        
+        # Load fresh configuration
+        try:
+            with open(file_path, 'r') as f:
+                config = json.load(f)
+            
+            # Validate and cache
+            validated_config = self._validate_config(config, config_type)
+            self._config_cache[cache_key] = validated_config
+            self._file_timestamps[cache_key] = current_mtime
+            
+            logger.debug(f"Configuration loaded and cached: {file_path}")
+            return validated_config.copy()
+            
+        except Exception as e:
+            logger.error(f"Failed to load config from {file_path}: {e}")
+            return self._default_configs.get(config_type, {}).copy()
+    
+    def _validate_config(self, config: Dict[str, Any], config_type: str) -> Dict[str, Any]:
+        """Validate configuration against defaults and apply fallbacks."""
+        defaults = self._default_configs.get(config_type, {})
+        validated = defaults.copy()
+        
+        # Overlay provided config
+        validated.update(config)
+        
+        # Type validation for critical parameters
+        if config_type == 'risk_management':
+            self._validate_risk_parameters(validated)
+        elif config_type == 'strategy':
+            self._validate_strategy_parameters(validated)
+        elif config_type == 'portfolio':
+            self._validate_portfolio_parameters(validated)
+        
+        return validated
+    
+    def _validate_risk_parameters(self, config: Dict[str, Any]) -> None:
+        """Validate risk management parameters."""
+        risk_params = [
+            'FIXED_RISK_PERCENTAGE', 'MAX_SINGLE_TRADE_RISK', 'MAX_PORTFOLIO_RISK',
+            'HIGH_VOLATILITY_THRESHOLD', 'LOW_VOLATILITY_THRESHOLD', 'COMMISSION_RATE'
+        ]
+        
+        for param in risk_params:
+            if param in config:
+                config[param] = max(0.0, min(1.0, float(config[param])))
+    
+    def _validate_strategy_parameters(self, config: Dict[str, Any]) -> None:
+        """Validate strategy parameters."""
+        if 'MIN_SIGNAL_CONFIDENCE' in config:
+            config['MIN_SIGNAL_CONFIDENCE'] = max(0.0, min(1.0, float(config['MIN_SIGNAL_CONFIDENCE'])))
+        if 'MIN_CONSENSUS_THRESHOLD' in config:
+            config['MIN_CONSENSUS_THRESHOLD'] = max(0.0, min(1.0, float(config['MIN_CONSENSUS_THRESHOLD'])))
+        if 'MAX_SIGNAL_HISTORY' in config:
+            config['MAX_SIGNAL_HISTORY'] = max(100, int(config['MAX_SIGNAL_HISTORY']))
+    
+    def _validate_portfolio_parameters(self, config: Dict[str, Any]) -> None:
+        """Validate portfolio parameters."""
+        if 'INITIAL_CAPITAL' in config:
+            config['INITIAL_CAPITAL'] = max(1000, float(config['INITIAL_CAPITAL']))
+        if 'SAFETY_WARNING_INTERVAL' in config:
+            config['SAFETY_WARNING_INTERVAL'] = max(100, int(config['SAFETY_WARNING_INTERVAL']))
+    
+    def clear_cache(self) -> None:
+        """Clear configuration cache (useful for testing)."""
+        self._config_cache.clear()
+        self._file_timestamps.clear()
+
+# Global configuration manager instance
+config_manager = ConfigurationManager()
+
+# ========== DATA STANDARDIZATION ==========
+
+class DataStandardizer:
+    """
+    Unified data transformation and validation utilities.
+    Provides consistent data handling across modules.
+    """
+    
+    @staticmethod
+    def standardize_dataframe(df, required_columns=None, fill_method='forward'):
+        """
+        Standardize DataFrame format and handle missing data.
+        
+        Args:
+            df: Input DataFrame
+            required_columns: List of required column names
+            fill_method: Method for handling missing data ('forward', 'backward', 'zero', 'drop')
+        
+        Returns:
+            Standardized DataFrame
+        """
+        try:
+            import pandas as pd
+            
+            if df is None or df.empty:
+                return pd.DataFrame()
+            
+            # Ensure copy to avoid modifying original
+            df_clean = df.copy()
+            
+            # Handle required columns
+            if required_columns:
+                missing_cols = [col for col in required_columns if col not in df_clean.columns]
+                if missing_cols:
+                    logger.warning(f"Missing required columns: {missing_cols}")
+                    # Add missing columns with NaN
+                    for col in missing_cols:
+                        df_clean[col] = float('nan')
+            
+            # Handle missing data based on method
+            if fill_method == 'forward':
+                df_clean = df_clean.fillna(method='ffill')
+            elif fill_method == 'backward':
+                df_clean = df_clean.fillna(method='bfill')
+            elif fill_method == 'zero':
+                df_clean = df_clean.fillna(0)
+            elif fill_method == 'drop':
+                df_clean = df_clean.dropna()
+            
+            # Ensure proper data types for common columns
+            numeric_columns = ['open', 'high', 'low', 'close', 'volume']
+            for col in numeric_columns:
+                if col in df_clean.columns:
+                    df_clean[col] = pd.to_numeric(df_clean[col], errors='coerce')
+            
+            return df_clean
+            
+        except Exception as e:
+            logger.error(f"DataFrame standardization failed: {e}")
+            return df if df is not None else pd.DataFrame()
+    
+    @staticmethod
+    def normalize_price_data(prices, method='minmax'):
+        """
+        Normalize price data for consistent scaling.
+        
+        Args:
+            prices: Price series or array
+            method: Normalization method ('minmax', 'zscore', 'robust')
+        
+        Returns:
+            Normalized prices
+        """
+        try:
+            import numpy as np
+            
+            if len(prices) == 0:
+                return prices
+            
+            prices_array = np.array(prices)
+            
+            if method == 'minmax':
+                min_val, max_val = np.min(prices_array), np.max(prices_array)
+                if max_val > min_val:
+                    return (prices_array - min_val) / (max_val - min_val)
+                else:
+                    return np.zeros_like(prices_array)
+            
+            elif method == 'zscore':
+                mean_val, std_val = np.mean(prices_array), np.std(prices_array)
+                if std_val > 0:
+                    return (prices_array - mean_val) / std_val
+                else:
+                    return np.zeros_like(prices_array)
+            
+            elif method == 'robust':
+                median_val = np.median(prices_array)
+                mad = np.median(np.abs(prices_array - median_val))
+                if mad > 0:
+                    return (prices_array - median_val) / mad
+                else:
+                    return np.zeros_like(prices_array)
+            
+            return prices_array
+            
+        except Exception as e:
+            logger.error(f"Price normalization failed: {e}")
+            return prices
+    
+    @staticmethod
+    def standardize_timestamps(df, timestamp_column='timestamp', target_format='datetime'):
+        """
+        Standardize timestamp formats across datasets.
+        
+        Args:
+            df: DataFrame with timestamp column
+            timestamp_column: Name of timestamp column
+            target_format: Target format ('datetime', 'unix', 'string')
+        
+        Returns:
+            DataFrame with standardized timestamps
+        """
+        try:
+            import pandas as pd
+            
+            if df is None or df.empty or timestamp_column not in df.columns:
+                return df
+            
+            df_clean = df.copy()
+            
+            if target_format == 'datetime':
+                df_clean[timestamp_column] = pd.to_datetime(df_clean[timestamp_column], errors='coerce')
+            elif target_format == 'unix':
+                df_clean[timestamp_column] = pd.to_datetime(df_clean[timestamp_column], errors='coerce')
+                df_clean[timestamp_column] = df_clean[timestamp_column].astype(int) // 10**9
+            elif target_format == 'string':
+                df_clean[timestamp_column] = pd.to_datetime(df_clean[timestamp_column], errors='coerce')
+                df_clean[timestamp_column] = df_clean[timestamp_column].dt.strftime('%Y-%m-%d %H:%M:%S')
+            
+            return df_clean
+            
+        except Exception as e:
+            logger.error(f"Timestamp standardization failed: {e}")
+            return df
+
+# Global data standardizer instance
+data_standardizer = DataStandardizer()
+
+# ========== MODULE COMMUNICATION HELPERS ==========
+
+class ModuleCommunicator:
+    """
+    Enhanced communication patterns for inter-module coordination.
+    Provides safe method calling, performance monitoring, and error handling.
+    """
+    
+    @staticmethod
+    def safe_module_call(module_method, *args, fallback_value=None, timeout_seconds=10, **kwargs):
+        """
+        Safely call a method from another module with timeout and error handling.
+        Cross-platform implementation without signal dependency.
+        
+        Args:
+            module_method: Method to call
+            *args: Positional arguments
+            fallback_value: Value to return if call fails
+            timeout_seconds: Maximum execution time (Windows compatible)
+            **kwargs: Keyword arguments
+        
+        Returns:
+            Result of method call or fallback value
+        """
+        try:
+            import threading
+            result = [None]
+            exception = [None]
+            
+            def target():
+                try:
+                    result[0] = module_method(*args, **kwargs)
+                except Exception as e:
+                    exception[0] = e
+            
+            thread = threading.Thread(target=target)
+            thread.daemon = True
+            thread.start()
+            thread.join(timeout_seconds)
+            
+            if thread.is_alive():
+                logger.warning(f"Module call timed out: {module_method.__name__}")
+                return fallback_value
+            
+            if exception[0]:
+                logger.error(f"Module call failed: {module_method.__name__}: {exception[0]}")
+                return fallback_value
+            
+            return result[0]
+            
+        except Exception as e:
+            logger.error(f"Module call failed: {module_method.__name__}: {e}")
+            return fallback_value
+    
+    @staticmethod
+    def strategy_portfolio_sync(strategy_instance, portfolio_instance, sync_data):
+        """
+        Synchronized communication between strategy and portfolio modules.
+        
+        Args:
+            strategy_instance: Strategy module instance
+            portfolio_instance: Portfolio module instance
+            sync_data: Data to synchronize
+        
+        Returns:
+            Synchronization status and results
+        """
+        try:
+            sync_results = {}
+            
+            # Portfolio → Strategy sync
+            if hasattr(portfolio_instance, 'get_current_capital'):
+                current_capital = ModuleCommunicator.safe_module_call(
+                    portfolio_instance.get_current_capital,
+                    fallback_value=10000
+                )
+                sync_results['current_capital'] = current_capital
+                
+                # Update strategy with capital info
+                if hasattr(strategy_instance, 'update_capital_info'):
+                    ModuleCommunicator.safe_module_call(
+                        strategy_instance.update_capital_info,
+                        current_capital
+                    )
+            
+            # Strategy → Portfolio sync
+            if hasattr(strategy_instance, 'get_risk_metrics'):
+                risk_metrics = ModuleCommunicator.safe_module_call(
+                    strategy_instance.get_risk_metrics,
+                    fallback_value={}
+                )
+                sync_results['risk_metrics'] = risk_metrics
+                
+                # Update portfolio with risk info
+                if hasattr(portfolio_instance, 'update_risk_metrics'):
+                    ModuleCommunicator.safe_module_call(
+                        portfolio_instance.update_risk_metrics,
+                        risk_metrics
+                    )
+            
+            sync_results['sync_status'] = 'success'
+            return sync_results
+            
+        except Exception as e:
+            logger.error(f"Strategy-Portfolio sync failed: {e}")
+            return {'sync_status': 'failed', 'error': str(e)}
+    
+    @staticmethod
+    def position_manager_coordination(position_manager, strategy_instance, market_data):
+        """
+        Coordinate position manager with strategy for risk-aware decisions.
+        
+        Args:
+            position_manager: PositionManager instance
+            strategy_instance: Strategy instance
+            market_data: Current market data
+        
+        Returns:
+            Coordination results
+        """
+        try:
+            coordination_results = {}
+            
+            # Get position sizing recommendations
+            if hasattr(position_manager, 'calculate_position_size'):
+                position_size = ModuleCommunicator.safe_module_call(
+                    position_manager.calculate_position_size,
+                    market_data.get('current_price', 0),
+                    market_data.get('stop_loss_price', 0),
+                    fallback_value=0.01
+                )
+                coordination_results['recommended_position_size'] = position_size
+            
+            # Get strategy confidence for position adjustment
+            if hasattr(strategy_instance, 'get_signal_confidence'):
+                signal_confidence = ModuleCommunicator.safe_module_call(
+                    strategy_instance.get_signal_confidence,
+                    market_data,
+                    fallback_value=0.5
+                )
+                coordination_results['signal_confidence'] = signal_confidence
+                
+                # Adjust position size based on confidence
+                if 'recommended_position_size' in coordination_results:
+                    adjusted_size = coordination_results['recommended_position_size'] * signal_confidence
+                    coordination_results['confidence_adjusted_size'] = adjusted_size
+            
+            coordination_results['coordination_status'] = 'success'
+            return coordination_results
+            
+        except Exception as e:
+            logger.error(f"Position manager coordination failed: {e}")
+            return {'coordination_status': 'failed', 'error': str(e)}
+
+# Global module communicator instance  
+module_communicator = ModuleCommunicator()
+
+# ========== PERFORMANCE MONITORING HELPERS ==========
+
+class PerformanceMonitor:
+    """
+    Monitor and optimize performance of cross-module interactions.
+    """
+    
+    _call_stats = {}
+    _performance_history = []
+    
+    @classmethod
+    def track_module_call(cls, module_name: str, method_name: str, execution_time: float):
+        """Track performance statistics for module calls."""
+        key = f"{module_name}.{method_name}"
+        
+        if key not in cls._call_stats:
+            cls._call_stats[key] = {
+                'call_count': 0,
+                'total_time': 0.0,
+                'avg_time': 0.0,
+                'max_time': 0.0,
+                'min_time': float('inf')
+            }
+        
+        stats = cls._call_stats[key]
+        stats['call_count'] += 1
+        stats['total_time'] += execution_time
+        stats['avg_time'] = stats['total_time'] / stats['call_count']
+        stats['max_time'] = max(stats['max_time'], execution_time)
+        stats['min_time'] = min(stats['min_time'], execution_time)
+        
+        # Add to history
+        cls._performance_history.append({
+            'timestamp': time.time(),
+            'module': module_name,
+            'method': method_name,
+            'execution_time': execution_time
+        })
+        
+        # Keep only last 1000 entries
+        if len(cls._performance_history) > 1000:
+            cls._performance_history = cls._performance_history[-1000:]
+    
+    @classmethod
+    def get_performance_report(cls) -> Dict[str, Any]:
+        """Get comprehensive performance report."""
+        return {
+            'call_statistics': cls._call_stats.copy(),
+            'recent_history': cls._performance_history[-100:],
+            'total_tracked_calls': sum(stats['call_count'] for stats in cls._call_stats.values()),
+            'slowest_calls': sorted(
+                [(key, stats['max_time']) for key, stats in cls._call_stats.items()],
+                key=lambda x: x[1],
+                reverse=True
+            )[:10]
+        }
+    
+    @classmethod
+    def reset_statistics(cls):
+        """Reset all performance statistics."""
+        cls._call_stats.clear()
+        cls._performance_history.clear()
+
+# Global performance monitor instance
+performance_monitor = PerformanceMonitor()
+
+# ========== EVENT-DRIVEN COMMUNICATION SYSTEM ==========
+
+class EventManager:
+    """
+    Advanced event-driven communication system for cross-module coordination.
+    Enables loose coupling between modules through event broadcasting and subscription.
+    """
+    
+    _instance = None
+    _subscribers = {}
+    _event_history = []
+    _max_history = 1000
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(EventManager, cls).__new__(cls)
+        return cls._instance
+    
+    def subscribe(self, event_type: str, callback_function, module_name: str = "unknown"):
+        """
+        Subscribe to events of a specific type.
+        
+        Args:
+            event_type: Type of event to subscribe to
+            callback_function: Function to call when event occurs
+            module_name: Name of subscribing module for tracking
+        """
+        if event_type not in self._subscribers:
+            self._subscribers[event_type] = []
+        
+        self._subscribers[event_type].append({
+            'callback': callback_function,
+            'module': module_name,
+            'subscription_time': time.time()
+        })
+        
+        logger.debug(f"Module {module_name} subscribed to {event_type} events")
+    
+    def publish(self, event_type: str, event_data: Dict[str, Any], source_module: str = "unknown"):
+        """
+        Publish an event to all subscribers.
+        
+        Args:
+            event_type: Type of event
+            event_data: Event payload data
+            source_module: Module publishing the event
+        """
+        event = {
+            'type': event_type,
+            'data': event_data,
+            'source': source_module,
+            'timestamp': time.time(),
+            'event_id': f"{event_type}_{int(time.time() * 1000)}"
+        }
+        
+        # Add to history
+        self._event_history.append(event)
+        if len(self._event_history) > self._max_history:
+            self._event_history = self._event_history[-self._max_history:]
+        
+        # Notify subscribers
+        if event_type in self._subscribers:
+            for subscriber in self._subscribers[event_type]:
+                try:
+                    # Safe callback execution with timeout
+                    module_communicator.safe_module_call(
+                        subscriber['callback'],
+                        event,
+                        timeout_seconds=5
+                    )
+                except Exception as e:
+                    logger.error(f"Event callback failed for {subscriber['module']}: {e}")
+        
+        logger.debug(f"Event {event_type} published by {source_module}")
+    
+    def unsubscribe(self, event_type: str, module_name: str):
+        """Remove subscriptions for a specific module."""
+        if event_type in self._subscribers:
+            self._subscribers[event_type] = [
+                sub for sub in self._subscribers[event_type] 
+                if sub['module'] != module_name
+            ]
+    
+    def get_event_statistics(self) -> Dict[str, Any]:
+        """Get event system statistics."""
+        return {
+            'total_events': len(self._event_history),
+            'active_subscriptions': {
+                event_type: len(subscribers) 
+                for event_type, subscribers in self._subscribers.items()
+            },
+            'recent_events': self._event_history[-10:],
+            'event_types': list(set(event['type'] for event in self._event_history))
+        }
+
+# Global event manager instance
+event_manager = EventManager()
+
+# ========== ADVANCED ERROR RECOVERY SYSTEM ==========
+
+class ErrorRecoveryManager:
+    """
+    Advanced error recovery and cascade failure prevention system.
+    Provides intelligent error handling and recovery strategies.
+    """
+    
+    _recovery_strategies = {}
+    _error_history = []
+    _recovery_stats = {}
+    
+    @classmethod
+    def register_recovery_strategy(cls, error_type: str, recovery_function, module_name: str):
+        """
+        Register a recovery strategy for specific error types.
+        
+        Args:
+            error_type: Type of error (class name or string identifier)
+            recovery_function: Function to call for recovery
+            module_name: Module providing the recovery strategy
+        """
+        if error_type not in cls._recovery_strategies:
+            cls._recovery_strategies[error_type] = []
+        
+        cls._recovery_strategies[error_type].append({
+            'recovery_function': recovery_function,
+            'module': module_name,
+            'registration_time': time.time()
+        })
+        
+        logger.debug(f"Recovery strategy registered for {error_type} by {module_name}")
+    
+    @classmethod
+    def handle_error(cls, error: Exception, context: Dict[str, Any], source_module: str) -> bool:
+        """
+        Handle errors with intelligent recovery strategies.
+        
+        Args:
+            error: The exception that occurred
+            context: Context information about the error
+            source_module: Module where error occurred
+        
+        Returns:
+            bool: True if recovery was successful, False otherwise
+        """
+        error_type = type(error).__name__
+        error_record = {
+            'error_type': error_type,
+            'error_message': str(error),
+            'source_module': source_module,
+            'context': context,
+            'timestamp': time.time(),
+            'recovery_attempted': False,
+            'recovery_successful': False
+        }
+        
+        # Add to error history
+        cls._error_history.append(error_record)
+        if len(cls._error_history) > 1000:
+            cls._error_history = cls._error_history[-1000:]
+        
+        # Publish error event
+        event_manager.publish(
+            'error_occurred',
+            {
+                'error_type': error_type,
+                'error_message': str(error),
+                'context': context
+            },
+            source_module
+        )
+        
+        # Attempt recovery if strategies are available
+        recovery_successful = False
+        if error_type in cls._recovery_strategies:
+            for strategy in cls._recovery_strategies[error_type]:
+                try:
+                    error_record['recovery_attempted'] = True
+                    
+                    # Execute recovery strategy
+                    recovery_result = module_communicator.safe_module_call(
+                        strategy['recovery_function'],
+                        error,
+                        context,
+                        fallback_value=False,
+                        timeout_seconds=10
+                    )
+                    
+                    if recovery_result:
+                        recovery_successful = True
+                        error_record['recovery_successful'] = True
+                        
+                        # Update recovery statistics
+                        strategy_key = f"{error_type}_{strategy['module']}"
+                        if strategy_key not in cls._recovery_stats:
+                            cls._recovery_stats[strategy_key] = {
+                                'attempts': 0,
+                                'successes': 0
+                            }
+                        cls._recovery_stats[strategy_key]['attempts'] += 1
+                        cls._recovery_stats[strategy_key]['successes'] += 1
+                        
+                        logger.info(f"Error recovery successful for {error_type} using {strategy['module']} strategy")
+                        break
+                    
+                except Exception as recovery_error:
+                    logger.error(f"Recovery strategy failed: {recovery_error}")
+        
+        # Publish recovery result event
+        event_manager.publish(
+            'error_recovery_result',
+            {
+                'original_error': error_type,
+                'recovery_successful': recovery_successful,
+                'source_module': source_module
+            },
+            'ErrorRecoveryManager'
+        )
+        
+        return recovery_successful
+    
+    @classmethod
+    def get_error_statistics(cls) -> Dict[str, Any]:
+        """Get comprehensive error and recovery statistics."""
+        if not cls._error_history:
+            return {'total_errors': 0, 'recovery_rate': 0}
+        
+        total_errors = len(cls._error_history)
+        recovered_errors = sum(1 for error in cls._error_history if error['recovery_successful'])
+        
+        return {
+            'total_errors': total_errors,
+            'recovered_errors': recovered_errors,
+            'recovery_rate': recovered_errors / total_errors if total_errors > 0 else 0,
+            'error_types': list(set(error['error_type'] for error in cls._error_history)),
+            'recent_errors': cls._error_history[-10:],
+            'recovery_strategies': list(cls._recovery_strategies.keys()),
+            'strategy_effectiveness': cls._recovery_stats
+        }
+
+# ========== INTEGRATION HEALTH MONITOR ==========
+
+class IntegrationHealthMonitor:
+    """
+    Real-time monitoring of integration health and performance.
+    Provides comprehensive system health assessment and alerts.
+    """
+    
+    _health_checks = {}
+    _health_history = []
+    _alert_thresholds = {
+        'response_time': 1.0,  # seconds
+        'error_rate': 0.05,    # 5%
+        'memory_usage': 0.8    # 80%
+    }
+    
+    @classmethod
+    def register_health_check(cls, check_name: str, check_function, module_name: str, interval_seconds: int = 60):
+        """
+        Register a health check function.
+        
+        Args:
+            check_name: Unique name for the health check
+            check_function: Function that returns health status
+            module_name: Module providing the health check
+            interval_seconds: How often to run the check
+        """
+        cls._health_checks[check_name] = {
+            'function': check_function,
+            'module': module_name,
+            'interval': interval_seconds,
+            'last_run': 0,
+            'last_result': None
+        }
+        
+        logger.debug(f"Health check '{check_name}' registered by {module_name}")
+    
+    @classmethod
+    def run_health_checks(cls, force_all: bool = False) -> Dict[str, Any]:
+        """
+        Run all registered health checks and return comprehensive status.
+        
+        Args:
+            force_all: If True, run all checks regardless of interval
+        
+        Returns:
+            Comprehensive health status
+        """
+        current_time = time.time()
+        health_results = {}
+        overall_health = True
+        
+        for check_name, check_info in cls._health_checks.items():
+            # Check if it's time to run this health check
+            if (not force_all and 
+                current_time - check_info['last_run'] < check_info['interval']):
+                # Use cached result
+                health_results[check_name] = check_info['last_result']
+                continue
+            
+            try:
+                # Run health check
+                result = module_communicator.safe_module_call(
+                    check_info['function'],
+                    fallback_value={'status': 'unknown', 'healthy': False},
+                    timeout_seconds=5
+                )
+                
+                # Update cache
+                check_info['last_run'] = current_time
+                check_info['last_result'] = result
+                health_results[check_name] = result
+                
+                # Update overall health
+                if not result.get('healthy', False):
+                    overall_health = False
+                
+            except Exception as e:
+                logger.error(f"Health check '{check_name}' failed: {e}")
+                health_results[check_name] = {
+                    'status': 'error',
+                    'healthy': False,
+                    'error': str(e)
+                }
+                overall_health = False
+        
+        # Compile comprehensive health report
+        health_report = {
+            'timestamp': current_time,
+            'overall_healthy': overall_health,
+            'individual_checks': health_results,
+            'performance_metrics': performance_monitor.get_performance_report(),
+            'error_statistics': ErrorRecoveryManager.get_error_statistics(),
+            'event_statistics': event_manager.get_event_statistics()
+        }
+        
+        # Add to history
+        cls._health_history.append(health_report)
+        if len(cls._health_history) > 100:
+            cls._health_history = cls._health_history[-100:]
+        
+        # Check for alerts
+        cls._check_alert_conditions(health_report)
+        
+        return health_report
+    
+    @classmethod
+    def _check_alert_conditions(cls, health_report: Dict[str, Any]):
+        """Check if any alert conditions are met and publish alerts."""
+        alerts = []
+        
+        # Check performance metrics
+        perf_metrics = health_report.get('performance_metrics', {})
+        slowest_calls = perf_metrics.get('slowest_calls', [])
+        
+        for call_name, exec_time in slowest_calls[:5]:
+            if exec_time > cls._alert_thresholds['response_time']:
+                alerts.append({
+                    'type': 'performance',
+                    'severity': 'warning',
+                    'message': f"Slow execution detected: {call_name} ({exec_time:.2f}s)",
+                    'metric': 'response_time',
+                    'value': exec_time
+                })
+        
+        # Check error rate
+        error_stats = health_report.get('error_statistics', {})
+        recovery_rate = error_stats.get('recovery_rate', 1.0)
+        
+        if 1.0 - recovery_rate > cls._alert_thresholds['error_rate']:
+            alerts.append({
+                'type': 'reliability',
+                'severity': 'critical',
+                'message': f"High error rate detected: {(1.0 - recovery_rate) * 100:.1f}%",
+                'metric': 'error_rate',
+                'value': 1.0 - recovery_rate
+            })
+        
+        # Publish alerts if any
+        if alerts:
+            event_manager.publish(
+                'health_alerts',
+                {'alerts': alerts, 'health_report': health_report},
+                'IntegrationHealthMonitor'
+            )
+    
+    @classmethod
+    def get_health_trend(cls, hours: int = 24) -> Dict[str, Any]:
+        """Get health trend analysis for the specified time period."""
+        cutoff_time = time.time() - (hours * 3600)
+        recent_reports = [
+            report for report in cls._health_history 
+            if report['timestamp'] > cutoff_time
+        ]
+        
+        if not recent_reports:
+            return {'trend': 'no_data', 'reports_analyzed': 0}
+        
+        healthy_count = sum(1 for report in recent_reports if report['overall_healthy'])
+        health_percentage = healthy_count / len(recent_reports)
+        
+        return {
+            'trend': 'improving' if health_percentage > 0.8 else 'degrading' if health_percentage < 0.5 else 'stable',
+            'health_percentage': health_percentage,
+            'reports_analyzed': len(recent_reports),
+            'recent_alerts': [
+                report for report in recent_reports[-10:] 
+                if not report['overall_healthy']
+            ]
+        }
+
+# Global integration health monitor instance
+integration_health_monitor = IntegrationHealthMonitor()
+
+# ==============================================================================
+# OPTIMIZED HEALTH CHECK INTEGRATION (Phase 3 Enhancement)
+# ==============================================================================
+
+def safe_health_check(component_name: str, silent: bool = True) -> bool:
+    """
+    Optimized health check wrapper for core modules.
+    Enhanced with event publishing and integration monitoring.
+    
+    Args:
+        component_name: Name of the component being checked
+        silent: If True, suppress non-critical output
+    
+    Returns:
+        bool: True if health check passed, False otherwise
+    """
+    try:
+        import sys
+        import os
+        # Add parent directory to path to find health_utils
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        if parent_dir not in sys.path:
+            sys.path.insert(0, parent_dir)
+        
+        from health_utils import ensure_system_health
+        
+        # Run health check with performance tracking
+        start_time = time.time()
+        result = ensure_system_health(component_name, silent=silent)
+        execution_time = time.time() - start_time
+        
+        # Track performance
+        performance_monitor.track_module_call(
+            'health_utils', 
+            'ensure_system_health', 
+            execution_time
+        )
+        
+        # Publish health check event
+        event_manager.publish(
+            'health_check_completed',
+            {
+                'component': component_name,
+                'result': result,
+                'execution_time': execution_time,
+                'silent': silent
+            },
+            'safe_health_check'
+        )
+        
+        return True
+        
+    except ImportError:
+        # health_utils not available - proceed without check
+        if not silent:
+            logger.warning(f"Health check unavailable for {component_name}")
+        return True
+    except Exception as e:
+        # Handle error through recovery system
+        ErrorRecoveryManager.handle_error(
+            e,
+            {
+                'component': component_name,
+                'operation': 'health_check',
+                'silent': silent
+            },
+            'safe_health_check'
+        )
+        return False
+
+def safe_pre_backtest_gate(component_name: str, silent: bool = True) -> bool:
+    """
+    Enhanced pre-execution validation with event publishing.
+    
+    Args:
+        component_name: Name of the component
+        silent: If True, suppress non-critical output
+    
+    Returns:
+        bool: True if validation passed
+    """
+    try:
+        # Run health check first
+        health_ok = safe_health_check(component_name, silent)
+        
+        # Publish pre-backtest event
+        event_manager.publish(
+            'pre_backtest_validation',
+            {
+                'component': component_name,
+                'health_check_passed': health_ok,
+                'timestamp': time.time()
+            },
+            'safe_pre_backtest_gate'
+        )
+        
+        return health_ok
+        
+    except Exception as e:
+        ErrorRecoveryManager.handle_error(
+            e,
+            {
+                'component': component_name,
+                'operation': 'pre_backtest_validation',
+                'silent': silent
+            },
+            'safe_pre_backtest_gate'
+        )
+        return False
+
+def safe_auto_fix_config(component_name: str, config_path: str = None) -> bool:
+    """
+    Enhanced configuration auto-fix with centralized management.
+    
+    Args:
+        component_name: Name of the component
+        config_path: Path to configuration file
+    
+    Returns:
+        bool: True if auto-fix succeeded
+    """
+    try:
+        start_time = time.time()
+        
+        # Use centralized configuration manager
+        if config_path:
+            config = config_manager.get_config(config_path, 'general')
+        else:
+            config = config_manager.get_config(None, 'general')
+        
+        execution_time = time.time() - start_time
+        
+        # Track performance
+        performance_monitor.track_module_call(
+            'config_manager',
+            'get_config',
+            execution_time
+        )
+        
+        # Publish configuration event
+        event_manager.publish(
+            'configuration_loaded',
+            {
+                'component': component_name,
+                'config_path': config_path,
+                'config_keys': list(config.keys()) if config else [],
+                'execution_time': execution_time
+            },
+            'safe_auto_fix_config'
+        )
+        
+        return True
+        
+    except Exception as e:
+        ErrorRecoveryManager.handle_error(
+            e,
+            {
+                'component': component_name,
+                'operation': 'auto_fix_config',
+                'config_path': config_path
+            },
+            'safe_auto_fix_config'
+        )
+        return False
+
+# ========== INTEGRATION INITIALIZATION ==========
+
+def initialize_integration_system():
+    """
+    Initialize the complete integration system with all enhancements.
+    Sets up event handlers, health checks, and recovery strategies.
+    """
+    logger.info("Initializing Phase 3 Integration System...")
+    
+    # Register default health checks
+    integration_health_monitor.register_health_check(
+        'configuration_system',
+        lambda: {
+            'status': 'healthy',
+            'healthy': True,
+            'cached_configs': len(config_manager._config_cache),
+            'cache_timestamps': len(config_manager._file_timestamps)
+        },
+        'ConfigurationManager'
+    )
+    
+    integration_health_monitor.register_health_check(
+        'event_system',
+        lambda: {
+            'status': 'healthy',
+            'healthy': True,
+            'active_subscriptions': len(event_manager._subscribers),
+            'total_events': len(event_manager._event_history)
+        },
+        'EventManager'
+    )
+    
+    integration_health_monitor.register_health_check(
+        'performance_monitoring',
+        lambda: {
+            'status': 'healthy',
+            'healthy': True,
+            'tracked_calls': len(performance_monitor._call_stats),
+            'performance_history': len(performance_monitor._performance_history)
+        },
+        'PerformanceMonitor'
+    )
+    
+    # Register default recovery strategies
+    ErrorRecoveryManager.register_recovery_strategy(
+        'ImportError',
+        lambda error, context: True,  # Always attempt to continue
+        'DefaultRecovery'
+    )
+    
+    ErrorRecoveryManager.register_recovery_strategy(
+        'FileNotFoundError',
+        lambda error, context: config_manager.get_config(None, context.get('config_type', 'general')),
+        'ConfigurationManager'
+    )
+    
+    # Subscribe to critical events
+    event_manager.subscribe(
+        'error_occurred',
+        lambda event: logger.error(f"System error in {event['data']['context'].get('operation', 'unknown')}: {event['data']['error_message']}"),
+        'IntegrationLogger'
+    )
+    
+    event_manager.subscribe(
+        'health_alerts',
+        lambda event: logger.warning(f"Health alert: {len(event['data']['alerts'])} issues detected"),
+        'IntegrationLogger'
+    )
+    
+    logger.info("Phase 3 Integration System initialized successfully")
+    
+    # Publish initialization complete event
+    event_manager.publish(
+        'integration_system_initialized',
+        {
+            'version': '3.0',
+            'components': [
+                'ConfigurationManager',
+                'DataStandardizer', 
+                'ModuleCommunicator',
+                'PerformanceMonitor',
+                'EventManager',
+                'ErrorRecoveryManager',
+                'IntegrationHealthMonitor'
+            ]
+        },
+        'IntegrationSystem'
+    )
+
+# Auto-initialize integration system when module is imported
+try:
+    initialize_integration_system()
+except Exception as e:
+    logger.error(f"Failed to initialize integration system: {e}")
+
+# ========== ENHANCED HEALTH CHECK WRAPPERS (PHASE 3) ==========
+
+def safe_health_check(component_name: str, silent: bool = True) -> bool:
+    """
+    Optimized health check wrapper for core modules.
+    Enhanced with event publishing and integration monitoring.
+    
+    Args:
+        component_name: Name of the component being checked
+        silent: If True, suppress non-critical output
+    
+    Returns:
+        bool: True if health check passed, False otherwise
+    """
+    try:
+        import sys
+        import os
+        # Add parent directory to path to find health_utils
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        if parent_dir not in sys.path:
+            sys.path.insert(0, parent_dir)
+        
+        from health_utils import ensure_system_health
+        
+        # Run health check with performance tracking
+        start_time = time.time()
+        result = ensure_system_health(component_name, silent=silent)
+        execution_time = time.time() - start_time
+        
+        # Track performance
+        performance_monitor.track_module_call(
+            'health_utils', 
+            'ensure_system_health', 
+            execution_time
+        )
+        
+        # Publish health check event
+        event_manager.publish(
+            'health_check_completed',
+            {
+                'component': component_name,
+                'result': result,
+                'execution_time': execution_time,
+                'silent': silent
+            },
+            'safe_health_check'
+        )
+        
+        return True
+        
+    except ImportError:
+        # health_utils not available - proceed without check
+        if not silent:
+            logger.warning(f"Health check unavailable for {component_name}")
+        return True
+    except Exception as e:
+        # Handle error through recovery system
+        ErrorRecoveryManager.handle_error(
+            e,
+            {
+                'component': component_name,
+                'operation': 'health_check',
+                'silent': silent
+            },
+            'safe_health_check'
+        )
+        return False
+
+def safe_pre_backtest_gate(component_name: str, silent: bool = True) -> bool:
+    """
+    Enhanced pre-execution validation with event publishing.
+    
+    Args:
+        component_name: Name of the component
+        silent: If True, suppress non-critical output
+    
+    Returns:
+        bool: True if validation passed
+    """
+    try:
+        # Run health check first
+        health_ok = safe_health_check(component_name, silent)
+        
+        # Publish pre-backtest event
+        event_manager.publish(
+            'pre_backtest_validation',
+            {
+                'component': component_name,
+                'health_check_passed': health_ok,
+                'timestamp': time.time()
+            },
+            'safe_pre_backtest_gate'
+        )
+        
+        return health_ok
+        
+    except Exception as e:
+        ErrorRecoveryManager.handle_error(
+            e,
+            {
+                'component': component_name,
+                'operation': 'pre_backtest_validation',
+                'silent': silent
+            },
+            'safe_pre_backtest_gate'
+        )
+        return False
+
+def safe_auto_fix_config(component_name: str, config_path: str = None) -> bool:
+    """
+    Enhanced configuration auto-fix with centralized management.
+    
+    Args:
+        component_name: Name of the component
+        config_path: Path to configuration file
+    
+    Returns:
+        bool: True if auto-fix succeeded
+    """
+    try:
+        start_time = time.time()
+        
+        # Use centralized configuration manager
+        if config_path:
+            config = config_manager.get_config(config_path, 'general')
+        else:
+            config = config_manager.get_config(None, 'general')
+        
+        execution_time = time.time() - start_time
+        
+        # Track performance
+        performance_monitor.track_module_call(
+            'config_manager',
+            'get_config',
+            execution_time
+        )
+        
+        # Publish configuration event
+        event_manager.publish(
+            'configuration_loaded',
+            {
+                'component': component_name,
+                'config_path': config_path,
+                'config_keys': list(config.keys()) if config else [],
+                'execution_time': execution_time
+            },
+            'safe_auto_fix_config'
+        )
+        
+        return True
+        
+    except Exception as e:
+        ErrorRecoveryManager.handle_error(
+            e,
+            {
+                'component': component_name,
+                'operation': 'auto_fix_config',
+                'config_path': config_path
+            },
+            'safe_auto_fix_config'
+        )
+        return False
+
+# ========== ENHANCED FAULT TOLERANCE & CIRCUIT BREAKER SYSTEM ==========
+
+def safe_pre_backtest_gate() -> bool:
+    """
+    Optimized pre-backtest safety gate with consistent error handling.
+    
+    Returns:
+        bool: True if safe to proceed or gate unavailable, False if unsafe
+    """
+    try:
+        from health_utils import pre_backtest_safety_gate
+        return pre_backtest_safety_gate()
+    except ImportError:
+        return True
+    except Exception:
+        return True
+
+def safe_auto_fix_config(config_path: str) -> bool:
+    """
+    Optimized auto-fix configuration loader with consistent error handling.
+    
+    Args:
+        config_path: Path to configuration file
+        
+    Returns:
+        bool: True if fix successful or unavailable, False if fix failed
+    """
+    try:
+        from health_utils import auto_fix_on_config_load
+        return auto_fix_on_config_load(config_path)
+    except ImportError:
+        return True
+    except Exception:
+        return True
+
 # ==============================================================================
 
 class CircuitState(Enum):

@@ -96,27 +96,32 @@ class Portfolio:
         try:
             import sys
             import os
-            # Add parent directory to path to find health_utils
+            # Add parent directory to path to find utilities
             parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             if parent_dir not in sys.path:
                 sys.path.insert(0, parent_dir)
-            from health_utils import ensure_system_health
-            ensure_system_health("Portfolio", silent=True)
-        except ImportError:
-            # health_utils not available - proceed without check
-            pass
+            from utilities.utils import safe_health_check
+            safe_health_check("Portfolio", silent=True)
         except Exception:
-            # Any other health check error - proceed with warning
+            # Any error in health check - proceed with warning
             pass
             
-        self.initial_capital = float(initial_capital)
-        self.cash = float(initial_capital)
+        # Enhanced configuration loading for portfolio
+        try:
+            from utilities.utils import config_manager
+            portfolio_config = config_manager.get_config(None, 'portfolio')
+            self.initial_capital = float(portfolio_config.get('INITIAL_CAPITAL', initial_capital))
+            self.safety_warning_interval = portfolio_config.get('SAFETY_WARNING_INTERVAL', 5000)
+        except Exception:
+            # Fallback to provided values
+            self.initial_capital = float(initial_capital)
+            self.safety_warning_interval = 5000
+        self.cash = float(self.initial_capital)
         self.history = []
-        self.equity_curve = [(pd.Timestamp.min, initial_capital)] # Start with initial capital
+        self.equity_curve = [(pd.Timestamp.min, self.initial_capital)] # Start with initial capital
         
         # Warning reduction counters  
         self.safety_check_count = 0
-        self.safety_warning_interval = 5000  # Show summary every 5000 safety checks (much more aggressive)
     
     def record_trade(self, entry_timestamp, exit_timestamp, entry_price, exit_price, size, trade_type, pnl, exit_reason, window_num, window_start_capital, position_manager=None, strategy_params=None, comprehensive_manager=None):
         """

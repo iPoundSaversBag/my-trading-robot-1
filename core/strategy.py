@@ -2337,17 +2337,14 @@ class MultiTimeframeStrategy:
         try:
             import sys
             import os
-            # Add parent directory to path to find health_utils
+            # Add parent directory to path to find utilities
             parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             if parent_dir not in sys.path:
                 sys.path.insert(0, parent_dir)
-            from health_utils import ensure_system_health
-            ensure_system_health("MultiTimeframeStrategy", silent=True)
-        except ImportError:
-            # health_utils not available - proceed without check
-            pass
+            from utilities.utils import safe_health_check
+            safe_health_check("MultiTimeframeStrategy", silent=True)
         except Exception:
-            # Any other health check error - proceed with warning
+            # Any error in health check - proceed with warning
             pass
         
         # OPTIMIZATION COMPATIBILITY: Handle both nested config and flat parameter dict
