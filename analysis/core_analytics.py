@@ -27,6 +27,18 @@ import traceback
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, List, Optional, Tuple
+import logging
+
+# Set up logging
+try:
+    # Try to import centralized logger
+    import sys
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from utilities.utils import central_logger
+except ImportError:
+    # Fallback to basic logging
+    central_logger = logging.getLogger(__name__)
+    central_logger.setLevel(logging.INFO)
 
 # ============================================================================
 # CONSTANTS AND MARKERS
@@ -593,6 +605,151 @@ class CoreAnalytics:
             print(f"❌ Comprehensive analysis failed: {e}")
             traceback.print_exc()
             return results
+
+# ============================================================================
+# COMPATIBILITY FUNCTIONS FOR BACKTEST.PY
+# ============================================================================
+
+def plot_trades_for_window(trades_df: pd.DataFrame, 
+                          start_time: Optional[str] = None,
+                          end_time: Optional[str] = None,
+                          symbol: str = "BTCUSDT") -> Optional[str]:
+    """Plot trades for a specific time window - compatibility function."""
+    try:
+        if trades_df.empty:
+            return None
+        
+        # Basic trade plotting logic
+        import matplotlib.pyplot as plt
+        import matplotlib.dates as mdates
+        
+        fig, ax = plt.subplots(figsize=(12, 6))
+        
+        # Filter by time window if specified
+        if start_time and end_time:
+            mask = (trades_df.index >= start_time) & (trades_df.index <= end_time)
+            trades_df = trades_df[mask]
+        
+        # Plot trades
+        if 'entry_price' in trades_df.columns and 'exit_price' in trades_df.columns:
+            ax.scatter(trades_df.index, trades_df['entry_price'], 
+                      c='green', marker='^', label='Entry', alpha=0.7)
+            ax.scatter(trades_df.index, trades_df['exit_price'], 
+                      c='red', marker='v', label='Exit', alpha=0.7)
+        
+        ax.set_title(f'Trades for {symbol}')
+        ax.set_xlabel('Time')
+        ax.set_ylabel('Price')
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+        
+        # Format x-axis
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        
+        # Save plot
+        plot_path = f"plots_output/trades_window_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        os.makedirs(os.path.dirname(plot_path), exist_ok=True)
+        plt.savefig(plot_path, dpi=150, bbox_inches='tight')
+        plt.close()
+        
+        return plot_path
+        
+    except Exception as e:
+        central_logger.error(f"Error plotting trades for window: {e}")
+        return None
+
+def plot_pnl_distribution(pnl_data: List[float], 
+                         bins: int = 50,
+                         title: str = "P&L Distribution") -> Optional[str]:
+    """Plot P&L distribution - compatibility function."""
+    try:
+        if not pnl_data:
+            return None
+        
+        import matplotlib.pyplot as plt
+        
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+        
+        # Histogram
+        ax1.hist(pnl_data, bins=bins, alpha=0.7, color='skyblue', edgecolor='black')
+        ax1.set_title(f'{title} - Histogram')
+        ax1.set_xlabel('P&L')
+        ax1.set_ylabel('Frequency')
+        ax1.grid(True, alpha=0.3)
+        ax1.axvline(x=0, color='red', linestyle='--', label='Break-even')
+        ax1.legend()
+        
+        # Box plot
+        ax2.boxplot(pnl_data, vert=True)
+        ax2.set_title(f'{title} - Box Plot')
+        ax2.set_ylabel('P&L')
+        ax2.grid(True, alpha=0.3)
+        ax2.axhline(y=0, color='red', linestyle='--', label='Break-even')
+        
+        plt.tight_layout()
+        
+        # Save plot
+        plot_path = f"plots_output/pnl_distribution_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        os.makedirs(os.path.dirname(plot_path), exist_ok=True)
+        plt.savefig(plot_path, dpi=150, bbox_inches='tight')
+        plt.close()
+        
+        return plot_path
+        
+    except Exception as e:
+        central_logger.error(f"Error plotting P&L distribution: {e}")
+        return None
+
+def enhance_performance_report(report_path: str, data: Optional[Dict[str, Any]] = None) -> bool:
+    """Enhance performance report - compatibility function."""
+    try:
+        if not data:
+            # Collect data automatically
+            data = collect_comprehensive_analysis_data()
+        
+        # Use the ReportGenerator to inject enhancement
+        generator = ReportGenerator()
+        return generator.inject_enhancement_dashboard(report_path, data)
+        
+    except Exception as e:
+        central_logger.error(f"Error enhancing performance report: {e}")
+        return False
+
+def collect_comprehensive_analysis_data() -> Dict[str, Any]:
+    """Collect comprehensive analysis data - compatibility function."""
+    try:
+        analytics = CoreAnalytics()
+        
+        # Try to get trading journal data
+        journal_path = "data/trading_journal.json"
+        if os.path.exists(journal_path):
+            results = analytics.run_comprehensive_analysis(journal_path)
+            return results.get("analysis", {})
+        
+        # Fallback to basic data structure
+        return {
+            "performance": {
+                "total_return": 0.0,
+                "sharpe_ratio": 0.0,
+                "max_drawdown": 0.0,
+                "volatility": 0.0,
+                "final_equity": 10000.0,
+                "total_sessions": 0
+            },
+            "trades": {
+                "total_trades": 0,
+                "winning_trades": 0,
+                "losing_trades": 0,
+                "win_rate": 0.0,
+                "run_directory": None
+            }
+        }
+        
+    except Exception as e:
+        central_logger.error(f"Error collecting comprehensive analysis data: {e}")
+        return {}
 
 # ============================================================================
 # CONVENIENCE FUNCTIONS
