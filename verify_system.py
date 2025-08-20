@@ -172,7 +172,7 @@ def main():
     
     if all_passed:
         print(f"\n🎊 CONGRATULATIONS! Your trading bot is 100% operational!")
-        print(f"💰 You've successfully replaced Google Cloud with $0/month hosting!")
+        print(f"💰 You've successfully deployed with $0/month Vercel hosting!")
         print(f"🤖 Background automation is running every 5 minutes!")
     else:
         print(f"\n🔧 Some issues detected - but your bot may still be working!")

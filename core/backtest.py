@@ -135,7 +135,6 @@ def log_listener(queue):
 # Suppress noisy urllib3 warnings
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-warnings.filterwarnings('ignore', message='.*oauth2.googleapis.com.*')
 warnings.filterwarnings('ignore', message='.*api.alternative.me.*')
 import time
 from numba import njit, typed
@@ -261,8 +260,6 @@ warnings.filterwarnings('ignore', category=UserWarning, module='matplotlib')
 # Configure logging to reduce verbosity
 logging.getLogger('urllib3').setLevel(logging.ERROR)
 logging.getLogger('requests').setLevel(logging.ERROR)
-logging.getLogger('google').setLevel(logging.ERROR)
-logging.getLogger('googleapiclient').setLevel(logging.ERROR)
 
 # Set default logging level to WARNING to reduce noise
 if not logging.getLogger().handlers:
@@ -366,24 +363,24 @@ except ImportError:
         PositionManager = None  # Fallback for error handling
 
 try:
-    from utilities.gcp_utils import upload_to_gcs, sync_parameters_to_cloud, check_gcs_connection  # Enhanced GCP integration
-    GCP_AVAILABLE = True
+    from utilities.vercel_utils import upload_to_vercel, sync_parameters_to_vercel, check_vercel_connection  # Enhanced Vercel integration
+    VERCEL_AVAILABLE = True
     # Silently available
 except ImportError:
-    GCP_AVAILABLE = False
+    VERCEL_AVAILABLE = False
     # Silently not available
     
     # Create dummy functions for fallback
-    def upload_to_gcs(source_file_path, destination_blob_name):
+    def upload_to_vercel(source_file_path, destination_name):
         # Silently fail
         return False
     
-    def sync_parameters_to_cloud(local_params_file, cloud_blob_name):
+    def sync_parameters_to_vercel(local_params_file, parameter_name):
         # Silently fail
         return False
     
-    def check_gcs_connection():
-        return {'connected': False, 'error_messages': ['GCP utilities not available']}
+    def check_vercel_connection():
+        return {'connected': False, 'error_messages': ['Vercel utilities not available']}
 
 # --- Refactored Backtesting Core ---
 def run_backtest(params, processed_df, initial_capital, window_num=0, comprehensive_manager=None):

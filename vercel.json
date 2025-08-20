@@ -10,6 +10,10 @@
       "use": "@vercel/python"
     },
     {
+      "src": "api/dashboard-data.py",
+      "use": "@vercel/python"
+    },
+    {
       "src": "api/test-python.py",
       "use": "@vercel/python"
     },
@@ -18,19 +22,7 @@
       "use": "@vercel/python"
     },
     {
-      "src": "api/trading-engine.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/auto-trader.py",
-      "use": "@vercel/python"
-    },
-    {
       "src": "api/live-bot.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/backtest-sync.py",
       "use": "@vercel/python"
     }
   ],
@@ -38,6 +30,10 @@
     {
       "src": "/api/live-data",
       "dest": "/api/live-data.py"
+    },
+    {
+      "src": "/api/dashboard-data",
+      "dest": "/api/dashboard-data.py"
     },
     {
       "src": "/api/test-python",
@@ -48,32 +44,8 @@
       "dest": "/api/portfolio-vercel.py"
     },
     {
-      "src": "/api/trading-engine",
-      "dest": "/api/trading-engine.py"
-    },
-    {
-      "src": "/api/auto-trader",
-      "dest": "/api/auto-trader.py"
-    },
-    {
       "src": "/api/live-bot",
       "dest": "/api/live-bot.py"
-    },
-    {
-      "src": "/api/backtest-sync",
-      "dest": "/api/backtest-sync.py"
-    },
-    {
-      "src": "/api/backtest-sync/update",
-      "dest": "/api/backtest-sync.py"
-    },
-    {
-      "src": "/api/backtest-sync/trigger",
-      "dest": "/api/backtest-sync.py"
-    },
-    {
-      "src": "/api/backtest-sync/sync-live",
-      "dest": "/api/backtest-sync.py"
     },
     {
       "src": "/",

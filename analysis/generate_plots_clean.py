@@ -288,7 +288,7 @@ def _sections(_: Dict[str, Any]) -> List[tuple[str,str,str]]:
     <div class='comprehensive-section'>
         <h3>📊 Live Trading Data</h3>
         <div class='update-indicator'>
-            🔴 Real-time data from Google Cloud bot • Updates every 5 seconds • Live BTC: $<span id="live-btc-indicator">Loading...</span>
+            🔴 Real-time data from Vercel bot • Updates every 5 seconds • Live BTC: $<span id="live-btc-indicator">Loading...</span>
         </div>
         <div class='live-data-grid'>
             <div class='live-data-card'>

@@ -15,15 +15,30 @@ from http.server import BaseHTTPRequestHandler
 def load_trading_config():
     """Load optimized trading parameters from backtest results"""
     try:
-        # Try to load optimized parameters from backtest
-        config_path = os.path.join(os.path.dirname(__file__), 'live_trading_config.json')
+        # Try to load optimized parameters from parameter sync
+        config_path = 'live_trading_config.json'
         if os.path.exists(config_path):
             with open(config_path, 'r') as f:
                 config = json.load(f)
-            print(f"✅ Loaded optimized parameters: RSI={config.get('RSI_PERIOD')}, MA_FAST={config.get('MA_FAST')}, MA_SLOW={config.get('MA_SLOW')}")
+            
+            # Check if config is recent (within last 24 hours)
+            updated_at = config.get('updated_at')
+            if updated_at:
+                from datetime import datetime, timedelta
+                try:
+                    update_time = datetime.fromisoformat(updated_at.replace('Z', '+00:00'))
+                    if datetime.now() - update_time.replace(tzinfo=None) < timedelta(hours=24):
+                        print(f"✅ Loaded recent optimized parameters from {config.get('source', 'unknown')}")
+                        print(f"   Updated: {updated_at}")
+                        print(f"   RSI_PERIOD={config.get('RSI_PERIOD')}, MA_FAST={config.get('MA_FAST')}, MA_SLOW={config.get('MA_SLOW')}")
+                        return config
+                except:
+                    pass
+            
+            print(f"⚠️ Config found but outdated, using anyway")
             return config
         else:
-            print(f"⚠️ Config file not found at {config_path}, using defaults")
+            print(f"⚠️ No optimized config found at {config_path}, using defaults")
             return None
     except Exception as e:
         print(f"❌ Error loading config: {e}")
@@ -482,6 +497,47 @@ class VercelLiveBot:
         
         return max(min_qty, min(quantity, max_qty))
     
+    def get_dashboard_status(self):
+        """Get read-only status for dashboard display"""
+        try:
+            # Get market data for current price
+            klines = self.get_market_data(self.config['SYMBOL'], self.config['TIMEFRAME'], limit=50)
+            if "error" in klines:
+                return {"error": "Failed to get market data", "status": "api_error"}
+            
+            # Extract price data
+            prices = [float(k[4]) for k in klines]  # Close prices
+            volumes = [float(k[5]) for k in klines]  # Volumes
+            current_price = prices[-1]
+            
+            # Calculate indicators for display
+            indicators = self.calculate_indicators(prices, volumes)
+            
+            # Detect market regime
+            market_regime = self.detect_market_regime(indicators)
+            
+            # Generate signal (without executing)
+            signal_data = self.generate_signal(indicators, market_regime)
+            
+            return {
+                'status': 'dashboard_view',
+                'timestamp': int(time.time()),
+                'signal': signal_data,
+                'market_regime': market_regime,
+                'account_balance': {'USDT': 10000, 'BTC': 0.1},  # Placeholder values
+                'trade_executed': {
+                    'simulated': True,
+                    'side': 'HOLD',
+                    'quantity': 0,
+                    'value': 0
+                },
+                'config_source': 'optimized' if OPTIMIZED_CONFIG else 'default',
+                'execution_mode': 'read_only_dashboard'
+            }
+            
+        except Exception as e:
+            return {"error": f"Dashboard status failed: {str(e)}"}
+
     def execute_live_trading_cycle(self):
         """Execute one live trading cycle using regime-aware backtest strategy"""
         try:
@@ -593,20 +649,33 @@ class VercelLiveBot:
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            # Security check for automated requests
+            # Check if this is a dashboard view request vs trading execution
             auth_header = self.headers.get('Authorization')
+            user_agent = self.headers.get('User-Agent', '')
             cron_secret = os.environ.get('BOT_SECRET')
-            if cron_secret and auth_header != f'Bearer {cron_secret}':
+            
+            # Allow dashboard access without authentication (read-only)
+            # Require authentication for automated trading requests
+            is_dashboard_request = 'Mozilla' in user_agent or not auth_header
+            is_authenticated = cron_secret and auth_header == f'Bearer {cron_secret}'
+            
+            # For dashboard requests, provide read-only status data
+            if is_dashboard_request:
+                bot = VercelLiveBot()
+                result = bot.get_dashboard_status()
+            elif is_authenticated:
+                # Execute actual trading for authenticated requests
+                bot = VercelLiveBot()
+                result = bot.execute_live_trading_cycle()
+            else:
+                # Unauthorized for trading execution
                 self.send_response(401)
                 self.send_header('Content-Type', 'application/json')
                 self.send_header('Access-Control-Allow-Origin', '*')
                 self.end_headers()
-                error_response = {"error": "Unauthorized"}
+                error_response = {"error": "Unauthorized for trading execution"}
                 self.wfile.write(json.dumps(error_response).encode())
                 return
-            
-            bot = VercelLiveBot()
-            result = bot.execute_live_trading_cycle()
             
             status_code = 200 if result.get('status') == 'success' else 500
             

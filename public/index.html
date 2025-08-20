@@ -539,22 +539,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     async function loadRealBotData() {
         try {
-            // Use live testnet API instead of local file
-            const response = await fetch('/api/live-bot', {
-                headers: {
-                    'Authorization': 'Bearer 93699b3917045092715b8e16c01f2e1d'
-                }
-            });
+            // Use public dashboard data API (no authentication required)
+            const response = await fetch('/api/dashboard-data');
             
             if (response.ok) {
                 const botData = await response.json();
                 updateLiveTestnetData(botData);
             } else {
-                console.log('API not available, using fallback data');
+                console.log('Dashboard API not available, using fallback data');
                 showDataUnavailable();
             }
         } catch (error) {
-            console.log('Error loading testnet bot data:', error);
+            console.log('Error loading dashboard data:', error);
             showDataUnavailable();
         }
     }

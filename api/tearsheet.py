@@ -195,7 +195,7 @@ def generate_tearsheet_html():
             <ul>
                 <li>✅ Background automation running every 5 minutes</li>
                 <li>✅ Dynamic parameter loading from backtest optimization</li>
-                <li>✅ Complete Google Cloud elimination achieved</li>
+                <li>✅ Complete Vercel migration achieved</li>
                 <li>🔄 Accumulating live trading data for comparison</li>
                 <li>📊 Will compare live vs backtest performance once sufficient data collected</li>
             </ul>

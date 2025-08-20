@@ -924,6 +924,20 @@ if __name__ == "__main__":
             if results:
                 print(f"✅ Backtest completed successfully!")
                 print(f"📁 Results saved to: {results['run_directory']}")
+                
+                # Trigger automated parameter sync to live bot
+                try:
+                    from watcher_hook import on_backtest_complete
+                    sync_success = on_backtest_complete(results['run_directory'], results)
+                    if sync_success:
+                        print("🔄 Live bot parameters automatically updated!")
+                    else:
+                        print("⚠️ Parameter sync to live bot failed")
+                except ImportError:
+                    print("⚠️ Automated pipeline not available - manual sync required")
+                except Exception as e:
+                    print(f"⚠️ Parameter sync error: {e}")
+                    
             else:
                 print("❌ Backtest failed. Check the logs for details.")
                 sys.exit(1)
@@ -936,9 +950,12 @@ if __name__ == "__main__":
             print(f"🔄 Multi-timeframe: {'Yes' if args.multi_timeframe else 'No'}")
             print("-" * 50)
             
-            # Start live trading
-            from live_trading.live_bot import main as live_bot_main
-            live_bot_main()
+            # Start live monitoring (live bot runs on Vercel)
+            print("🚀 Starting live bot monitoring...")
+            print("📡 Live bot is running on Vercel - starting local monitoring")
+            
+            from unified_live_monitor import start_monitoring
+            start_monitoring()  # Monitor indefinitely
             
         elif args.mode == 'download':
             # Data download mode (from main.py)

@@ -29,8 +29,8 @@ plotly
 # File watching
 watchdog
 
-# GCP Integration
-google-cloud-storage
+# Vercel Integration (replaced Google Cloud)
+requests
 cmaes
 
 # Real-time dashboard and advanced analytics

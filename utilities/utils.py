@@ -2315,17 +2315,19 @@ class TradingPerformanceAnalyzer:
                         self.logger.warning(f"Error loading {source}: {e}")
                         continue
             
-            # Try GCP if no local data found
+            # Try Vercel if no local data found
             if not journal_data:
                 try:
-                    from utilities.gcp_utils import download_from_gcs
-                    gcp_data = download_from_gcs('trading_journal.json', '')
-                    if gcp_data:
-                        journal_data = json.loads(gcp_data)
+                    from utilities.vercel_utils import download_from_vercel
+                    vercel_data = download_from_vercel('trading_journal', 'temp_journal.json')
+                    if vercel_data and os.path.exists('temp_journal.json'):
+                        with open('temp_journal.json', 'r') as f:
+                            journal_data = json.load(f)
                         if not isinstance(journal_data, list):
                             journal_data = [journal_data]
+                        os.remove('temp_journal.json')  # Cleanup
                 except Exception as e:
-                    self.logger.warning(f"Error loading from GCP: {e}")
+                    self.logger.warning(f"Error loading from Vercel: {e}")
             
             self.trade_history = journal_data
             return journal_data
@@ -2843,7 +2845,7 @@ async def simulate_live_bot():
     
     try:
         # Import live bot components
-        from live_trading.live_bot import (
+        from unified_live_monitor import (
             load_parameters_with_fallback,
             load_state,
             save_state,
@@ -4857,7 +4859,7 @@ class HealthMonitor:
             
             # Try to send via live bot notification system
             try:
-                from live_trading.live_bot import send_system_status
+                from unified_live_monitor import send_system_status
                 send_system_status(message)
             except ImportError:
                 pass  # Live bot notifications not available
@@ -5559,58 +5561,68 @@ def stop_system_monitoring():
 
 
 # ==============================================================================
-# GCP STATUS CHECK UTILITIES (from simple_gcp_check.py)
+# VERCEL STATUS CHECK UTILITIES (migrated from GCP)
 # ==============================================================================
 
-def check_gcp_live_bot_status():
+def check_vercel_live_bot_status():
     """
-    Check Google Cloud live bot status - Integrated from simple_gcp_check.py
+    Check Vercel live bot status - Migrated from GCP to Vercel platform
     Returns dict with status information
     """
     try:
-        from utilities.gcp_utils import get_gcs_blob_metadata
+        from utilities.vercel_utils import get_vercel_data_metadata
         
-        print("=== GOOGLE CLOUD LIVE BOT STATUS ===")
+        print("=== VERCEL LIVE BOT STATUS ===")
         
         status = {
-            'gcs_connection': False,
+            'vercel_connection': False,
             'parameters_in_cloud': False,
             'local_cloud_synced': False,
             'time_difference_minutes': 0
         }
         
-        # Check parameters
-        blob = get_gcs_blob_metadata("latest_live_parameters.json")
-        if blob:
-            print(f"✅ Live parameters in GCS: {blob.updated}")
-            print(f"   Size: {blob.size} bytes")
-            status['gcs_connection'] = True
+        # Check parameters via Vercel API
+        metadata = get_vercel_data_metadata("latest_live_parameters")
+        if metadata:
+            print(f"✅ Live parameters in Vercel: {metadata['last_updated']}")
+            print(f"   Size: {metadata['size_bytes']} bytes")
+            print(f"   Status: {metadata['status']}")
+            status['vercel_connection'] = True
             status['parameters_in_cloud'] = True
         else:
-            print("❌ No live parameters found in GCS")
+            print("❌ No live parameters found in Vercel")
             return status
 
         # Check local vs cloud sync
-        local_file = "latest_live_parameters.json"
+        local_file = "data/latest_live_parameters.json"
         if os.path.exists(local_file):
             local_time = os.path.getmtime(local_file)
-            cloud_time = blob.updated.timestamp() if blob else 0
-            time_diff_minutes = (cloud_time - local_time) / 60
-            status['time_difference_minutes'] = time_diff_minutes
-            
-            if abs(time_diff_minutes) < 5:  # 5 minutes
-                print("✅ Local and cloud parameters are synced")
-                status['local_cloud_synced'] = True
-            else:
-                print(f"⚠️  Time difference: {time_diff_minutes:.1f} minutes")
+            # Parse cloud timestamp
+            try:
+                from datetime import datetime
+                cloud_time_str = metadata['last_updated']
+                if cloud_time_str != 'Unknown':
+                    cloud_time = datetime.fromisoformat(cloud_time_str.replace('Z', '+00:00')).timestamp()
+                    time_diff_minutes = (cloud_time - local_time) / 60
+                    status['time_difference_minutes'] = time_diff_minutes
+                    
+                    if abs(time_diff_minutes) < 5:  # 5 minutes
+                        print("✅ Local and Vercel parameters are synced")
+                        status['local_cloud_synced'] = True
+                    else:
+                        print(f"⚠️  Time difference: {time_diff_minutes:.1f} minutes")
+                else:
+                    print("⚠️  Could not determine sync status")
+            except Exception as e:
+                print(f"⚠️  Error checking sync status: {e}")
         else:
             print("⚠️  No local parameters file")
 
-        print("\n💡 Your live bot in Google Cloud should be using these parameters")
+        print("\n💡 Your live bot on Vercel should be using these parameters")
         print("   and executing trades automatically!")
         
         return status
         
     except Exception as e:
-        print(f"❌ Error checking GCP status: {e}")
+        print(f"❌ Error checking Vercel status: {e}")
         return {'error': str(e)}

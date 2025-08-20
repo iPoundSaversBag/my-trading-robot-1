@@ -36,7 +36,7 @@ python live_trading/live_bot.py
 - **Automated Optimization**: Continuous parameter tuning via watcher.py
 - **Live Trading**: Real-time execution with Binance integration
 - **Risk Management**: Stop-loss, take-profit, position sizing
-- **Cloud Integration**: Google Cloud Storage for parameter synchronization
+- **Cloud Integration**: Vercel deployment for parameter synchronization
 
 ## 🏗️ Project Architecture & Directory Structure
 
@@ -90,9 +90,9 @@ Core trading system files and engine components:
 
 #### **Live Trading** (`live_trading/`)
 Live trading and monitoring components:
-- **Trading Bot**: `live_bot.py` - Real-time execution with GCP integration
+- **Trading Bot**: `live_bot.py` - Real-time execution with Vercel integration
 - **Monitoring**: Built-in performance tracking and alerts
-- **Parameter Sync**: Automatic Google Cloud parameter synchronization
+- **Parameter Sync**: Automatic Vercel parameter synchronization
 - **State Management**: `live_bot_state.json`, health tracking, and monitoring logs
 
 #### **Analysis & Utilities** (`analysis/`, `utilities/`)
@@ -106,7 +106,7 @@ Analysis and diagnostic tools plus utility functions:
 
 **Utilities Components:**  
 - **Core Functions**: `utils.py` - Data handling, configuration, cloud integration
-- **GCP Integration**: Google Cloud parameter synchronization for VM-based optimization
+- **Vercel Integration**: Serverless parameter synchronization for cloud-based optimization
 
 #### **Data Management** (`data/`)
 Data files and data management pipeline:
@@ -184,7 +184,7 @@ Logging, monitoring, and performance optimization:
 #### **✅ Pipeline Integrity Maintained**
 - **Core Pipeline**: watcher.py → core/backtest.py subprocess calls preserved
 - **Dependencies**: All import statements validated and functional
-- **Google Cloud**: Parameter synchronization for VM integration intact
+- **Vercel Platform**: Parameter synchronization for cloud integration intact
 - **Optimization**: Two-tier parameter tuning system fully operational
 
 #### **✅ Workspace Organization Complete**
@@ -196,7 +196,7 @@ Logging, monitoring, and performance optimization:
 #### **✅ Code Quality Enhanced**
 - **Duplicates Removed**: Eliminated duplicate functions and files
 - **Professional Structure**: Clean separation of concerns
-- **GCP Integration**: Full parameter synchronization capabilities
+- **Vercel Integration**: Full parameter synchronization capabilities
 - **Error Handling**: Robust retry logic and monitoring systems
 
 #### **Data Management** (`data/`)
@@ -205,7 +205,7 @@ Logging, monitoring, and performance optimization:
 - **Data Quality**: Automated integrity checks and multi-timeframe alignment
 
 #### **Live Trading** (`live_trading/`)
-- **Trading Engine**: `live_bot.py` - Real-time execution with GCP integration
+- **Trading Engine**: `live_bot.py` - Real-time execution with Vercel integration
 - **Monitoring**: Enhanced monitoring with state persistence
 - **Risk Management**: Real-time portfolio tracking and position management
 
@@ -216,7 +216,7 @@ Logging, monitoring, and performance optimization:
 
 #### **Utilities** (`utilities/`)
 - **Core Functions**: `utils.py` - Data handling, configuration, cloud integration
-- **Google Cloud**: GCP parameter synchronization for VM-based optimization
+- **Vercel Platform**: Serverless parameter synchronization for cloud-based optimization
 
 #### **Testing Framework** (`tests/`)
 - **Strategy Testing**: Multi-timeframe strategy validation
@@ -283,7 +283,7 @@ CONSOLIDATION IMPACT:
 
 #### **Architecture Preservation**
 - **Pipeline Integrity**: watcher.py → core/backtest.py → analysis chain intact
-- **Google Cloud Integration**: VM parameter synchronization preserved
+- **Vercel Integration**: Cloud parameter synchronization preserved
 - **Multi-Timeframe System**: Native 5m/15m/1h/4h data processing maintained
 
 #### **Code Quality Improvements**
@@ -349,11 +349,11 @@ python tests/unit/test_strategy_import.py
 python analysis/native_vs_resampled_comparison.py
 ```
 
-#### **4. Configure GCP Integration** ☁️
-**Purpose:** Set up Google Cloud Storage for VM parameter sharing
+#### **4. Configure Vercel Integration** ☁️
+**Purpose:** Set up Vercel deployment for parameter sharing
 ```bash
-# Test GCP connection
-python utilities/gcp_utils.py
+# Test Vercel connection
+python utilities/vercel_utils.py
 
 # Verify parameter upload/download
 python live_trading/watcher.py
@@ -377,9 +377,9 @@ python live_trading/enhanced_monitoring.py
 API_KEY=your_binance_testnet_api_key
 SECRET_KEY=your_binance_testnet_secret_key
 
-# Google Cloud Platform
-GOOGLE_APPLICATION_CREDENTIALS=path/to/your/service-account-key.json
-GCS_BUCKET_NAME=your-gcs-bucket-name
+# Vercel Deployment
+VERCEL_URL=https://your-app.vercel.app
+BOT_SECRET=your_secure_bot_secret
 
 # Notification settings (optional)
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
@@ -396,7 +396,7 @@ TELEGRAM_CHAT_ID=your_telegram_chat_id
 1. **Start with Data:** Run data download scripts
 2. **Run Backtest:** Execute backtesting to generate configs
 3. **Test Strategy:** Validate all components work
-4. **Setup GCP:** Configure cloud storage integration
+4. **Setup Vercel:** Configure cloud deployment integration
 5. **Test Live Bot:** Run in paper trading mode
 6. **Monitor & Optimize:** Use monitoring tools
 
@@ -408,9 +408,9 @@ TELEGRAM_CHAT_ID=your_telegram_chat_id
 API_KEY=your_binance_testnet_api_key
 SECRET_KEY=your_binance_testnet_secret_key
 
-# Google Cloud Platform (optional)
-GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account-key.json
-GCS_BUCKET_NAME=your-gcs-bucket-name
+# Vercel Deployment (for live trading)
+VERCEL_URL=https://your-app.vercel.app
+BOT_SECRET=your_secure_bot_secret
 ```
 
 **Generated Files** (created by backtest):
@@ -442,7 +442,7 @@ GCS_BUCKET_NAME=your-gcs-bucket-name
 - Workspace organization and file consolidation (339→282 files, 20.2% toward 50-file target)
 - Backup file recovery and duplicate cleanup
 - Import fixes and module integration
-- Live bot preparation with GCP integration
+- Live bot preparation with Vercel integration
 - Multi-timeframe data pipeline (604K+ candles ready)
 
 ### **Immediate Development Steps**
@@ -477,11 +477,11 @@ python tests/unit/test_strategy_import.py
 python analysis/native_vs_resampled_comparison.py
 ```
 
-#### **4. Configure GCP Integration** ☁️
-Set up Google Cloud Storage for VM parameter sharing:
+#### **4. Configure Vercel Integration** ☁️
+Set up Vercel deployment for parameter sharing:
 ```bash
-# Test GCP connection
-python utilities/gcp_utils.py
+# Test Vercel connection
+python utilities/vercel_utils.py
 
 # Verify parameter upload/download
 python live_trading/watcher.py
@@ -505,9 +505,9 @@ python live_trading/enhanced_monitoring.py
 API_KEY=your_binance_testnet_api_key
 SECRET_KEY=your_binance_testnet_secret_key
 
-# Google Cloud Platform
-GOOGLE_APPLICATION_CREDENTIALS=path/to/your/service-account-key.json
-GCS_BUCKET_NAME=your-gcs-bucket-name
+# Vercel Deployment
+VERCEL_URL=https://your-app.vercel.app
+BOT_SECRET=your_secure_bot_secret
 
 # Notification settings (optional)
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
@@ -517,7 +517,7 @@ TELEGRAM_CHAT_ID=your_telegram_chat_id
 #### **Files Created During Setup:**
 - `optimization_config.json` - Created by backtest pipeline
 - `final_optimized_params.json` - Created by optimization
-- `latest_live_parameters.json` - Downloaded from GCS
+- `latest_live_parameters.json` - Downloaded from Vercel
 - Various data files (`crypto_data_*.parquet`)
 
 ### **Execution Sequence:**
@@ -554,7 +554,7 @@ The consolidation follows a **pipeline-aware strategic merging** approach:
 - **Extract only pipeline-relevant functions** during merging
 - **Archive debug/demo/analysis tools** that don't serve core pipeline
 - **Maintain critical dependencies** for watcher.py orchestration
-- **Preserve Google Cloud integration** for parameter synchronization
+- **Preserve Vercel integration** for parameter synchronization
 
 ## ⚠️ Important Notes
 
@@ -568,7 +568,7 @@ The consolidation follows a **pipeline-aware strategic merging** approach:
 The project follows a comprehensive consolidation methodology documented in `docs/PROJECT_CONSOLIDATION_PLAN.md`. Key development principles:
 
 - **Pipeline-Aware Architecture**: Core system built around watcher.py orchestration
-- **Two-Tier Optimization**: Automated parameter tuning with Google Cloud synchronization
+- **Two-Tier Optimization**: Automated parameter tuning with Vercel synchronization
 - **Modular Design**: Clean separation between strategy, portfolio, and execution layers
 
 ## 📝 License
