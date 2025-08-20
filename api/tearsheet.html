@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Bot Tearsheet</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; background: #2c3e50; color: white; padding: 20px; border-radius: 8px; }
+        .section { background: white; margin: 20px 0; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .metric-card { background: #f8f9fa; padding: 15px; border-radius: 6px; text-align: center; }
+        .metric-value { font-size: 1.5em; font-weight: bold; color: #2c3e50; }
+        .metric-label { color: #7f8c8d; font-size: 0.9em; }
+        .status-good { color: #27ae60; }
+        .status-warning { color: #f39c12; }
+        .status-error { color: #e74c3c; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .table th, .table td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .table th { background: #f8f9fa; font-weight: bold; }
+        .timestamp { color: #7f8c8d; font-size: 0.9em; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Trading Bot Performance Tearsheet</h1>
+            <p>Backtest vs Live Trading Comparison</p>
+            <p class="timestamp">Generated: 2025-08-20 14:41:42 UTC</p>
+        </div>
+        
+        <div class="section">
+            <h2>📊 Backtest Results</h2>
+            <p class='status-error'>❌ No backtest results found</p>
+        </div>
+        
+        <div class="section">
+            <h2>🔴 Live Trading Results</h2>
+            <p class='status-error'>❌ No live results found - run live_trading_tracker.py first</p>
+        </div>
+        
+        <div class="section">
+            <h2>⚖️ Comparison Analysis</h2>
+            <p>⏳ Comparison will be available once both backtest and live data are collected.</p>
+        </div>
+        
+        <div class="section">
+            <h2>🔧 System Status</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value status-good">✅ Active</div>
+                    <div class="metric-label">GitHub Actions</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value status-good">✅ Deployed</div>
+                    <div class="metric-label">Vercel API</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value status-good">$0/month</div>
+                    <div class="metric-label">Hosting Cost</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value status-good">5 min</div>
+                    <div class="metric-label">Update Frequency</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📈 Next Steps</h2>
+            <ul>
+                <li>✅ Background automation running every 5 minutes</li>
+                <li>✅ Dynamic parameter loading from backtest optimization</li>
+                <li>✅ Complete Vercel migration achieved</li>
+                <li>🔄 Accumulating live trading data for comparison</li>
+                <li>📊 Will compare live vs backtest performance once sufficient data collected</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

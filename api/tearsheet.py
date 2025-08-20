@@ -1,5 +1,5 @@
 """
-Tearsheet API Endpoint - Provides comprehensive performance comparison
+Tearsheet API Endpoint - Provides comprehensive performance comparison with live data integration
 """
 import json
 import os
@@ -8,6 +8,32 @@ import sys
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+def load_enhanced_performance_report():
+    """Load the enhanced performance report created by generate_plots.py"""
+    try:
+        # First try to find the latest enhanced report
+        latest_run_file = "plots_output/latest_run_dir.txt"
+        
+        if os.path.exists(latest_run_file):
+            with open(latest_run_file, 'r') as f:
+                latest_dir = f.read().strip()
+            
+            performance_report_path = f"{latest_dir}/performance_report.html"
+            if os.path.exists(performance_report_path):
+                with open(performance_report_path, 'r', encoding='utf-8') as f:
+                    enhanced_html = f.read()
+                
+                # Check if it has V4 enhancements
+                if "ENHANCEMENT_DASHBOARD_V4_START" in enhanced_html:
+                    return enhanced_html, performance_report_path
+        
+        # If no enhanced report found, return None
+        return None, None
+        
+    except Exception as e:
+        print(f"Error loading enhanced report: {e}")
+        return None, None
 
 def load_latest_backtest():
     """Load latest backtest results"""
@@ -61,10 +87,143 @@ def load_live_results():
     except Exception as e:
         return {"error": f"Failed to load live results: {str(e)}"}
 
+def inject_live_data_into_enhanced_report(enhanced_html, live_data, backtest_data):
+    """Inject live data into the enhanced performance report"""
+    
+    # Create live data injection script
+    live_data_script = f"""
+    <script>
+    // Live Data Integration for Enhanced Tearsheet
+    const liveData = {json.dumps(live_data)};
+    const backtestData = {json.dumps(backtest_data)};
+    
+    function updateLiveMetrics() {{
+        try {{
+            // Update live signal rate if element exists
+            const signalRateElement = document.getElementById('live-signal-rate');
+            if (signalRateElement && liveData.metadata) {{
+                const totalCycles = liveData.metadata.total_cycles || 0;
+                const totalSignals = liveData.metadata.total_signals || 0;
+                const signalRate = totalCycles > 0 ? (totalSignals / totalCycles * 100).toFixed(1) : '0.0';
+                signalRateElement.textContent = signalRate + '%';
+            }}
+            
+            // Update live trades count
+            const tradesElement = document.getElementById('live-trades-count');
+            if (tradesElement && liveData.metadata) {{
+                tradesElement.textContent = liveData.metadata.total_trades || 0;
+            }}
+            
+            // Update live cycles count
+            const cyclesElement = document.getElementById('live-cycles-count');
+            if (cyclesElement && liveData.metadata) {{
+                cyclesElement.textContent = liveData.metadata.total_cycles || 0;
+            }}
+            
+            // Update last update timestamp
+            const timestampElement = document.getElementById('live-timestamp');
+            if (timestampElement) {{
+                timestampElement.textContent = new Date().toLocaleString();
+            }}
+            
+            // Add live status indicator
+            const statusElement = document.getElementById('live-status');
+            if (statusElement) {{
+                if (liveData.error) {{
+                    statusElement.innerHTML = '🔴 Error: ' + liveData.error;
+                    statusElement.className = 'status-error';
+                }} else {{
+                    statusElement.innerHTML = '🟢 Live Trading Active';
+                    statusElement.className = 'status-good';
+                }}
+            }}
+            
+        }} catch (error) {{
+            console.error('Error updating live metrics:', error);
+        }}
+    }}
+    
+    // Update immediately when page loads
+    document.addEventListener('DOMContentLoaded', updateLiveMetrics);
+    
+    // Auto-refresh every 30 seconds
+    setInterval(updateLiveMetrics, 30000);
+    
+    </script>
+    """
+    
+    # Add live data display section after the V4 banner
+    live_data_section = f"""
+    <!-- Live Data Integration Section -->
+    <div class="v4-live-section" style="margin: 20px auto; max-width: 1000px; padding: 20px; background: #f8fafc; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h2 style="color: #374151; margin-bottom: 20px;">🔴 Live Trading Status</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="font-size: 1.5em; font-weight: bold; color: #059669;" id="live-signal-rate">Calculating...</div>
+                <div style="color: #6b7280; font-size: 0.9em;">Signal Rate</div>
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="font-size: 1.5em; font-weight: bold; color: #3b82f6;" id="live-trades-count">0</div>
+                <div style="color: #6b7280; font-size: 0.9em;">Total Trades</div>
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="font-size: 1.5em; font-weight: bold; color: #8b5cf6;" id="live-cycles-count">0</div>
+                <div style="color: #6b7280; font-size: 0.9em;">Total Cycles</div>
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="font-size: 1em; font-weight: bold;" id="live-status">🟡 Loading...</div>
+                <div style="color: #6b7280; font-size: 0.9em;">Status</div>
+            </div>
+        </div>
+        <div style="text-align: center; color: #6b7280; font-size: 0.8em;">
+            Last Updated: <span id="live-timestamp">Loading...</span>
+        </div>
+    </div>
+    """
+    
+    # Inject the live data section after the V4 banner
+    banner_end = enhanced_html.find("</div>", enhanced_html.find("v4-banner"))
+    if banner_end != -1:
+        enhanced_html = enhanced_html[:banner_end + 6] + live_data_section + enhanced_html[banner_end + 6:]
+    
+    # Inject the script before closing body tag
+    body_end = enhanced_html.rfind("</body>")
+    if body_end != -1:
+        enhanced_html = enhanced_html[:body_end] + live_data_script + enhanced_html[body_end:]
+    
+    return enhanced_html
+
 def generate_tearsheet_html():
-    """Generate HTML tearsheet comparing backtest vs live"""
+    """Generate the complete tearsheet HTML with enhanced performance report and live data"""
+    
+    # Try to load the enhanced performance report first
+    enhanced_html, report_path = load_enhanced_performance_report()
+    
+    if enhanced_html:
+        # We have an enhanced report - inject live data
+        print("Using enhanced performance report with live data integration")
+        
+        # Load live and backtest data
+        live_data = load_live_results()
+        backtest_data = load_latest_backtest()
+        
+        # Inject live data into the enhanced report
+        final_html = inject_live_data_into_enhanced_report(enhanced_html, live_data, backtest_data)
+        return final_html
+    
+    else:
+        # Fallback to basic comparison tearsheet
+        print("No enhanced report found, generating basic comparison tearsheet")
+        return generate_basic_comparison_tearsheet()
+
+def generate_basic_comparison_tearsheet():
+    """Generate a basic comparison tearsheet when enhanced report is not available"""
+    
+    # Load data
     backtest = load_latest_backtest()
     live = load_live_results()
+    
+    current_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
     
     html = f"""
 <!DOCTYPE html>
@@ -291,12 +450,12 @@ def handler(request):
 
 # For local testing
 if __name__ == "__main__":
-    print("🎯 Generating Tearsheet...")
+    print("Generating Tearsheet...")
     html = generate_tearsheet_html()
     
     # Save to file
     with open("tearsheet.html", "w", encoding="utf-8") as f:
         f.write(html)
     
-    print("✅ Tearsheet saved to: tearsheet.html")
-    print("📊 Open in browser to view performance comparison")
+    print("Tearsheet saved to: tearsheet.html")
+    print("Open in browser to view performance comparison")
