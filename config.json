@@ -1,0 +1,36 @@
+{
+  "trading": {
+    "default_symbols": ["BTCUSDT", "ETHUSDT", "ADAUSDT"],
+    "default_position_size": 10,
+    "default_stop_loss": 2.0,
+    "default_take_profit": 4.0,
+    "risk_management": {
+      "max_positions": 3,
+      "max_daily_loss": 5.0,
+      "position_size_percent": 1.0
+    }
+  },
+  "api": {
+    "binance": {
+      "base_url": "https://api.binance.com",
+      "testnet_url": "https://testnet.binance.vision",
+      "rate_limit": {
+        "requests_per_minute": 1200,
+        "order_requests_per_second": 10
+      }
+    }
+  },
+  "notifications": {
+    "telegram": {
+      "enabled": true,
+      "notification_types": ["trade_executed", "error", "daily_summary"]
+    }
+  },
+  "monitoring": {
+    "health_check_interval": 300,
+    "log_level": "INFO",
+    "metrics_enabled": true
+  },
+  "version": "1.0.0",
+  "environment": "development"
+}

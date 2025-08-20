@@ -5626,3 +5626,251 @@ def check_vercel_live_bot_status():
     except Exception as e:
         print(f"❌ Error checking Vercel status: {e}")
         return {'error': str(e)}
+
+# ============================================================================
+# HARVESTED CONFIGURATION MANAGEMENT FUNCTIONS
+# Extracted from check_env_config.py during Phase 0 Function Harvesting
+# Purpose: Enhanced environment validation and configuration management
+# Integration Date: 2024 Consolidation Process
+# ============================================================================
+
+def load_and_validate_env_file(file_path='.env'):
+    """
+    Enhanced environment file loading with comprehensive validation.
+    Harvested from check_env_config.py - Provides detailed environment analysis.
+    
+    Returns:
+        dict: Environment variables with validation status
+    """
+    try:
+        import os
+        from pathlib import Path
+        
+        if not Path(file_path).exists():
+            print(f"❌ Environment file not found: {file_path}")
+            return {}
+            
+        env_vars = {}
+        required_vars = [
+            'BINANCE_API_KEY', 'BINANCE_SECRET_KEY', 'TELEGRAM_BOT_TOKEN',
+            'TELEGRAM_CHAT_ID', 'TRADING_SYMBOLS', 'POSITION_SIZE',
+            'STOP_LOSS_PERCENTAGE', 'TAKE_PROFIT_PERCENTAGE'
+        ]
+        
+        # Load environment file
+        with open(file_path, 'r') as f:
+            for line_num, line in enumerate(f, 1):
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, value = line.split('=', 1)
+                    key = key.strip()
+                    value = value.strip().strip('"\'')
+                    env_vars[key] = value
+        
+        # Validate required variables
+        missing_vars = []
+        invalid_vars = []
+        
+        for var in required_vars:
+            if var not in env_vars:
+                missing_vars.append(var)
+            elif not env_vars[var] or env_vars[var] == 'your_value_here':
+                invalid_vars.append(var)
+        
+        # Enhanced validation report
+        print(f"📊 Environment Configuration Analysis:")
+        print(f"   • Total variables loaded: {len(env_vars)}")
+        print(f"   • Required variables: {len(required_vars)}")
+        print(f"   • Missing variables: {len(missing_vars)}")
+        print(f"   • Invalid variables: {len(invalid_vars)}")
+        
+        if missing_vars:
+            print(f"❌ Missing: {', '.join(missing_vars)}")
+        if invalid_vars:
+            print(f"⚠️  Invalid: {', '.join(invalid_vars)}")
+            
+        # Return enhanced environment data
+        return {
+            'variables': env_vars,
+            'required': required_vars,
+            'missing': missing_vars,
+            'invalid': invalid_vars,
+            'validation_passed': len(missing_vars) == 0 and len(invalid_vars) == 0,
+            'completeness_score': (len(required_vars) - len(missing_vars) - len(invalid_vars)) / len(required_vars)
+        }
+        
+    except Exception as e:
+        print(f"❌ Error loading environment file: {e}")
+        return {'error': str(e), 'validation_passed': False}
+
+def configuration_completeness_audit():
+    """
+    Comprehensive configuration audit across all system files.
+    Harvested from check_env_config.py - Provides complete configuration analysis.
+    
+    Returns:
+        dict: Complete configuration audit results
+    """
+    try:
+        import os
+        import json
+        from pathlib import Path
+        from datetime import datetime
+        
+        audit_results = {
+            'timestamp': str(datetime.now()),
+            'files_checked': [],
+            'configurations_found': {},
+            'missing_configurations': [],
+            'recommendations': []
+        }
+        
+        # Configuration files to check
+        config_files = [
+            '.env',
+            'vercel.json',
+            'package.json',
+            'requirements.txt',
+            'config.json',
+            'monitoring_config.json'
+        ]
+        
+        print("🔍 Performing Configuration Completeness Audit...")
+        
+        for config_file in config_files:
+            file_path = Path(config_file)
+            if file_path.exists():
+                audit_results['files_checked'].append(config_file)
+                
+                try:
+                    if config_file == '.env':
+                        env_data = load_and_validate_env_file(config_file)
+                        audit_results['configurations_found'][config_file] = {
+                            'type': 'environment',
+                            'variables_count': len(env_data.get('variables', {})),
+                            'validation_passed': env_data.get('validation_passed', False),
+                            'completeness_score': env_data.get('completeness_score', 0)
+                        }
+                        
+                    elif config_file.endswith('.json'):
+                        with open(file_path, 'r') as f:
+                            json_data = json.load(f)
+                            audit_results['configurations_found'][config_file] = {
+                                'type': 'json',
+                                'keys_count': len(json_data.keys()) if isinstance(json_data, dict) else 0,
+                                'structure_valid': True
+                            }
+                            
+                    elif config_file == 'requirements.txt':
+                        with open(file_path, 'r') as f:
+                            lines = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+                            audit_results['configurations_found'][config_file] = {
+                                'type': 'requirements',
+                                'packages_count': len(lines),
+                                'has_versions': sum(1 for line in lines if '==' in line or '>=' in line)
+                            }
+                            
+                except Exception as e:
+                    audit_results['configurations_found'][config_file] = {
+                        'type': 'error',
+                        'error': str(e)
+                    }
+            else:
+                audit_results['missing_configurations'].append(config_file)
+        
+        # Generate recommendations
+        if '.env' not in audit_results['files_checked']:
+            audit_results['recommendations'].append("Create .env file with required API keys and configuration")
+            
+        if 'vercel.json' not in audit_results['files_checked']:
+            audit_results['recommendations'].append("Add vercel.json for deployment configuration")
+            
+        # Calculate overall configuration health score
+        total_files = len(config_files)
+        found_files = len(audit_results['files_checked'])
+        config_health_score = found_files / total_files
+        
+        audit_results['configuration_health_score'] = config_health_score
+        audit_results['audit_passed'] = config_health_score >= 0.7  # 70% threshold
+        
+        # Report results
+        print(f"\n📊 Configuration Audit Results:")
+        print(f"   • Files checked: {found_files}/{total_files}")
+        print(f"   • Configuration health: {config_health_score:.1%}")
+        print(f"   • Missing files: {len(audit_results['missing_configurations'])}")
+        print(f"   • Recommendations: {len(audit_results['recommendations'])}")
+        
+        if audit_results['recommendations']:
+            print(f"\n💡 Recommendations:")
+            for i, rec in enumerate(audit_results['recommendations'], 1):
+                print(f"   {i}. {rec}")
+        
+        return audit_results
+        
+    except Exception as e:
+        print(f"❌ Configuration audit failed: {e}")
+        return {'error': str(e), 'audit_passed': False}
+
+def enhanced_configuration_validator():
+    """
+    Master configuration validation combining all harvested capabilities.
+    Provides complete system configuration health assessment.
+    
+    Returns:
+        dict: Complete configuration validation results
+    """
+    try:
+        from datetime import datetime
+        
+        print("🚀 Enhanced Configuration Validation Starting...")
+        
+        # Run all configuration checks
+        env_results = load_and_validate_env_file()
+        audit_results = configuration_completeness_audit()
+        
+        # Combine results for master assessment
+        master_results = {
+            'timestamp': str(datetime.now()),
+            'environment_validation': env_results,
+            'configuration_audit': audit_results,
+            'overall_health_score': 0,
+            'system_ready': False,
+            'critical_issues': [],
+            'warnings': [],
+            'recommendations': []
+        }
+        
+        # Calculate overall health score
+        env_score = env_results.get('completeness_score', 0) if env_results.get('validation_passed', False) else 0
+        config_score = audit_results.get('configuration_health_score', 0) if audit_results.get('audit_passed', False) else 0
+        
+        master_results['overall_health_score'] = (env_score + config_score) / 2
+        master_results['system_ready'] = master_results['overall_health_score'] >= 0.8
+        
+        # Identify critical issues
+        if not env_results.get('validation_passed', False):
+            master_results['critical_issues'].append("Environment configuration invalid")
+            
+        if not audit_results.get('audit_passed', False):
+            master_results['critical_issues'].append("Configuration files incomplete")
+        
+        # Add consolidated recommendations
+        master_results['recommendations'].extend(env_results.get('recommendations', []))
+        master_results['recommendations'].extend(audit_results.get('recommendations', []))
+        
+        # Final report
+        print(f"\n🎯 Enhanced Configuration Validation Complete:")
+        print(f"   • Overall Health Score: {master_results['overall_health_score']:.1%}")
+        print(f"   • System Ready: {'✅ YES' if master_results['system_ready'] else '❌ NO'}")
+        print(f"   • Critical Issues: {len(master_results['critical_issues'])}")
+        
+        if master_results['critical_issues']:
+            print(f"\n🚨 Critical Issues:")
+            for issue in master_results['critical_issues']:
+                print(f"   • {issue}")
+        
+        return master_results
+        
+    except Exception as e:
+        print(f"❌ Enhanced configuration validation failed: {e}")
+        return {'error': str(e), 'system_ready': False}
