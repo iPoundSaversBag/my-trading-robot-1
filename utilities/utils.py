@@ -4585,6 +4585,7 @@ def analyze_enhanced_signals(strategy, data, sample_size=10000):
     # Quick performance simulation
     capital = 10000
     position = 0
+    entry_price = None  # track entry price when in a position
     trades = 0
     winning_trades = 0
     
@@ -4592,17 +4593,20 @@ def analyze_enhanced_signals(strategy, data, sample_size=10000):
         current_signal = signals_df['signal'].iloc[i]
         current_price = signals_df['close'].iloc[i]
         
-        if position != 0 and current_signal != position:
-            if position == 1:
-                pnl = (current_price - entry_price) / entry_price
-            else:
-                pnl = (entry_price - current_price) / entry_price
-                
-            capital *= (1 + pnl * 0.95)  # 5% trading costs
-            trades += 1
-            if pnl > 0:
-                winning_trades += 1
+        if position != 0 and current_signal != position and entry_price is not None:
+            try:
+                if position == 1:
+                    pnl = (current_price - entry_price) / entry_price
+                else:
+                    pnl = (entry_price - current_price) / entry_price
+                capital *= (1 + pnl * 0.95)  # apply simple trading cost factor
+                trades += 1
+                if pnl > 0:
+                    winning_trades += 1
+            except Exception:
+                pass
             position = 0
+            entry_price = None
         
         if current_signal != 0 and position == 0:
             position = current_signal
@@ -7014,16 +7018,17 @@ class EnhancedMonitor:
 # Legacy compatibility functions
 def start_system_monitoring(interval_seconds: int = 30):
     """Start system monitoring (legacy compatibility)"""
-    global _global_monitor
-    if '_global_monitor' not in globals():
-        _global_monitor = EnhancedMonitor()
-    _global_monitor.start_monitoring(interval_seconds)
+    monitor = globals().get('_global_monitor')
+    if monitor is None or not isinstance(monitor, EnhancedMonitor):
+        monitor = EnhancedMonitor()
+        globals()['_global_monitor'] = monitor
+    monitor.start_monitoring(interval_seconds)
 
 def stop_system_monitoring():
     """Stop system monitoring (legacy compatibility)"""
-    global _global_monitor
-    if '_global_monitor' in globals():
-        _global_monitor.stop_monitoring_system()
+    monitor = globals().get('_global_monitor')
+    if isinstance(monitor, EnhancedMonitor):
+        monitor.stop_monitoring_system()
 
 
 # ==============================================================================

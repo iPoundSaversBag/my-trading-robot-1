@@ -18,5 +18,10 @@
     "yaml": true,
     "plaintext": false,
     "markdown": true
-  }
+  },
+  // Reduce Problems panel noise: exclude virtual environment from analysis/linting
+  "python.analysis.exclude": ["**/venv/**"],
+  "python.linting.ignorePatterns": ["**/venv/**", "**/.git/**", "**/__pycache__/**"],
+  "python.linting.flake8Args": ["--exclude=venv,.git,__pycache__"],
+  "python.formatting.provider": "autopep8"
 }

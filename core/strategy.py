@@ -4348,14 +4348,10 @@ class MultiTimeframeStrategy:
                 'take_profit_multiplier': 3.0,
                 'trailing_stop_multiplier': 0.02
             }
-        result_df['adaptive_position_multiplier'] = adaptive_params['POSITION_SIZE_MULTIPLIER']
-        result_df['exit_strategy'] = adaptive_params['EXIT_STRATEGY']
-        
-        # Add trending/ranging flag for backward compatibility
-        is_trending = market_condition.regime in [MarketRegime.TRENDING_BULL, MarketRegime.TRENDING_BEAR]
-        result_df['is_trending'] = is_trending
-        
-        return result_df
+    # NOTE: Removed orphaned block referencing undefined variables (result_df, adaptive_params, market_condition)
+    # that caused lint errors (F821). If adaptive position metadata needs to be appended to a
+    # DataFrame result, implement it inside the function where result_df is created and pass the
+    # required context explicitly.
 
 # ==============================================================================
 # STRATEGY INTEGRATION UTILITIES
