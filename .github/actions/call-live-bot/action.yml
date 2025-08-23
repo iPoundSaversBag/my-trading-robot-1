@@ -1,0 +1,66 @@
+name: "Call Live Bot Endpoint"
+description: "Calls the Vercel /api/live-bot endpoint with optional protection bypass token and BOT auth."
+inputs:
+  vercel-url:
+    description: "Base Vercel deployment URL (e.g. https://my-trading-robot-1.vercel.app)"
+    required: false
+  path:
+    description: "Endpoint path"
+    required: false
+    default: "/api/live-bot"
+  bot-secret:
+    description: "BOT_SECRET value; if provided sends Bearer auth header"
+    required: false
+  bypass-token:
+    description: "Vercel protection bypass token (optional)"
+    required: false
+  method:
+    description: "HTTP method"
+    required: false
+    default: "GET"
+  fail-on-non-200:
+    description: "If true, fail step when HTTP code != 200"
+    required: false
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - id: call
+      shell: bash
+      run: |
+        set -euo pipefail
+        VERCEL_URL="${{ inputs.vercel-url }}"
+        if [[ -z "${VERCEL_URL}" ]]; then
+          VERCEL_URL="https://my-trading-robot-1.vercel.app"
+        fi
+        PATH_PART="${{ inputs.path }}"
+        METHOD="${{ inputs.method }}"
+        BOT_SECRET_INPUT="${{ inputs.bot-secret }}"
+        BYPASS="${{ inputs.bypass-token }}"
+        FAIL_ON_NON_200="${{ inputs['fail-on-non-200'] }}"
+        URL="${VERCEL_URL%/}${PATH_PART}"
+        if [[ -n "${BYPASS}" ]]; then
+          SEP='?'; [[ "${URL}" == *'?'* ]] && SEP='&'
+          URL="${URL}${SEP}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${BYPASS}"
+        fi
+        echo "[call-live-bot] ${METHOD} ${URL} auth=$([[ -n $BOT_SECRET_INPUT ]] && echo yes || echo no) bypass=$([[ -n $BYPASS ]] && echo yes || echo no)"
+        AUTH_HEADER=()
+        if [[ -n "${BOT_SECRET_INPUT}" ]]; then AUTH_HEADER=(-H "Authorization: Bearer ${BOT_SECRET_INPUT}"); fi
+        RESP=$(curl -sS -X "${METHOD}" "${URL}" "${AUTH_HEADER[@]}" -w "\n%{http_code}" || true)
+        BODY="$(echo "${RESP}" | head -n -1)"
+        CODE="$(echo "${RESP}" | tail -n1)"
+        BODY_SNIP="$(echo "${BODY}" | head -c 300 | tr '\n' ' ')"
+        echo "HTTP ${CODE} body(snippet)=${BODY_SNIP}"
+        echo "http-code=${CODE}" >> "$GITHUB_OUTPUT"
+        if [[ "${CODE}" == "200" ]]; then echo "success=true" >> "$GITHUB_OUTPUT"; else echo "success=false" >> "$GITHUB_OUTPUT"; fi
+        if [[ "${FAIL_ON_NON_200}" == "true" && "${CODE}" != "200" ]]; then
+          echo "Non-200 (${CODE}) from live-bot endpoint" >&2
+          exit 1
+        fi
+outputs:
+  http-code:
+    description: "HTTP status code"
+    value: ${{ steps.call.outputs.http-code }}
+  success:
+    description: "Whether status code was 200"
+    value: ${{ steps.call.outputs.success }}

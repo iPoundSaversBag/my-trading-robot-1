@@ -18,24 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
-      - name: Execute trading cycle (skips if secret missing)
-        shell: bash
-        env:
-          BOT_SECRET: ${{ secrets.BOT_SECRET }}
-          VERCEL_URL: ${{ secrets.VERCEL_URL }}
-        run: |
-          set -euo pipefail
-          # Fallback for VERCEL_URL if not provided as secret
-          if [[ -z "${VERCEL_URL:-}" ]]; then
-            VERCEL_URL="https://my-trading-robot-1.vercel.app"
-          fi
-          if [[ -z "${BOT_SECRET:-}" ]]; then
-            echo "BOT_SECRET not set in secrets; skipping run safely.";
-            exit 0
-          fi
-          echo "Invoking live bot endpoint at ${VERCEL_URL} (masked auth)..."
-          curl -sS -X GET "${VERCEL_URL}/api/live-bot" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${BOT_SECRET}" \
-            --max-time 40 --retry 3 --retry-delay 5 --fail
-          echo "Trading cycle completed at $(date -u)"
+      - name: Call live-bot endpoint (skips if secret missing)
+        uses: ./.github/actions/call-live-bot
+        with:
+          vercel-url: ${{ secrets.VERCEL_URL }}
+          bot-secret: ${{ secrets.BOT_SECRET }}
+          bypass-token: ${{ secrets.VERCEL_BYPASS_TOKEN }}
+          path: /api/live-bot
+          method: GET
+          fail-on-non-200: true
+      - name: Trading cycle timestamp
+        run: echo "Trading cycle completed at $(date -u)"
