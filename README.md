@@ -1,5 +1,8 @@
 # 🤖 Multi-Timeframe Trading Robot
 
+![Integrity CI](https://github.com/iPoundSaversBag/my-trading-robot-1/actions/workflows/integrity.yml/badge.svg)
+![Maintenance CI](https://github.com/iPoundSaversBag/my-trading-robot-1/actions/workflows/maintenance.yml/badge.svg)
+
 An advanced cryptocurrency trading bot with Ichimoku Cloud strategy, multi-timeframe analysis, and automated optimization pipeline.
 
 ## 🚀 Quick Start
@@ -398,6 +401,61 @@ TELEGRAM_CHAT_ID=your_telegram_chat_id
 3. **Test Strategy:** Validate all components work
 4. **Setup Vercel:** Configure cloud deployment integration
 5. **Test Live Bot:** Run in paper trading mode
+ 
+## 🔐 Configuration Integrity & ML Toggle
+
+The project now uses a single master configuration at `core/optimization_config.json` which consolidates optimization, risk, monitoring, and regime detection (including ML settings). Key elements:
+
+**Config-Based ML Toggle**
+`regime_detection.ml.enabled` controls whether the ML layer is active (replaces legacy `REGIME_USE_ML` environment variable). Set to `false` for rule-only regime detection.
+
+Temporary evaluation scripts (`evaluate_ml_regime_benefit.py`, `paired_backtest_regime_comparison.py`) atomically patch this flag and restore its prior state—no env vars needed.
+
+**Atomic Single-Writer Pattern**
+All updates to the master config go through `atomic_update_master_config` ensuring:
+- Write to temp file + fsync then atomic rename
+- `_meta.content_hash` (SHA-256 over canonical JSON excluding volatile meta)
+- `_meta.reason` for audit trail
+
+**Integrity Verification**
+Use the bundled tools:
+```bash
+python verify_master_config_integrity.py            # Recompute and compare hash (prints INTEGRITY_OK on success)
+python test_deployment_trigger_and_integrity.py --reason ci_probe  # Simulated safe update + trigger + integrity check
+```
+
+**Deployment Trigger**
+`deployment-trigger.json` is marked `pending=true` with a reason whenever significant config changes (e.g. new best parameters) occur. Your CI/CD can watch this file, perform validation, deploy, then clear `pending`.
+
+Debounce: Ephemeral reasons prefixed with `self_test_`, `temp_ml_toggle_`, or `paired_compare_toggle_` are ignored (not marked pending) to avoid noisy deployments.
+
+Clearing after deploy:
+```python
+from utilities.utils import clear_deployment_trigger
+clear_deployment_trigger(note="prod_release_2025-08-22")
+```
+
+**Recommended CI Step (pseudo):**
+```bash
+python verify_master_config_integrity.py || exit 1
+if python test_deployment_trigger_and_integrity.py --reason pipeline_check; then
+  echo "Integrity & trigger OK" 
+fi
+```
+
+**Permanent ML Disable Example Snippet:**
+```jsonc
+"regime_detection": {
+  "enabled": true,
+  "ml": { "enabled": false }
+}
+```
+
+**Notes:**
+- Avoid editing `_meta.content_hash` manually; it is auto-managed.
+- For tooling toggles (experiments) prefer the helper scripts instead of ad‑hoc JSON edits.
+- Manual edits to the config should be followed by a run of the integrity verifier.
+
 6. **Monitor & Optimize:** Use monitoring tools
 
 **🎯 IMMEDIATE PRIORITY:** Run the backtesting pipeline first - this will create all necessary configuration files and establish baseline performance metrics.
