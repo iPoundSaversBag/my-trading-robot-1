@@ -34,13 +34,11 @@ def test_health_utils_harvested_functions():
         print("  • Testing api_connection_quality_check()...")
         quality_result = engine.api_connection_quality_check()
         print(f"    ✅ Connection quality check completed")
-        
         print("✅ health_utils.py harvested functions: ALL WORKING")
-        return True
-        
+        assert success is True
     except Exception as e:
         print(f"❌ health_utils.py test failed: {e}")
-        return False
+        raise
 
 def test_utils_harvested_functions():
     """Test harvested functions in utilities/utils.py"""
@@ -66,13 +64,13 @@ def test_utils_harvested_functions():
         validation_data = enhanced_configuration_validator()
         health_score = validation_data.get('overall_health_score', 0)
         print(f"    ✅ Enhanced validation completed: {health_score:.1%} health score")
-        
         print("✅ utilities/utils.py harvested functions: ALL WORKING")
-        return True
-        
+        assert isinstance(env_data, dict)
+        assert isinstance(audit_data, dict)
+        assert isinstance(validation_data, dict)
     except Exception as e:
         print(f"❌ utilities/utils.py test failed: {e}")
-        return False
+        raise
 
 def main():
     """Run all harvested function validation tests"""
@@ -85,15 +83,15 @@ def main():
     
     print("=" * 60)
     
-    if health_success and utils_success:
+    overall = health_success and utils_success
+    if overall:
         print("🎯 PHASE 0 FUNCTION HARVESTING VALIDATION: ✅ SUCCESS")
         print("💫 All harvested functions working correctly in new locations")
         print("🚀 Ready to proceed to Phase 1 - File Removal")
-        return True
     else:
         print("❌ PHASE 0 VALIDATION FAILED")
         print("🔧 Fix integration issues before proceeding to Phase 1")
-        return False
+    return 0 if overall else 1
 
 if __name__ == "__main__":
     main()

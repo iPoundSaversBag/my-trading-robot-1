@@ -1,0 +1,703 @@
+{
+    "optimizer": "bayesian",
+    "optimization_enabled": true,
+    "regime_analysis_enabled": true,
+    "optimization_timeout": 180,
+    "data_settings": {
+        "file_path": "data/crypto_data_5m.parquet",
+        "symbol": "BTCUSDT",
+        "timeframe": "5m",
+        "start_date": "2021-01-01",
+        "end_date": "2025-12-31",
+        "multi_timeframe_enabled": true,
+        "timeframe_files": {
+            "5m": "data/crypto_data_5m.parquet",
+            "15m": "data/crypto_data_15m.parquet",
+            "1h": "data/crypto_data_1h.parquet",
+            "4h": "data/crypto_data_4h.parquet"
+        },
+        "primary_timeframe": "5m",
+        "signal_timeframes": [
+            "15m",
+            "1h",
+            "4h"
+        ]
+    },
+    "fixed_parameters": {
+        "initial_capital": 10000,
+        "commission": 0.001,
+        "slippage": 0.0005,
+        "max_position_size": 0.25
+    },
+    "regime_parameters": {
+        "regime_auto_tune": true,
+        "regime_tune_every": 2,
+        "regime_min_trades": 10,
+        "regime_ema_alpha": 0.4,
+        "min_regime_mult": 0.4,
+        "max_regime_mult": 1.8,
+        "regime_step": 0.05,
+        "regime_window_size": 50,
+        "regime_confidence_threshold": 0.72
+    },
+    "warm_start_enabled": true,
+    "regime_multipliers": {
+        "trending_up": 1.2,
+        "trending_down": 0.8,
+        "sideways": 1.0,
+        "high_volatility": 0.6,
+        "low_volatility": 1.1
+    },
+    "regime_directives": {
+        "version": 1,
+        "default": {
+            "base_position_multiplier": 1.0,
+            "parameter_overrides": {},
+            "bounds_expansions": {}
+        },
+        "regimes": {
+            "trending_bull": {
+                "base_position_multiplier": 1.25,
+                "parameter_overrides": {
+                    "ADX_THRESHOLD": {
+                        "adjust": -3
+                    },
+                    "POSITION_SIZE_PCT": {
+                        "multiplier": 1.15
+                    },
+                    "TAKE_PROFIT_MULTIPLIER": {
+                        "multiplier": 1.1
+                    }
+                },
+                "bounds_expansions": {
+                    "RSI_OVERBOUGHT": {
+                        "hard_bounds": [
+                            70.0,
+                            100.0
+                        ],
+                        "bounds": [
+                            72.0,
+                            88.0
+                        ]
+                    },
+                    "STOP_LOSS_MULTIPLIER": {
+                        "expand": [
+                            -0.2,
+                            0.5
+                        ]
+                    }
+                }
+            },
+            "trending_bear": {
+                "base_position_multiplier": 0.9,
+                "parameter_overrides": {
+                    "ADX_THRESHOLD": {
+                        "adjust": -2
+                    },
+                    "POSITION_SIZE_PCT": {
+                        "multiplier": 0.95
+                    },
+                    "STOP_LOSS_MULTIPLIER": {
+                        "multiplier": 0.9
+                    }
+                },
+                "bounds_expansions": {
+                    "TAKE_PROFIT_MULTIPLIER": {
+                        "expand": [
+                            -0.5,
+                            0.8
+                        ]
+                    }
+                }
+            },
+            "ranging": {
+                "base_position_multiplier": 0.85,
+                "parameter_overrides": {
+                    "ADX_THRESHOLD": {
+                        "adjust": 4
+                    },
+                    "TAKE_PROFIT_MULTIPLIER": {
+                        "multiplier": 0.85
+                    }
+                },
+                "bounds_expansions": {
+                    "STOP_LOSS_MULTIPLIER": {
+                        "expand": [
+                            -0.3,
+                            0.3
+                        ]
+                    }
+                }
+            },
+            "high_volatility": {
+                "base_position_multiplier": 0.6,
+                "parameter_overrides": {
+                    "STOP_LOSS_MULTIPLIER": {
+                        "multiplier": 1.4
+                    },
+                    "POSITION_SIZE_PCT": {
+                        "multiplier": 0.6
+                    }
+                },
+                "bounds_expansions": {
+                    "STOP_LOSS_MULTIPLIER": {
+                        "expand": [
+                            0.0,
+                            1.0
+                        ]
+                    }
+                }
+            },
+            "low_volatility": {
+                "base_position_multiplier": 1.1,
+                "parameter_overrides": {
+                    "TAKE_PROFIT_MULTIPLIER": {
+                        "multiplier": 0.9
+                    },
+                    "POSITION_SIZE_PCT": {
+                        "multiplier": 1.05
+                    }
+                },
+                "bounds_expansions": {}
+            },
+            "breakout_bullish": {
+                "base_position_multiplier": 1.3,
+                "parameter_overrides": {
+                    "TAKE_PROFIT_MULTIPLIER": {
+                        "multiplier": 1.25
+                    },
+                    "STOP_LOSS_MULTIPLIER": {
+                        "multiplier": 1.1
+                    }
+                },
+                "bounds_expansions": {
+                    "TAKE_PROFIT_MULTIPLIER": {
+                        "expand": [
+                            0.2,
+                            1.0
+                        ]
+                    }
+                }
+            },
+            "breakout_bearish": {
+                "base_position_multiplier": 1.05,
+                "parameter_overrides": {
+                    "STOP_LOSS_MULTIPLIER": {
+                        "multiplier": 1.2
+                    }
+                },
+                "bounds_expansions": {
+                    "STOP_LOSS_MULTIPLIER": {
+                        "expand": [
+                            0.2,
+                            0.8
+                        ]
+                    }
+                }
+            },
+            "accumulation": {
+                "base_position_multiplier": 0.95,
+                "parameter_overrides": {
+                    "RSI_OVERSOLD": {
+                        "adjust": -2
+                    }
+                },
+                "bounds_expansions": {
+                    "RSI_OVERSOLD": {
+                        "hard_bounds": [
+                            0.0,
+                            32.0
+                        ]
+                    }
+                }
+            },
+            "distribution": {
+                "base_position_multiplier": 0.9,
+                "parameter_overrides": {
+                    "RSI_OVERBOUGHT": {
+                        "adjust": 2
+                    }
+                },
+                "bounds_expansions": {
+                    "RSI_OVERBOUGHT": {
+                        "hard_bounds": [
+                            68.0,
+                            100.0
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "machine_learning": {
+        "enabled": true,
+        "model_type": "ensemble",
+        "ensemble_models": {
+            "random_forest": {
+                "enabled": true,
+                "n_estimators": 100,
+                "max_depth": 10,
+                "min_samples_split": 5
+            },
+            "gradient_boosting": {
+                "enabled": true,
+                "n_estimators": 100,
+                "learning_rate": 0.1,
+                "max_depth": 6
+            },
+            "neural_network": {
+                "enabled": false,
+                "hidden_layers": [
+                    64,
+                    32,
+                    16
+                ],
+                "dropout_rate": 0.2,
+                "epochs": 100
+            }
+        },
+        "training_config": {
+            "test_size": 0.2,
+            "validation_size": 0.2,
+            "cross_validation_folds": 5,
+            "feature_importance_threshold": 0.01
+        }
+    },
+    "regime_detection": {
+        "enabled": true,
+        "accuracy_achieved": 97.9799,
+        "production_ready": true,
+        "ml": {
+            "enabled": true,
+            "mode": "distilled_rule_hybrid",
+            "fallback_on_error": true,
+            "env_override_allowed": true,
+            "notes": "Config-based ML toggle migrated from REGIME_USE_ML env var (legacy). Set enabled=false to force rule-only without needing environment variables."
+        },
+        "last_calibrated": "2025-08-21T20:57:33.451283",
+        "calibrated_thresholds": {
+            "high_volatility": 739.0108624947218,
+            "low_volatility": 325.38349947592747,
+            "volatility_ratio_high": 1.8,
+            "volatility_ratio_low": 0.6,
+            "trend_strength_min": 0.00966082774556356,
+            "trend_confirmation": 0.016922408965872552,
+            "momentum_threshold": 0.05,
+            "breakout_strength": 0.010070682498858154,
+            "breakout_volume": 1.391195009982834,
+            "breakout_confirmation": 5,
+            "range_volatility": 0.015,
+            "accumulation_volume": 1.1205891428133734,
+            "distribution_volume": 1.3,
+            "rsi_overbought": 75,
+            "rsi_oversold": 25,
+            "rsi_neutral_high": 60,
+            "rsi_neutral_low": 40,
+            "min_confidence": 0.7,
+            "strong_confidence": 0.85
+        }
+    },
+    "risk_model": {
+        "position_sizing": {
+            "base_size_pct": 1.5,
+            "max_size_pct": 3.0,
+            "regime_multipliers": {
+                "high_volatility": 0.3,
+                "low_volatility": 1.2,
+                "trending_bull": 1.4,
+                "trending_bear": 0.6,
+                "ranging": 0.8,
+                "breakout_bullish": 1.3,
+                "breakout_bearish": 0.4,
+                "accumulation": 1.0,
+                "distribution": 0.7
+            }
+        },
+        "stop_loss": {
+            "base_stop_pct": 1.5,
+            "max_stop_pct": 4.0,
+            "regime_adjustments": {
+                "high_volatility": 2.0,
+                "low_volatility": 0.8,
+                "trending_bull": 1.2,
+                "trending_bear": 1.5,
+                "ranging": 1.0,
+                "breakout_bullish": 1.8,
+                "breakout_bearish": 1.3,
+                "accumulation": 0.9,
+                "distribution": 1.4
+            },
+            "trailing_enabled": true,
+            "trailing_distance_pct": 1.2
+        },
+        "take_profit": {
+            "base_tp_pct": 3.0,
+            "max_tp_pct": 8.0,
+            "regime_multipliers": {
+                "high_volatility": 0.8,
+                "low_volatility": 1.3,
+                "trending_bull": 1.5,
+                "trending_bear": 0.7,
+                "ranging": 1.0,
+                "breakout_bullish": 1.8,
+                "breakout_bearish": 0.6,
+                "accumulation": 1.2,
+                "distribution": 0.8
+            },
+            "partial_profit_enabled": true,
+            "partial_profit_levels": [
+                0.5,
+                0.75
+            ]
+        },
+        "portfolio_limits": {
+            "max_portfolio_risk": 8.0,
+            "max_daily_loss": 3.0,
+            "max_concurrent_trades": 4,
+            "correlation_limit": 0.6,
+            "max_sector_exposure": 0.4,
+            "drawdown_limit": 12.0
+        },
+        "dynamic_adjustments": {
+            "enabled": true,
+            "volatility_scaling": true,
+            "performance_scaling": true,
+            "time_scaling": true,
+            "confidence_scaling": true
+        }
+    },
+    "monitoring": {
+        "monitoring_enabled": true,
+        "check_interval_seconds": 30,
+        "alert_cooldown_minutes": 10,
+        "performance_monitoring": true,
+        "alerts": {
+            "email_alerts": true,
+            "file_alerts": true,
+            "console_alerts": true,
+            "telegram_alerts": true,
+            "severity_levels": {
+                "critical": [
+                    "regime_failure",
+                    "stop_loss_breach",
+                    "system_error"
+                ],
+                "warning": [
+                    "low_confidence",
+                    "high_volatility",
+                    "correlation_breach"
+                ],
+                "info": [
+                    "regime_change",
+                    "position_update",
+                    "performance_update"
+                ]
+            }
+        },
+        "performance_tracking": {
+            "enabled": true,
+            "metrics_interval_minutes": 15,
+            "track_regime_accuracy": true,
+            "track_position_performance": true,
+            "track_risk_metrics": true,
+            "auto_reporting": true
+        },
+        "health_checks": {
+            "enabled": true,
+            "check_interval_minutes": 5,
+            "data_freshness_check": true,
+            "connection_check": true,
+            "memory_check": true,
+            "performance_check": true
+        },
+        "logging": {
+            "level": "INFO",
+            "file_logging": true,
+            "rotation_enabled": true,
+            "max_file_size_mb": 100,
+            "backup_count": 7,
+            "detailed_regime_logging": true
+        }
+    },
+    "best_parameters_snapshot": {
+        "ichimoku_conversion": 14,
+        "ichimoku_base": 36,
+        "ichimoku_leading_span_b": 72,
+        "rsi_period": 18,
+        "rsi_overbought": 75,
+        "rsi_oversold": 25,
+        "adx_period": 18,
+        "adx_threshold": 28,
+        "bb_period": 22,
+        "bb_std": 2.1,
+        "stop_loss_pct": 1.8,
+        "take_profit_pct": 3.2,
+        "position_size_pct": 12.5,
+        "last_updated": "2025-08-20",
+        "performance_score": 1.87,
+        "sharpe_ratio": 1.42
+    },
+    "optimization_settings": {
+        "parallel_optimization": true,
+        "n_jobs": "auto",
+        "objective_function": "sharpe_ratio",
+        "intensity": "3",
+        "calls_per_window": {
+            "3": 50
+        },
+        "hybrid_optimization": {
+            "enabled": true,
+            "exploration_fraction": 0.35,
+            "min_explore_trials": 15,
+            "min_refine_trials": 30,
+            "bayesian_seed_top_k": 6
+        },
+        "adaptive_parallel": {
+            "enabled": true,
+            "min_workers": 2,
+            "max_workers": 10,
+            "scale_factor": 0.65,
+            "memory_safety_ratio": 0.75,
+            "spare_cores": 1,
+            "throughput_improvement_threshold": 0.05,
+            "ramp_after_trials": 8,
+            "scaling_cooldown_trials": 10,
+            "io_latency_threshold_ms": 35,
+            "freq_drop_threshold": 0.85,
+            "estimated_rss_per_trial_mb": 140
+        },
+        "seed_diversity": {
+            "enabled": true,
+            "min_distance": 0.15,
+            "max_seeds": 6
+        },
+        "disable_pruning": true,
+        "constraints": {
+            "min_trades": 10,
+            "max_drawdown": 0.25,
+            "min_profit_factor": 1.1
+        }
+    },
+    "debug_settings": {
+        "enable_correlation_analysis": true,
+        "save_trial_data": true,
+        "force_trial_data_save": true
+    },
+    "walk_forward_settings": {
+        "training_days": 180,
+        "testing_days": 45,
+        "minimum_windows": 1,
+        "overlap_days": 0
+    },
+    "output_settings": {
+        "base_output_dir": "backtest_results",
+        "runs_to_keep": 10,
+        "save_detailed_results": true,
+        "save_trade_history": true
+    },
+    "parameter_spaces": {
+        "technical_indicators": [
+            {
+                "name": "TENKAN_SEN_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    5,
+                    15
+                ],
+                "hard_bounds": [
+                    3,
+                    26
+                ]
+            },
+            {
+                "name": "KIJUN_SEN_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    20,
+                    40
+                ],
+                "hard_bounds": [
+                    14,
+                    80
+                ]
+            },
+            {
+                "name": "SENKOU_SPAN_B_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    45,
+                    90
+                ],
+                "hard_bounds": [
+                    40,
+                    140
+                ]
+            },
+            {
+                "name": "RSI_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    10,
+                    28
+                ],
+                "hard_bounds": [
+                    5,
+                    42
+                ]
+            },
+            {
+                "name": "RSI_OVERBOUGHT",
+                "type": "real",
+                "bounds": [
+                    72.0,
+                    85.0
+                ],
+                "hard_bounds": [
+                    70.0,
+                    100.0
+                ]
+            },
+            {
+                "name": "RSI_OVERSOLD",
+                "type": "real",
+                "bounds": [
+                    20.0,
+                    28.0
+                ],
+                "hard_bounds": [
+                    0.0,
+                    30.0
+                ]
+            },
+            {
+                "name": "ADX_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    12,
+                    32
+                ],
+                "hard_bounds": [
+                    6,
+                    50
+                ]
+            },
+            {
+                "name": "ADX_THRESHOLD",
+                "type": "real",
+                "bounds": [
+                    18.0,
+                    38.0
+                ],
+                "hard_bounds": [
+                    12.0,
+                    55.0
+                ]
+            },
+            {
+                "name": "BBANDS_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    16,
+                    28
+                ],
+                "hard_bounds": [
+                    10,
+                    45
+                ]
+            },
+            {
+                "name": "BBANDS_STD",
+                "type": "real",
+                "bounds": [
+                    1.6,
+                    2.4
+                ],
+                "hard_bounds": [
+                    1.2,
+                    3.2
+                ]
+            },
+            {
+                "name": "RSI_OB_EXT_EXP",
+                "type": "real",
+                "bounds": [
+                    0.6,
+                    2.2
+                ],
+                "hard_bounds": [
+                    0.4,
+                    3.0
+                ]
+            },
+            {
+                "name": "RSI_OS_EXT_EXP",
+                "type": "real",
+                "bounds": [
+                    0.6,
+                    2.2
+                ],
+                "hard_bounds": [
+                    0.4,
+                    3.0
+                ]
+            },
+            {
+                "name": "RSI_EXT_BASE_WEIGHT",
+                "type": "real",
+                "bounds": [
+                    0.01,
+                    0.12
+                ],
+                "hard_bounds": [
+                    0.0,
+                    0.2
+                ]
+            }
+        ],
+        "risk_management": [
+            {
+                "name": "STOP_LOSS_MULTIPLIER",
+                "type": "real",
+                "bounds": [
+                    0.6,
+                    2.5
+                ],
+                "hard_bounds": [
+                    0.3,
+                    6.0
+                ]
+            },
+            {
+                "name": "TAKE_PROFIT_MULTIPLIER",
+                "type": "real",
+                "bounds": [
+                    1.2,
+                    4.5
+                ],
+                "hard_bounds": [
+                    0.8,
+                    10.0
+                ]
+            },
+            {
+                "name": "POSITION_SIZE_PCT",
+                "type": "real",
+                "bounds": [
+                    5.0,
+                    20.0
+                ],
+                "hard_bounds": [
+                    1.0,
+                    25.0
+                ]
+            }
+        ]
+    },
+    "_meta": {
+        "self_test_touch": "2025-08-22T23:07:30",
+        "schema_version": 1,
+        "updated_at": "2025-08-22T20:17:05.295747Z",
+        "reason": "test_fix2",
+        "content_hash": "7d93b781073e315b85f75511200d708805dc4f7567a0291665e2b5e20cd2f03e"
+    }
+}

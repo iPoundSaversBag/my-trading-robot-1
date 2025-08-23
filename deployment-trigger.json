@@ -1,11 +1,10 @@
 {
-  "deployment_trigger": "force-rebuild-2025-08-20",
-  "reason": "Live data panel fixes not deploying",
-  "timestamp": "2025-08-20T00:00:00Z",
-  "changes": [
-    "Fixed live data panel API integration",
-    "Updated CSS space-y properties", 
-    "Added testnet data update functions",
-    "Configured proper authentication headers"
-  ]
+  "last_update": "2025-08-23T11:19:10.649556Z",
+  "pending": false,
+  "reason": "config_update_ci",
+  "history": [
+    "config_update_ci",
+    "cleared:ci_test"
+  ],
+  "cleared_at": "2025-08-23T11:19:10.660859Z"
 }

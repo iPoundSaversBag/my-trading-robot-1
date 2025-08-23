@@ -75,6 +75,22 @@ os.environ['PYTHONIOENCODING'] = 'utf-8'
 import datetime
 import json
 import os
+
+
+# Custom JSON encoder to handle numpy/pandas int64 and other numpy types
+class NumpyJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (np.integer, np.int64)):
+            return int(obj)
+        elif isinstance(obj, (np.floating, np.float64)):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif hasattr(obj, 'item'):  # pandas scalar types
+            return obj.item()
+        return super(NumpyJSONEncoder, self).default(obj)
+
+
 import pandas as pd
 import numpy as np
 import logging
@@ -159,7 +175,7 @@ def run_backtest_instance(args):
             config_path=args.config,
             intensity_override=getattr(args, 'intensity', None),
             no_warmup=getattr(args, 'no_warmup', False),
-            optimizer=getattr(args, 'optimizer', 'optuna'),
+            optimizer=getattr(args, 'optimizer', 'bayesian'),
             min_trades_override=getattr(args, 'min_trades', None),
             runs_to_keep_override=None,  # enforce config value
             debug_mode=getattr(args, 'debug', False),
@@ -627,6 +643,126 @@ def load_data_from_parquet(filename='crypto_data.parquet'):
 class IchimokuBacktester:
     current_run_dir_static = None
 
+    # --- Unified adaptive worker computation ---
+    def _compute_workers(self, phase:str, trials_planned:int, adaptive_cfg:dict, window_num:int):
+        """Compute parallel worker count for exploration, optuna, or bayesian phases.
+
+        Consolidates previously duplicated logic (compute_explore_workers, compute_auto_workers,
+        compute_auto_workers_optuna). Applies adaptive guards (memory, throughput, IO, freq).
+
+        phase: 'explore' | 'optuna' | 'bayesian'
+        trials_planned: intended number of trials/calls for this phase
+        adaptive_cfg: dict from config['optimization_settings']['adaptive_parallel']
+        window_num: current walk-forward window index (for logging)
+        """
+        try:
+            import multiprocessing, psutil
+        except Exception:
+            # Fallback minimal behaviour if deps missing
+            return 1
+        if trials_planned <= 0:
+            return max(1, int(adaptive_cfg.get('min_workers', 1)))
+
+        # Base parameters
+        try:
+            logical = multiprocessing.cpu_count()
+        except Exception:
+            logical = 4
+        spare = int(adaptive_cfg.get('spare_cores', 2))
+        min_w = int(adaptive_cfg.get('min_workers', 2))
+        max_w = int(adaptive_cfg.get('max_workers', max(1, logical // 2)))
+        scale = float(adaptive_cfg.get('scale_factor', 0.5))
+        # Slight dampening for exploration for diversity control
+        if phase == 'explore':
+            scale *= 0.9
+        ramp_after = int(adaptive_cfg.get('ramp_after_trials', 8))
+        mem_ratio = float(adaptive_cfg.get('memory_safety_ratio', 0.7))
+        rss_est = float(adaptive_cfg.get('estimated_rss_per_trial_mb', 150)) * 1024 * 1024
+        thr_improv_thresh = float(adaptive_cfg.get('throughput_improvement_threshold', 0.08))
+        cooldown = int(adaptive_cfg.get('scaling_cooldown_trials', 10))
+        io_latency_thresh_ms = float(adaptive_cfg.get('io_latency_threshold_ms', 35))
+        freq_drop_thresh = float(adaptive_cfg.get('freq_drop_threshold', 0.85))
+
+        # Ensure adaptive state
+        if not hasattr(self, '_adaptive_state'):
+            self._adaptive_state = {
+                'last_scale_adjust_trial': 0,
+                'trial_timings': [],
+                'io_timings': [],
+                'last_workers': None
+            }
+        state = self._adaptive_state
+
+        # System metrics
+        try:
+            mem = psutil.virtual_memory()
+            freq = getattr(psutil, 'cpu_freq', lambda: None)()
+            cur_f = freq.current if freq else None
+            base_f = freq.max if freq else None
+            metrics = {'available': mem.available, 'total': mem.total, 'freq_current': cur_f, 'freq_base': base_f}
+        except Exception:
+            metrics = {'available': 0, 'total': 1, 'freq_current': None, 'freq_base': None}
+
+        # Initial target
+        base = max(min_w, int(scale * logical))
+        if trials_planned < ramp_after:
+            target = max(min_w, min(base, trials_planned))
+        else:
+            target = min(max_w, trials_planned, logical - spare)
+
+        reasons = []
+        # Memory guard
+        avail = metrics['available']; total = metrics['total'] or 1
+        safety_limit = total * mem_ratio
+        if rss_est > 0:
+            max_by_mem = int(avail / rss_est) if rss_est else target
+            if avail < safety_limit:
+                before = target
+                target = min(target, max_by_mem)
+                if target != before:
+                    reasons.append('MEM_GUARD')
+
+        # Throughput improvement guard (skip for pure exploration if no timings yet)
+        timings = state.get('trial_timings', [])
+        if phase in ('bayesian', 'optuna') and len(timings) >= 8 and state.get('last_workers'):
+            recent = timings[-4:]; prev = timings[-8:-4]
+            if prev and recent:
+                avg_prev = sum(prev)/len(prev); avg_recent = sum(recent)/len(recent)
+                improvement = (avg_prev - avg_recent)/avg_prev if avg_prev > 0 else 0
+                if improvement < thr_improv_thresh and (len(timings) - state['last_scale_adjust_trial']) >= cooldown:
+                    before = target
+                    target = min(target, state['last_workers'])
+                    state['last_scale_adjust_trial'] = len(timings)
+                    if target != before:
+                        reasons.append('THROUGHPUT_STALL')
+
+        # I/O latency guard
+        io_times = state.get('io_timings', [])
+        if len(io_times) >= 5:
+            avg_io_ms = (sum(io_times[-5:]) / 5.0) * 1000.0
+            if avg_io_ms > io_latency_thresh_ms:
+                before = target
+                target = max(min_w, int(target * 0.8))
+                if target != before:
+                    reasons.append('IO_BACKPRESSURE')
+
+        # CPU frequency drop guard
+        cur_f = metrics.get('freq_current'); base_f = metrics.get('freq_base')
+        if cur_f and base_f and base_f > 0 and (cur_f / base_f) < freq_drop_thresh:
+            before = target
+            target = max(min_w, int(target * 0.85))
+            if target != before:
+                reasons.append('FREQ_DROP')
+
+        target = max(1, min(target, max_w))
+        state['last_workers'] = target
+        # Re-use existing structured logging if available
+        try:
+            self._log_adaptive_decision(phase, window_num, trials_planned, base, target, reasons, metrics, state)
+        except Exception:
+            pass
+        return target
+
     def log_problem(self, message):
         """Logs a message to the problem summary and the main log file."""
         self.problem_summary.append(message)
@@ -698,6 +834,10 @@ class IchimokuBacktester:
         self.config = self.load_config(self.config_path)
         if self.config is None:
             sys.exit(1)
+            
+        # Initialize output directory
+        self.base_output_dir = self.config.get('output_settings', {}).get('base_output_dir', 'backtest_results')
+        
         # Non-fatal schema / structure validation
         if validate_config:
             try:
@@ -725,6 +865,48 @@ class IchimokuBacktester:
             except Exception:
                 pass
 
+        # Unified random_state initialization (was previously missing -> warning)
+        # Priority order:
+        #   1. Explicit optimization_settings.random_state (if provided)
+        #   2. debug_settings.seed when in debug mode
+        #   3. Deterministic hash of config content for stability across identical configs
+        #   4. Fallback to a time/random derived integer
+        try:
+            opt_settings_local = self.config.get('optimization_settings', {}) if isinstance(self.config, dict) else {}
+            explicit_rs = opt_settings_local.get('random_state')
+        except Exception:
+            explicit_rs = None
+        seed_candidate = None
+        if isinstance(explicit_rs, int):
+            seed_candidate = explicit_rs
+        elif self.debug_mode and isinstance(self.debug_config.get('seed'), int):
+            seed_candidate = self.debug_config.get('seed')
+        if seed_candidate is None:
+            try:
+                import hashlib, json as _json
+                # Hash config (excluding volatile _meta) for stable seed if config deterministic
+                cfg_copy = {k: v for k, v in self.config.items() if k != '_meta'} if isinstance(self.config, dict) else {}
+                h = hashlib.sha256(_json.dumps(cfg_copy, sort_keys=True, default=str).encode('utf-8')).hexdigest()
+                seed_candidate = int(h[:8], 16)  # take first 32 bits
+            except Exception:
+                seed_candidate = None
+        if seed_candidate is None:
+            try:
+                import random as _r, time as _t
+                seed_candidate = int((_t.time() * 1000)) & 0xFFFFFFFF ^ _r.randint(0, 2**32 - 1)
+            except Exception:
+                seed_candidate = 42  # final fallback
+        self.random_state = int(seed_candidate) & 0xFFFFFFFF
+        try:
+            # Also propagate to numpy/random for consistency if not already set via debug
+            import random as _r, numpy as _np
+            _r.seed(self.random_state)
+            _np.random.seed(self.random_state % (2**32 - 1))
+        except Exception:
+            pass
+        if self.debug_mode:
+            self.log_debug(f"[SEED] random_state set to {self.random_state}")
+
         # Apply CLI overrides
         self.warm_start_params = self.config.get('best_parameters_so_far', None)
         if intensity_override:
@@ -735,7 +917,15 @@ class IchimokuBacktester:
         if not self.default_params:
             self.log_problem("The 'fixed_parameters' block is missing from your config file. Using hardcoded defaults.")
         self.use_numba_warmup = not no_warmup
-        self.optimizer = optimizer
+        
+        # Use config optimizer if specified, otherwise use parameter
+        config_optimizer = self.config.get('optimizer', None)
+        if config_optimizer:
+            self.optimizer = config_optimizer
+            self.log_debug(f"Using optimizer from config: {config_optimizer}")
+        else:
+            self.optimizer = optimizer
+            self.log_debug(f"Using optimizer from parameter: {optimizer}")
 
         # Helper: intensity param resolver
         def get_intensity_param(self, param_name, default_value=None):
@@ -775,6 +965,12 @@ class IchimokuBacktester:
             'max_worsening_calls': int(self.adaptive_enhancements_cfg.get('early_refinement_abort', {}).get('max_worsening_calls', 4)),
             'min_absolute_improvement': float(self.adaptive_enhancements_cfg.get('early_refinement_abort', {}).get('min_absolute_improvement', 0.002)),
         }
+        # Seed diversity configuration for hybrid optimization
+        self._seed_div_cfg = self.config.get('optimization_settings', {}).get('seed_diversity', {
+            'enabled': True,
+            'min_distance': 0.15,
+            'max_seeds': 8
+        })
         # Master adaptive persistence load
         self._master_state_path = self.config.get('optimization_settings', {}).get('adaptive_master', {}).get('state_path', 'adaptive_master_state.json')
         self._master_adaptive_state = None
@@ -974,6 +1170,9 @@ class IchimokuBacktester:
             f"[PENALTY] Dynamic penalty system active | target_trades={self.min_trades_for_dynamic_penalty} allowed_dd={self.allowed_max_drawdown} trade_base={self.dynamic_trade_penalty_base} dd_base={self.dynamic_drawdown_penalty_base}",
             print_to_console=False
         )
+        
+        # Setup output directory for this run
+        self.setup_output_directory()
 
     def run_walk_forward_optimization(self):
         """
@@ -1122,56 +1321,18 @@ class IchimokuBacktester:
                                 except Exception:
                                     pass
 
-                                def _system_metrics_explore():
-                                    import psutil
-                                    mem = psutil.virtual_memory()
-                                    try:
-                                        freq = psutil.cpu_freq(); cur = freq.current if freq else None; base = freq.max if freq else None
-                                    except Exception:
-                                        cur = base = None
-                                    return {'available': mem.available, 'total': mem.total, 'freq_current': cur, 'freq_base': base}
-
-                                def compute_explore_workers(trials_planned:int)->int:
-                                    # Controlled worker computation (slightly more conservative early on)
-                                    try:
-                                        logical = multiprocessing.cpu_count()
-                                    except Exception:
-                                        logical = 4
-                                    spare = int(adaptive_cfg.get('spare_cores', 2))
-                                    min_w = int(adaptive_cfg.get('min_workers', 4))
-                                    max_w = int(adaptive_cfg.get('max_workers', max(1, logical//2)))
-                                    scale = float(adaptive_cfg.get('scale_factor', 0.5)) * 0.9  # dampen for exploration
-                                    ramp_after = int(adaptive_cfg.get('ramp_after_trials', 8))
-                                    mem_ratio = float(adaptive_cfg.get('memory_safety_ratio', 0.7))
-                                    rss_est = float(adaptive_cfg.get('estimated_rss_per_trial_mb', 150)) * 1024 * 1024
-                                    metrics = _system_metrics_explore()
-                                    if trials_planned <= 0:
-                                        return min_w
-                                    base = max(min_w, int(scale * logical))
-                                    if trials_planned < ramp_after:
-                                        target = max(min_w, min(base, trials_planned))
-                                    else:
-                                        target = min(max_w, trials_planned, logical - spare)
-                                    # Memory guard
-                                    avail = metrics['available']; total = metrics['total'] or 1
-                                    safety_limit = total * mem_ratio
-                                    if rss_est>0:
-                                        max_by_mem = int(avail / rss_est)
-                                        if avail < safety_limit:
-                                            target = min(target, max_by_mem)
-                                    return max(1, min(target, max_w))
+                                # (Removed old compute_explore_workers; use unified _compute_workers)
 
                                 # Decide exploration workers
                                 parallel_enabled = optimization_settings_full.get('parallel_optimization', False)
                                 n_jobs_config = optimization_settings_full.get('n_jobs', 'auto')
                                 if parallel_enabled:
                                     if isinstance(n_jobs_config, str) and n_jobs_config.lower() == 'auto':
-                                        explore_workers = compute_explore_workers(explore_trials)
+                                        explore_workers = self._compute_workers('explore', explore_trials, adaptive_cfg, window_num)
                                     elif n_jobs_config in (-1, 0):
                                         explore_workers = max(1, multiprocessing.cpu_count() - 1)
                                     else:
                                         explore_workers = max(1, int(n_jobs_config))
-                                    # Cap exploration to avoid model staleness explosion
                                     explore_workers = min(explore_workers, int(adaptive_cfg.get('max_workers', explore_workers)))
                                 else:
                                     explore_workers = 1
@@ -1385,83 +1546,11 @@ class IchimokuBacktester:
                                     'freq_base': base_freq
                                 }
                             # (Adaptive decision logging moved to class method _log_adaptive_decision)
-                            def compute_auto_workers(trials_planned: int) -> int:
-                                try:
-                                    logical = multiprocessing.cpu_count()
-                                except Exception:
-                                    logical = 4
-                                spare = int(adaptive_cfg.get('spare_cores', 2))
-                                min_w = int(adaptive_cfg.get('min_workers', 4))
-                                max_w = int(adaptive_cfg.get('max_workers', max(1, logical // 2)))
-                                scale = float(adaptive_cfg.get('scale_factor', 0.5))
-                                ramp_after = int(adaptive_cfg.get('ramp_after_trials', 8))
-                                mem_ratio = float(adaptive_cfg.get('memory_safety_ratio', 0.7))
-                                rss_est = float(adaptive_cfg.get('estimated_rss_per_trial_mb', 150)) * 1024 * 1024
-                                thr_improv_thresh = float(adaptive_cfg.get('throughput_improvement_threshold', 0.08))
-                                cooldown = int(adaptive_cfg.get('scaling_cooldown_trials', 10))
-                                io_latency_thresh_ms = float(adaptive_cfg.get('io_latency_threshold_ms', 35))
-                                freq_drop_thresh = float(adaptive_cfg.get('freq_drop_threshold', 0.85))
-                                state = self._adaptive_state
-                                metrics = _system_metrics()
-                                reasons = []
-                                if trials_planned <= 0:
-                                    return min_w
-                                base = max(min_w, int(scale * logical))
-                                if trials_planned < ramp_after:
-                                    target = max(min_w, min(base, trials_planned))
-                                else:
-                                    target = min(max_w, trials_planned, logical - spare)
-                                # Memory guard
-                                avail = metrics['available']; total = metrics['total'] or 1
-                                safety_limit = total * mem_ratio
-                                if rss_est > 0:
-                                    max_by_mem = int(avail / rss_est)
-                                    if avail < safety_limit:
-                                        target_before = target
-                                        target = min(target, max_by_mem)
-                                        if target != target_before:
-                                            reasons.append('MEM_GUARD')
-                                        # memory guard applied
-                                # Throughput improvement heuristic
-                                timings = state['trial_timings']
-                                if len(timings) >= 8 and state['last_workers']:
-                                    recent = timings[-4:]; prev = timings[-8:-4]
-                                    if prev and recent:
-                                        avg_prev = sum(prev)/len(prev); avg_recent = sum(recent)/len(recent)
-                                        improvement = (avg_prev - avg_recent)/avg_prev if avg_prev > 0 else 0
-                                        if improvement < thr_improv_thresh and (len(timings) - state['last_scale_adjust_trial']) >= cooldown:
-                                            target_before = target
-                                            target = min(target, state['last_workers'])
-                                            state['last_scale_adjust_trial'] = len(timings)
-                                            if target != target_before:
-                                                reasons.append('THROUGHPUT_STALL')
-                                            # throughput stall guard applied
-                                # I/O latency guard
-                                io_times = state['io_timings']
-                                if len(io_times) >= 5:
-                                    avg_io_ms = (sum(io_times[-5:]) / 5.0) * 1000.0
-                                    if avg_io_ms > io_latency_thresh_ms:
-                                        target_before = target
-                                        target = max(min_w, int(target * 0.8))
-                                        if target != target_before:
-                                            reasons.append('IO_BACKPRESSURE')
-                                        # io backpressure guard applied
-                                # Frequency drop guard
-                                cur_f = metrics['freq_current']; base_f = metrics['freq_base']
-                                if cur_f and base_f and base_f > 0 and (cur_f / base_f) < freq_drop_thresh:
-                                    target_before = target
-                                    target = max(min_w, int(target * 0.85))
-                                    if target != target_before:
-                                        reasons.append('FREQ_DROP')
-                                    # freq drop guard applied
-                                target = max(1, min(target, max_w))
-                                state['last_workers'] = target
-                                self._log_adaptive_decision('bayesian', window_num, trials_planned, base, target, reasons, metrics, state)
-                                return target
+                            # Use unified worker computation when n_jobs set to 'auto'; otherwise honor explicit value.
                             if parallel_enabled:
                                 if isinstance(n_jobs_config, str) and n_jobs_config.lower() == 'auto':
-                                    n_jobs = compute_auto_workers(n_calls)
-                                elif n_jobs_config in (-1, 0):
+                                    n_jobs = self._compute_workers('bayesian', n_calls, adaptive_cfg, window_num)
+                                elif n_jobs_config in (-1, 0):  # -1/0 treated as all cores minus one spare
                                     n_jobs = max(1, multiprocessing.cpu_count() - 1)
                                 else:
                                     n_jobs = max(1, int(n_jobs_config))
@@ -1471,81 +1560,17 @@ class IchimokuBacktester:
                                 log_to_file(f"[PARALLEL] Bayesian optimization using {n_jobs} workers (config={n_jobs_config})", print_to_console=True if self.debug_mode else False)
                             else:
                                 log_to_file("[PARALLEL] Bayesian optimization running single-threaded", print_to_console=True if self.debug_mode else False)
-                            
-                            gp_kwargs = {"n_calls": n_calls, "random_state": 42, "n_initial_points": n_initial_points, "n_jobs": n_jobs}
-                            # Early refinement abort (adaptive) via callback
-                            early_abort_enabled = bool(self._early_abort_cfg.get('enabled', False))
-                            if early_abort_enabled:
-                                cfg_ea = self._early_abort_cfg
-                                min_calls_before = cfg_ea['min_calls_before_check']
-                                rel_improv_thresh = cfg_ea['min_relative_improvement']
-                                patience_calls = cfg_ea['patience_calls']
-                                slope_window = cfg_ea['stagnation_slope_window']
-                                slope_thresh = cfg_ea['min_slope_threshold']
-                                penalty_dom_ratio = cfg_ea['penalty_dominance_ratio']
-                                max_worsen = cfg_ea['max_worsening_calls']
-                                abs_improv_min = cfg_ea['min_absolute_improvement']
-                                state_cb = {
-                                    'best': None,
-                                    'last_improv_iter': 0,
-                                    'recent_vals': [],
-                                    'worsen_streak': 0
-                                }
-                                def _early_abort_cb(res):
-                                    try:
-                                        iter_idx = len(res.func_vals)
-                                        current_best = min(res.func_vals)
-                                        # Track recent values for slope
-                                        state_cb['recent_vals'].append(current_best)
-                                        if len(state_cb['recent_vals']) > slope_window:
-                                            state_cb['recent_vals'] = state_cb['recent_vals'][-slope_window:]
-                                        if state_cb['best'] is None:
-                                            state_cb['best'] = current_best
-                                            state_cb['last_improv_iter'] = iter_idx
-                                            return False
-                                        prev_best = state_cb['best']
-                                        raw_improv = prev_best - current_best
-                                        if prev_best <= 0:
-                                            rel_improv = raw_improv
-                                        else:
-                                            rel_improv = raw_improv / abs(prev_best)
-                                        if raw_improv > 1e-12 and (rel_improv >= rel_improv_thresh or raw_improv >= abs_improv_min):
-                                            state_cb['best'] = current_best
-                                            state_cb['last_improv_iter'] = iter_idx
-                                            state_cb['worsen_streak'] = 0
-                                            return False
-                                        # Worsening tracking
-                                        if raw_improv < -1e-10:
-                                            state_cb['worsen_streak'] += 1
-                                        # Compute simple slope if enough points
-                                        slope_flag = False
-                                        if len(state_cb['recent_vals']) >= slope_window:
-                                            rv = state_cb['recent_vals']
-                                            # Linear regression slope approx: (last-first)/(n-1)
-                                            slope = (rv[-1] - rv[0]) / max(1, (len(rv)-1))
-                                            if abs(slope) < slope_thresh:
-                                                slope_flag = True
-                                        # Penalty dominance heuristic (requires stored last objective components)
-                                        penalty_dom_flag = False
-                                        try:
-                                            last_pen_frac = getattr(self, '_last_penalty_fraction', None)
-                                            if last_pen_frac is not None and last_pen_frac >= penalty_dom_ratio:
-                                                penalty_dom_flag = True
-                                        except Exception:
-                                            pass
-                                        stagnation = (iter_idx - state_cb['last_improv_iter']) >= patience_calls
-                                        criteria = []
-                                        if stagnation: criteria.append('STAGNATION')
-                                        if slope_flag: criteria.append('FLAT_SLOPE')
-                                        if penalty_dom_flag: criteria.append('PENALTY_DOMINANCE')
-                                        if state_cb['worsen_streak'] >= max_worsen: criteria.append('WORSENING_STREAK')
-                                        if (iter_idx >= min_calls_before) and criteria:
-                                            log_to_file(f"[EARLY_ABORT] Refinement aborted at {iter_idx} calls | criteria={criteria} rel_improv={rel_improv:.4f} raw_improv={raw_improv:.5f}", print_to_console=self.debug_mode)
-                                            return True
-                                    except Exception as _ea_e:
-                                        log_to_file(f"[EARLY_ABORT_WARN] Callback error: {_ea_e}", print_to_console=self.debug_mode)
-                                    return False
-                                gp_kwargs['callback'] = [_early_abort_cb]
+
+                            # gp_minimize does not itself parallelize objective evaluations; parallelism is handled externally
+                            # so we just record n_jobs for transparency (could be used in a future custom parallel wrapper).
+
+                            # Define gp_minimize kwargs (recreated after refactor loss)
+                            gp_kwargs = {
+                                'n_calls': n_calls,
+                                'n_initial_points': n_initial_points,
+                                'acq_func': 'gp_hedge',
+                                'random_state': self.random_state
+                            }
                             if last_window_best_params_list:
                                 log_to_file(f"Warm-starting window #{i+1} with best params from window #{i}", print_to_console=False)
                                 gp_kwargs["x0"] = [last_window_best_params_list]
@@ -1579,6 +1604,7 @@ class IchimokuBacktester:
                             self.save_trial_data(result, window_num, 'bayesian')
 
                         elif self.optimizer in ['optuna', 'cmaes']:
+                            import optuna
                             if self.debug_mode:
                                 optuna.logging.set_verbosity(optuna.logging.WARNING)
                             else:
@@ -2105,13 +2131,13 @@ class IchimokuBacktester:
                 'dynamic_explore_fraction': self._dynamic_explore_frac,
                 'sharpe_history': list(self._window_sharpes),
                 'adjust_events': list(self._auto_adjust_events[-25:]),  # trim
-                'timestamp': datetime.utcnow().isoformat() + 'Z'
+                'timestamp': datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z')
             }
             dirn = os.path.dirname(self._adaptive_state_export_path or '')
             if dirn:
                 os.makedirs(dirn, exist_ok=True)
             with open(self._adaptive_state_export_path, 'w') as f:
-                json.dump(payload, f, indent=2)
+                json.dump(payload, f, indent=2, cls=NumpyJSONEncoder)
         except Exception as e:
             log_to_file(f"[ADAPT_EXPORT_ERR] {e}", print_to_console=self.debug_mode)
 
@@ -3128,10 +3154,10 @@ class IchimokuBacktester:
                 'window': window_num,
                 'state': self._master_adaptive_state,
                 'dynamic_explore_fraction': self._dynamic_explore_frac,
-                'timestamp': datetime.utcnow().isoformat() + 'Z'
+                'timestamp': datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z')
             }
             with open(path, 'w') as f:
-                json.dump(payload, f, indent=2)
+                json.dump(payload, f, indent=2, cls=NumpyJSONEncoder)
             # Dashboard export (lightweight) if enabled
             try:
                 dash_cfg = self.config.get('optimization_settings', {}).get('adaptive_dashboard_export', {})
@@ -3142,7 +3168,7 @@ class IchimokuBacktester:
                             'false_signal_rate_ema','calls_multiplier','risk_tier','risk_multiplier',
                             'per_regime_false_signal','regime_multipliers','penalty_auto_calibration'
                         ])
-                        dash_payload = {'window': window_num,'timestamp': datetime.utcnow().isoformat()+'Z'}
+                        dash_payload = {'window': window_num,'timestamp': datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z')}
                         st = self._master_adaptive_state or {}
                         for k in dash_keys:
                             if k in st:
@@ -3248,9 +3274,17 @@ class IchimokuBacktester:
 
             if records:
                 self.all_trial_data.extend(records)
-                log_to_file(f"Saved {len(records)} trial records for window #{window_num} ({optimizer_type})", print_to_console=False)
+                debug_msg = f"Saved {len(records)} trial records for window #{window_num} ({optimizer_type})"
+                log_to_file(debug_msg, print_to_console=self.debug_mode)
+                if self.debug_mode:
+                    log_to_file(f"[DEBUG] Total trial data now: {len(self.all_trial_data)} records", print_to_console=True)
+            else:
+                debug_msg = f"No trial records to save for window #{window_num} ({optimizer_type})"
+                log_to_file(debug_msg, print_to_console=self.debug_mode)
         except Exception as e:
             self.log_debug(f"save_trial_data error: {e}")
+            if self.debug_mode:
+                log_to_file(f"[DEBUG] save_trial_data error for window #{window_num}: {e}", print_to_console=True)
         log_to_file(f"---------------------------------", print_to_console=False)
 
 
@@ -3524,7 +3558,13 @@ class IchimokuBacktester:
         
         # Load current parameter spaces from config
         param_spaces_config = self.config.get('parameter_spaces', {})
-        global_params = param_spaces_config.get('global', [])
+        # Collect all parameter configs across groups (technical_indicators, risk_management, etc.)
+        global_params = []
+        for group_name, group_list in param_spaces_config.items():
+            if isinstance(group_list, list):
+                global_params.extend(group_list)
+            else:
+                self.log_debug(f"Skipping non-list parameter group '{group_name}' in bounds analysis")
         
         bounds_modifications = {}
         
@@ -3595,9 +3635,9 @@ class IchimokuBacktester:
         # Save updated configuration if any modifications were made
         if bounds_modifications:
             try:
-                with open(self.config_path, 'w') as f:
-                    json.dump(self.config, f, indent=2)
-                
+                # Atomic single-writer update (utils.atomic_update_master_config)
+                from utilities.utils import atomic_update_master_config
+                atomic_update_master_config(self.config, self.config_path, reason="bounds_auto_adjust")
                 log_to_file(f"✅ Updated parameter bounds in {self.config_path}", print_to_console=True)
                 log_to_file(f"🔧 Modified {len(bounds_modifications)} parameter(s): {list(bounds_modifications.keys())}", print_to_console=True)
                 
@@ -3648,14 +3688,14 @@ class IchimokuBacktester:
         """
         config_save_path = os.path.join(self.current_run_dir, "final_config.json")
         with open(config_save_path, 'w') as f:
-            json.dump(self.config, f, indent=4)
+            json.dump(self.config, f, indent=4, cls=NumpyJSONEncoder)
         log_to_file(f"Saved configuration file to {config_save_path}")
 
         # --- FIX: This is the definitive fix. The parameter file MUST always be saved. ---
         if self.all_optimized_params:
             params_save_path = os.path.join(self.current_run_dir, "optimized_params_per_window.json")
             with open(params_save_path, 'w') as f:
-                json.dump(self.all_optimized_params, f, indent=4)
+                json.dump(self.all_optimized_params, f, indent=4, cls=NumpyJSONEncoder)
             log_to_file(f"Saved optimized parameters for each window to {params_save_path}")
 
         # Save directional diagnostics if collected
@@ -3663,17 +3703,27 @@ class IchimokuBacktester:
             diag_path = os.path.join(self.current_run_dir, "directional_diagnostics.json")
             try:
                 with open(diag_path, 'w') as f:
-                    json.dump(self.directional_diagnostics, f, indent=2)
+                    json.dump(self.directional_diagnostics, f, indent=2, cls=NumpyJSONEncoder)
                 log_to_file(f"Saved directional diagnostics to {diag_path}", print_to_console=False)
             except Exception as e:
                 log_to_file(f"Failed to save directional diagnostics: {e}", print_to_console=False)
 
         # Save trial data for correlation analysis
-        if self.all_trial_data:
+        debug_force_save = self.debug_config.get('force_trial_data_save', False)
+        debug_save_enabled = self.debug_config.get('save_trial_data', True)
+        
+        if self.all_trial_data or (self.debug_mode and debug_force_save):
             trial_data_path = os.path.join(self.current_run_dir, "optimization_trial_data.json")
-            with open(trial_data_path, 'w') as f:
-                json.dump(self.all_trial_data, f, indent=4)
-            log_to_file(f"Saved {len(self.all_trial_data)} optimization trial records to {trial_data_path}")
+            if self.all_trial_data:
+                with open(trial_data_path, 'w') as f:
+                    json.dump(self.all_trial_data, f, indent=4, cls=NumpyJSONEncoder)
+                log_to_file(f"Saved {len(self.all_trial_data)} optimization trial records to {trial_data_path}")
+            else:
+                # Debug mode: create empty placeholder for debugging
+                log_to_file(f"[DEBUG] No trial data to save (all_trial_data empty), but debug_force_save enabled")
+                log_to_file(f"[DEBUG] Check if save_trial_data() calls are working properly")
+        elif self.debug_mode and debug_save_enabled:
+            log_to_file(f"[DEBUG] Trial data saving: all_trial_data has {len(getattr(self, 'all_trial_data', []))} records")
 
         if self.all_optimized_params:
             # --- VERCEL INTEGRATION: Update live trading config for Vercel deployment ---
@@ -3859,7 +3909,7 @@ class IchimokuBacktester:
                     try:
                         self._write_parameter_ledger({
                             'record_type': 'ensemble_created',
-                            'timestamp': datetime.utcnow().isoformat(),
+                            'timestamp': datetime.now(datetime.timezone.utc).isoformat(),
                             'selected_count': len(selected),
                             'ensemble_params_keys': list(ensemble_params.keys())[:25]
                         })
@@ -3985,7 +4035,14 @@ class IchimokuBacktester:
                     else:
                         self.update_config_with_new_params(newly_optimized_params)
             else:
-                log_to_file("--- SKIPPING PARAMETER COMPARISON IN DEBUG MODE ---", print_to_console=True)
+                # Check if debug mode should still perform correlation analysis
+                debug_enable_correlation = self.debug_config.get('enable_correlation_analysis', False)
+                debug_skip_comparison = self.debug_config.get('skip_parameter_comparison', True)
+                
+                if debug_skip_comparison and not debug_enable_correlation:
+                    log_to_file("--- SKIPPING PARAMETER COMPARISON IN DEBUG MODE ---", print_to_console=True)
+                else:
+                    log_to_file("--- DEBUG MODE: Performing correlation analysis only ---", print_to_console=True)
         else:
             log_to_file("Skipping final parameter comparison: No optimized parameters were found.")
 
@@ -4372,7 +4429,12 @@ class IchimokuBacktester:
                 f.write(corrected_html)
 
             # --- Generate and embed additional plots ---
-            pnl_dist_plot = plot_pnl_distribution(trades_df, return_html_div=True)  # Restored
+            # Fixed: Remove unsupported return_html_div parameter
+            try:
+                pnl_dist_plot = plot_pnl_distribution(trades_df)  # Fixed: Remove unsupported parameter
+            except Exception as e:
+                self.log_problem(f"Could not generate PnL distribution plot: {e}")
+                pnl_dist_plot = "<div>PnL distribution plot unavailable</div>"
             
             window_plots_html = ""
             for window_num in sorted(trades_df['window'].unique()):
@@ -4380,12 +4442,15 @@ class IchimokuBacktester:
                 window_trades = trades_df[trades_df['window'] == window_num]
                 
                 # --- ROO: Fixed function call to match correct signature ---
-                plot_div = plot_trades_for_window(  # Restored
-                    window_trades,  # trades_df
-                    window_trades['entry_timestamp'].min() if len(window_trades) > 0 else pd.Timestamp.now(),  # window_start
-                    window_trades['entry_timestamp'].max() if len(window_trades) > 0 else pd.Timestamp.now(),  # window_end
-                    return_html_div=True
-                )
+                try:
+                    plot_div = plot_trades_for_window(  # Fixed: Remove unsupported parameter
+                        window_trades,  # trades_df
+                        window_trades['entry_timestamp'].min() if len(window_trades) > 0 else pd.Timestamp.now(),  # window_start
+                        window_trades['entry_timestamp'].max() if len(window_trades) > 0 else pd.Timestamp.now()   # window_end
+                    )
+                except Exception as e:
+                    self.log_problem(f"Could not generate window plot for {window_key}: {e}")
+                    plot_div = f"<div>Window plot unavailable for {window_key}</div>"
                 if plot_div:
                     window_plots_html += f'<h2>Trade Analysis for {window_key}</h2>'
                     window_plots_html += plot_div
@@ -5278,7 +5343,7 @@ details > summary {cursor:pointer;font-weight:600;margin:6px 0;}
         # 15. Write parameter ledger entry
         try:
             ledger_record = {
-                'timestamp': datetime.utcnow().isoformat(),
+                'timestamp': datetime.now(datetime.timezone.utc).isoformat(),
                 'window': getattr(self, '_active_window', None),
                 'trial': getattr(trial, 'number', None),
                 'objective': final_value,
@@ -5603,7 +5668,33 @@ details > summary {cursor:pointer;font-weight:600;margin:6px 0;}
 
         trade_penalty, drawdown_penalty = self._compute_penalties(total_trades, drawdown)
 
-        score = (sharpe * 0.4) + (sortino * 0.3) + (calmar * 0.3) - drawdown_penalty - trade_penalty
+        base_score = (sharpe * 0.4) + (sortino * 0.3) + (calmar * 0.3)
+        # RSI extremity weighting (encourage meaningful but not absurd thresholds)
+        try:
+            rsi_ob = params.get('RSI_OVERBOUGHT', 70)
+            rsi_os = params.get('RSI_OVERSOLD', 30)
+            ob_norm = (rsi_ob - 70) / 30.0  # 0..1 across 70..100
+            os_norm = (30 - rsi_os) / 30.0  # 0..1 across 30..0
+            ob_norm = max(0.0, min(1.0, ob_norm))
+            os_norm = max(0.0, min(1.0, os_norm))
+            # Tunable exponents & base weight
+            ob_exp = params.get('RSI_OB_EXT_EXP', 1.0)
+            os_exp = params.get('RSI_OS_EXT_EXP', 1.0)
+            base_w = params.get('RSI_EXT_BASE_WEIGHT', 0.05)
+            ob_score = ob_norm ** ob_exp
+            os_score = os_norm ** os_exp
+            # Balance penalty if both pushed extreme to avoid trivial widening of both thresholds
+            overlap_penalty = (ob_norm * os_norm) * 0.5
+            rsi_bonus = base_w * (ob_score + os_score) * (1 - overlap_penalty)
+            base_score += rsi_bonus
+            if self.debug_mode and (ob_norm > 0 or os_norm > 0):
+                log_to_file(
+                    f"[RSI_WEIGHT] ob={rsi_ob} os={rsi_os} ob_norm={ob_norm:.2f} os_norm={os_norm:.2f} ob_exp={ob_exp:.2f} os_exp={os_exp:.2f} base_w={base_w:.3f} bonus={rsi_bonus:.4f}",
+                    print_to_console=False
+                )
+        except Exception:
+            pass
+        score = base_score - drawdown_penalty - trade_penalty
         final_value = -score if np.isfinite(score) else (self.dynamic_trade_penalty_base + self.dynamic_drawdown_penalty_base)
         if self.debug_mode:
             log_to_file(
@@ -5619,10 +5710,10 @@ details > summary {cursor:pointer;font-weight:600;margin:6px 0;}
         if not (self.debug_mode and self.debug_log_trial_details):
             return
         try:
-            from datetime import datetime as _dt
+            from datetime import datetime as _dt, timezone
             rec = {
                 'window': self._active_window,
-                'timestamp': _dt.utcnow().isoformat() + 'Z',
+                'timestamp': _dt.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
                 'status': status,
             }
             if trial is not None:
@@ -5640,18 +5731,13 @@ details > summary {cursor:pointer;font-weight:600;margin:6px 0;}
     def update_config_with_new_params(self, new_params):
         """Update the configuration file with new best parameters."""
         try:
-            # Load existing config
-            with open(self.config_path, 'r') as f:
-                config = json.load(f)
-            
-            # Update the best_parameters_so_far section
+            from utilities.utils import load_master_config, atomic_update_master_config, mark_deployment_pending
+            config = load_master_config(self.config_path) or {}
             config['best_parameters_so_far'] = new_params
-            
-            # Save the updated config
-            with open(self.config_path, 'w') as f:
-                json.dump(config, f, indent=4)
-            
-            log_to_file(f"Updated config with new parameters: {new_params}", print_to_console=True)
+            atomic_update_master_config(config, self.config_path, reason="update_best_parameters")
+            log_to_file(f"Updated config with new parameters (atomic): {new_params}", print_to_console=True)
+            # Signal external deployment pipeline
+            mark_deployment_pending(reason="new_best_parameters")
         except Exception as e:
             log_to_file(f"Error updating config with new parameters: {e}", print_to_console=True)
 

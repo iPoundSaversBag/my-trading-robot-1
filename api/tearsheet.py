@@ -1,5 +1,5 @@
 """
-Tearsheet API Endpoint - Provides comprehensive performance comparison with live data integration
+Tearsheet API Endpoint - Generates HTML tearsheet for performance analysis
 """
 import json
 import os
@@ -8,6 +8,26 @@ import sys
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+def generate_tearsheet_html():
+    """Generate comprehensive tearsheet HTML with backtest and live data comparison"""
+    try:
+        # Load backtest and live data
+        backtest_data = load_latest_backtest()
+        live_data = load_live_results()
+        
+        # Check for enhanced report first
+        enhanced_html, enhanced_path = load_enhanced_performance_report()
+        
+        if enhanced_html:
+            # Inject live data into enhanced report
+            return inject_live_data_into_enhanced_report(enhanced_html, live_data, backtest_data)
+        else:
+            # Generate basic tearsheet
+            return generate_basic_tearsheet(backtest_data, live_data)
+            
+    except Exception as e:
+        return f"<html><body><h1>Error generating tearsheet</h1><p>{str(e)}</p></body></html>"
 
 def load_enhanced_performance_report():
     """Load the enhanced performance report created by generate_plots.py"""
@@ -193,35 +213,8 @@ def inject_live_data_into_enhanced_report(enhanced_html, live_data, backtest_dat
     
     return enhanced_html
 
-def generate_tearsheet_html():
-    """Generate the complete tearsheet HTML with enhanced performance report and live data"""
-    
-    # Try to load the enhanced performance report first
-    enhanced_html, report_path = load_enhanced_performance_report()
-    
-    if enhanced_html:
-        # We have an enhanced report - inject live data
-        print("Using enhanced performance report with live data integration")
-        
-        # Load live and backtest data
-        live_data = load_live_results()
-        backtest_data = load_latest_backtest()
-        
-        # Inject live data into the enhanced report
-        final_html = inject_live_data_into_enhanced_report(enhanced_html, live_data, backtest_data)
-        return final_html
-    
-    else:
-        # Fallback to basic comparison tearsheet
-        print("No enhanced report found, generating basic comparison tearsheet")
-        return generate_basic_comparison_tearsheet()
-
-def generate_basic_comparison_tearsheet():
+def generate_basic_tearsheet(backtest_data, live_data):
     """Generate a basic comparison tearsheet when enhanced report is not available"""
-    
-    # Load data
-    backtest = load_latest_backtest()
-    live = load_live_results()
     
     current_time = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
     
@@ -261,50 +254,50 @@ def generate_basic_comparison_tearsheet():
         
         <div class="section">
             <h2>📊 Backtest Results</h2>
-            {"<p class='status-error'>❌ " + backtest.get('error', '') + "</p>" if 'error' in backtest else f"""
+            {"<p class='status-error'>❌ " + backtest_data.get('error', '') + "</p>" if 'error' in backtest_data else f"""
             <div class="metrics-grid">
                 <div class="metric-card">
-                    <div class="metric-value status-good">{backtest.get('optimization_trials', 0)}</div>
+                    <div class="metric-value status-good">{backtest_data.get('optimization_trials', 0)}</div>
                     <div class="metric-label">Optimization Trials</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-value">{backtest.get('parameters', {}).get('RSI_PERIOD', 'N/A')}</div>
+                    <div class="metric-value">{backtest_data.get('parameters', {}).get('RSI_PERIOD', 'N/A')}</div>
                     <div class="metric-label">RSI Period</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-value">{backtest.get('parameters', {}).get('MA_FAST_PERIOD', 'N/A')}</div>
+                    <div class="metric-value">{backtest_data.get('parameters', {}).get('MA_FAST_PERIOD', 'N/A')}</div>
                     <div class="metric-label">Fast MA</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-value">{backtest.get('parameters', {}).get('MA_SLOW_PERIOD', 'N/A')}</div>
+                    <div class="metric-value">{backtest_data.get('parameters', {}).get('MA_SLOW_PERIOD', 'N/A')}</div>
                     <div class="metric-label">Slow MA</div>
                 </div>
             </div>
             <h3>Optimized Parameters:</h3>
-            <pre>{json.dumps(backtest.get('parameters', {}), indent=2)}</pre>
+            <pre>{json.dumps(backtest_data.get('parameters', {}), indent=2)}</pre>
             <h3>Best Metrics:</h3>
-            <pre>{json.dumps(backtest.get('metrics', {}), indent=2)}</pre>
+            <pre>{json.dumps(backtest_data.get('metrics', {}), indent=2)}</pre>
             """}
         </div>
         
         <div class="section">
             <h2>🔴 Live Trading Results</h2>
-            {"<p class='status-error'>❌ " + live.get('error', '') + "</p>" if 'error' in live else f"""
+            {"<p class='status-error'>❌ " + live_data.get('error', '') + "</p>" if 'error' in live_data else f"""
             <div class="metrics-grid">
                 <div class="metric-card">
-                    <div class="metric-value status-good">{live.get('metadata', {}).get('total_cycles', 0)}</div>
+                    <div class="metric-value status-good">{live_data.get('metadata', {}).get('total_cycles', 0)}</div>
                     <div class="metric-label">Total Cycles</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-value">{live.get('metadata', {}).get('total_signals', 0)}</div>
+                    <div class="metric-value">{live_data.get('metadata', {}).get('total_signals', 0)}</div>
                     <div class="metric-label">Signals Generated</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-value">{live.get('metadata', {}).get('total_trades', 0)}</div>
+                    <div class="metric-value">{live_data.get('metadata', {}).get('total_trades', 0)}</div>
                     <div class="metric-label">Trades Executed</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-value">{(live.get('metadata', {}).get('total_signals', 0) / max(live.get('metadata', {}).get('total_cycles', 1), 1) * 100):.1f}%</div>
+                    <div class="metric-value">{(live_data.get('metadata', {}).get('total_signals', 0) / max(live_data.get('metadata', {}).get('total_cycles', 1), 1) * 100):.1f}%</div>
                     <div class="metric-label">Signal Rate</div>
                 </div>
             </div>
@@ -317,14 +310,14 @@ def generate_basic_comparison_tearsheet():
                     <th>Confidence</th>
                     <th>Status</th>
                 </tr>
-                {generate_cycle_rows(live.get('recent_cycles', []))}
+                {generate_cycle_rows(live_data.get('recent_cycles', []))}
             </table>
             """}
         </div>
         
         <div class="section">
             <h2>⚖️ Comparison Analysis</h2>
-            {generate_comparison_analysis(backtest, live)}
+            {generate_comparison_analysis(backtest_data, live_data)}
         </div>
         
         <div class="section">

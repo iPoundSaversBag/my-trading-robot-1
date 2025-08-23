@@ -1,7 +1,0 @@
-{
-  "monitoring_enabled": true,
-  "check_interval_seconds": 30,
-  "alert_cooldown_minutes": 15,
-  "email_alerts": false,
-  "file_alerts": true
-}

@@ -48,12 +48,13 @@ def test_configuration_fixes():
             print(f"  • Files checked: {len(audit_data.get('files_checked', []))}")
             print(f"  • Missing files: {len(audit_data.get('missing_configurations', []))}")
             print(f"  • Config health: {audit_data.get('configuration_health_score', 0):.1%}")
-        
-        return result.get('system_ready', False)
-        
+
+        # Assertions
+        assert isinstance(result, dict)
+        assert result.get('system_ready', False) is True, 'System not ready per enhanced_configuration_validator()'
     except Exception as e:
         print(f"❌ Configuration test failed: {e}")
-        return False
+        raise
 
 if __name__ == "__main__":
     success = test_configuration_fixes()

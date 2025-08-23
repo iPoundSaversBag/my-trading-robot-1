@@ -9,6 +9,9 @@ import sys
 import os
 from pathlib import Path
 
+# Add project root to path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 class WatcherHook:
     def __init__(self):
         self.base_dir = Path(__file__).parent
@@ -37,6 +40,7 @@ class WatcherHook:
                 
         except Exception as e:
             print(f"❌ Error triggering parameter sync: {e}")
+            return False
     
     def start_continuous_monitoring(self):
         """Start continuous monitoring using unified monitor"""

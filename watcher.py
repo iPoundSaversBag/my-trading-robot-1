@@ -381,68 +381,10 @@ def parse_analysis(analysis_output):
     return params_hitting_limits
 
 def update_config_bounds(params_to_update):
-    """
-    Reads, updates, and writes the optimization_config.json file.
-    It widens the bounds for the parameters that were flagged by the analysis.
-    """
-    if not params_to_update:
-        print("\nNo parameters flagged for adjustment. Bounds are optimal for now.")
-        return False
-
-    print(f"\n--- Updating bounds in {CONFIG_FILE} ---")
-    
-    try:
-        with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-            config = json5.load(f)
-    except Exception as e:
-        print(f"ERROR: Could not read or parse {CONFIG_FILE}: {e}")
-        return False
-
-    config_was_changed = False
-    
-    # Iterate through all parameter space groups
-    for space_group in config.get('parameter_spaces', {}).values():
-        if isinstance(space_group, list):
-            for param_info in space_group:
-                param_name = param_info.get('name')
-                if param_name in params_to_update:
-                    limit_hit = params_to_update[param_name]
-                    current_bounds = param_info['bounds']
-                    param_type = param_info.get('type', 'real')
-                    hard_min, hard_max = param_info.get('hard_bounds', [float('-inf'), float('inf')])
-                    
-                    print(f"  - Adjusting '{param_name}' | Current: {current_bounds} | Hard: [{hard_min}, {hard_max}]")
-
-                    original_bounds = list(current_bounds)
-
-                    if limit_hit == 'MAX':
-                        new_max = current_bounds[1] * (1 + ADJUSTMENT_FACTOR)
-                        new_max = min(new_max, hard_max)
-                        current_bounds[1] = int(new_max) if param_type.lower() == 'integer' else round(new_max, 4)
-                    elif limit_hit == 'MIN':
-                        new_min = current_bounds[0] * (1 - ADJUSTMENT_FACTOR)
-                        new_min = max(1.0, new_min) if "PERIOD" in param_name.upper() else max(0.0, new_min)
-                        new_min = max(new_min, hard_min)
-                        current_bounds[0] = int(new_min) if param_type.lower() == 'integer' else round(new_min, 4)
-                    
-                    if original_bounds != current_bounds:
-                        config_was_changed = True
-                        print(f"    New Bounds -> {current_bounds}")
-                    else:
-                        print(f"    Bounds for '{param_name}' are at their hard limit.")
-
-    if not config_was_changed:
-        print("No meaningful bound updates could be made.")
-        return False
-
-    try:
-        with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
-            json.dump(config, f, indent=4)
-        print(f"Successfully updated bounds in {CONFIG_FILE}.")
-        return True
-    except Exception as e:
-        print(f"ERROR: Could not write updated {CONFIG_FILE}: {e}")
-        return False
+    """Deprecated: Bounds auto-adjustment now handled internally by backtest.analyze_and_update_parameter_bounds().
+    This stub remains to avoid import/runtime errors from legacy calls and will be removed in a future cleanup phase."""
+    print("[INFO] update_config_bounds() is deprecated; skipping (single-writer backtest handles bounds).")
+    return False
 
 # [REMOVED] Functions for local bot management are no longer needed.
 
@@ -606,15 +548,9 @@ def main_loop(args):
         # --- Roo Fix: Run backtest as a separate, isolated process ---
         backtest_command = [
             sys.executable, "core/backtest.py",
-            '--config', args.config,
-            '--intensity', str(args.intensity),
-            '--runs-to-keep', str(args.runs_to_keep),
-            '--optimizer', args.optimizer
+            '--config', args.config
         ]
-        if args.no_warmup: backtest_command.append('--no-warmup')
-        if args.min_trades: backtest_command.extend(['--min-trades', str(args.min_trades)])
         if args.debug: backtest_command.append('--debug')
-        if args.no_numba: backtest_command.append('--no-numba')
 
         log_message(f"Executing command: {' '.join(backtest_command)}", 'watcher')
         
@@ -848,12 +784,16 @@ if __name__ == "__main__":
         
         if missing_files:
             print(f"⚠️ Health check found missing data files: {missing_files}")
-            # Try to download missing data
-            print("🔄 Attempting to download missing data...")
-            if not download_data(args):
-                print("❌ Failed to download missing data")
+            # Try to download missing data only if download is not skipped
+            if not args.skip_download:
+                print("🔄 Attempting to download missing data...")
+                if not download_data(args):
+                    print("❌ Failed to download missing data")
+                else:
+                    print("✅ Data download completed")
             else:
-                print("✅ Data download completed")
+                print("⏭️ Skipping data download due to --skip-download flag")
+                print("💡 Use 'python watcher.py --mode download' to fetch missing data")
         else:
             print("✅ System health check passed - all essential data files available")
             
@@ -929,8 +869,10 @@ if __name__ == "__main__":
                 
                 # Trigger automated parameter sync to live bot
                 try:
-                    from watcher_hook import on_backtest_complete
-                    sync_success = on_backtest_complete(results['run_directory'], results)
+                    # Note: watcher_hook functionality consolidated
+                    # Using automated_pipeline.py instead
+                    from automated_pipeline import sync_backtest_results_to_live
+                    sync_success = sync_backtest_results_to_live(results['run_directory'], results)
                     if sync_success:
                         print("🔄 Live bot parameters automatically updated!")
                     else:
@@ -956,7 +898,9 @@ if __name__ == "__main__":
             print("🚀 Starting live bot monitoring...")
             print("📡 Live bot is running on Vercel - starting local monitoring")
             
-            from unified_live_monitor import start_monitoring
+            # Note: unified_live_monitor functionality consolidated
+            # Using live_trading/state_updater.py instead
+            from live_trading.state_updater import start_monitoring
             start_monitoring()  # Monitor indefinitely
             
         elif args.mode == 'download':
