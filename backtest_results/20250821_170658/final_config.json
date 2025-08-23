@@ -1,0 +1,373 @@
+{
+    "optimizer": "bayesian",
+    "optimization_enabled": true,
+    "regime_analysis_enabled": true,
+    "training_days": 60,
+    "testing_days": 15,
+    "max_optimization_trials": 50,
+    "optimization_timeout": 180,
+    "data_settings": {
+        "file_path": "data/crypto_data_5m.parquet",
+        "symbol": "BTCUSDT",
+        "timeframe": "5m",
+        "start_date": "2021-01-01",
+        "end_date": "2025-12-31",
+        "multi_timeframe_enabled": true,
+        "timeframe_files": {
+            "5m": "data/crypto_data_5m.parquet",
+            "15m": "data/crypto_data_15m.parquet",
+            "1h": "data/crypto_data_1h.parquet",
+            "4h": "data/crypto_data_4h.parquet"
+        },
+        "primary_timeframe": "5m",
+        "signal_timeframes": [
+            "15m",
+            "1h",
+            "4h"
+        ]
+    },
+    "fixed_parameters": {
+        "initial_capital": 10000,
+        "commission": 0.001,
+        "slippage": 0.0005,
+        "max_position_size": 0.25
+    },
+    "parameter_ranges": {
+        "ichimoku_conversion": [
+            9,
+            30
+        ],
+        "ichimoku_base": [
+            26,
+            60
+        ],
+        "ichimoku_leading_span_b": [
+            52,
+            120
+        ],
+        "rsi_period": [
+            10,
+            30
+        ],
+        "rsi_overbought": [
+            65,
+            85
+        ],
+        "rsi_oversold": [
+            15,
+            35
+        ],
+        "adx_period": [
+            10,
+            30
+        ],
+        "adx_threshold": [
+            20,
+            40
+        ],
+        "bb_period": [
+            15,
+            30
+        ],
+        "bb_std": [
+            1.5,
+            2.5
+        ],
+        "stop_loss_pct": [
+            0.5,
+            3.0
+        ],
+        "take_profit_pct": [
+            1.0,
+            5.0
+        ],
+        "position_size_pct": [
+            1.0,
+            25.0
+        ]
+    },
+    "regime_parameters": {
+        "regime_auto_tune": true,
+        "regime_tune_every": 2,
+        "regime_min_trades": 8,
+        "regime_ema_alpha": 0.4,
+        "min_regime_mult": 0.4,
+        "max_regime_mult": 1.8,
+        "regime_step": 0.05,
+        "regime_window_size": 50,
+        "regime_confidence_threshold": 0.7
+    },
+    "best_parameters_so_far": {
+        "ichimoku_conversion": 14,
+        "ichimoku_base": 36,
+        "ichimoku_leading_span_b": 72,
+        "rsi_period": 18,
+        "rsi_overbought": 75,
+        "rsi_oversold": 25,
+        "adx_period": 18,
+        "adx_threshold": 28,
+        "bb_period": 22,
+        "bb_std": 2.1,
+        "stop_loss_pct": 1.8,
+        "take_profit_pct": 3.2,
+        "position_size_pct": 12.5,
+        "last_updated": "2025-08-20",
+        "performance_score": 1.87,
+        "sharpe_ratio": 1.42
+    },
+    "warm_start_enabled": true,
+    "regime_multipliers": {
+        "trending_up": 1.2,
+        "trending_down": 0.8,
+        "sideways": 1.0,
+        "high_volatility": 0.6,
+        "low_volatility": 1.1
+    },
+    "machine_learning": {
+        "enabled": true,
+        "model_type": "ensemble",
+        "feature_engineering": {
+            "technical_indicators": true,
+            "price_patterns": true,
+            "volume_analysis": true,
+            "regime_classification": true
+        },
+        "ensemble_models": {
+            "random_forest": {
+                "enabled": true,
+                "n_estimators": 100,
+                "max_depth": 10,
+                "min_samples_split": 5
+            },
+            "gradient_boosting": {
+                "enabled": true,
+                "n_estimators": 100,
+                "learning_rate": 0.1,
+                "max_depth": 6
+            },
+            "neural_network": {
+                "enabled": false,
+                "hidden_layers": [
+                    64,
+                    32,
+                    16
+                ],
+                "dropout_rate": 0.2,
+                "epochs": 100
+            }
+        },
+        "training_config": {
+            "test_size": 0.2,
+            "validation_size": 0.2,
+            "cross_validation_folds": 5,
+            "feature_importance_threshold": 0.01
+        }
+    },
+    "bot_settings": {
+        "trading_enabled": false,
+        "paper_trading": true,
+        "max_concurrent_trades": 3,
+        "min_trade_interval_minutes": 15,
+        "emergency_stop_enabled": true,
+        "max_daily_loss_pct": 5.0,
+        "trading_hours": {
+            "enabled": false,
+            "start_hour": 9,
+            "end_hour": 17,
+            "timezone": "UTC"
+        },
+        "risk_management": {
+            "max_portfolio_risk": 0.02,
+            "correlation_limit": 0.7,
+            "drawdown_limit": 0.15
+        }
+    },
+    "optimization_settings": {
+        "max_iterations": 500,
+        "population_size": 50,
+        "convergence_threshold": 0.001,
+        "timeout_minutes": 120,
+        "parallel_workers": 4,
+        "parallel_optimization": true,
+        "n_jobs": "auto",
+        "optimization_algorithm": "bayesian",
+        "objective_function": "sharpe_ratio",
+        "intensity": "3",
+        "hybrid_optimization": {
+            "enabled": true,
+            "exploration_fraction": 0.4,
+            "min_explore_trials": 20,
+            "min_refine_trials": 30,
+            "bayesian_seed_top_k": 8
+        },
+        "adaptive_parallel": {
+            "enabled": true,
+            "min_workers": 2,
+            "max_workers": 8,
+            "scale_factor": 0.7,
+            "memory_safety_ratio": 0.75,
+            "spare_cores": 1,
+            "throughput_improvement_threshold": 0.05
+        },
+        "seed_diversity": {
+            "enabled": true,
+            "min_distance": 0.15,
+            "max_seeds": 8
+        },
+        "calls_per_window": {
+            "1": 10,
+            "2": 25,
+            "3": 50,
+            "4": 100,
+            "5": 200
+        },
+        "min_trials_before_pruning": {
+            "1": 5,
+            "2": 10,
+            "3": 15,
+            "4": 20,
+            "5": 25
+        },
+        "pruning_warmup_steps": {
+            "1": 3,
+            "2": 5,
+            "3": 8,
+            "4": 10,
+            "5": 15
+        },
+        "disable_pruning": true,
+        "constraints": {
+            "min_trades": 10,
+            "max_drawdown": 0.25,
+            "min_profit_factor": 1.1
+        }
+    },
+    "debug_settings": {
+        "enable_correlation_analysis": true,
+        "save_trial_data": true,
+        "skip_parameter_comparison": false,
+        "force_trial_data_save": true
+    },
+    "walk_forward_settings": {
+        "training_days": 180,
+        "testing_days": 45,
+        "minimum_windows": 1,
+        "overlap_days": 0
+    },
+    "output_settings": {
+        "base_output_dir": "backtest_results",
+        "runs_to_keep": 10,
+        "save_detailed_results": true,
+        "save_trade_history": true
+    },
+    "parameter_spaces": {
+        "technical_indicators": [
+            {
+                "name": "TENKAN_SEN_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    4,
+                    14
+                ]
+            },
+            {
+                "name": "KIJUN_SEN_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    15,
+                    35
+                ]
+            },
+            {
+                "name": "SENKOU_SPAN_B_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    30,
+                    70
+                ]
+            },
+            {
+                "name": "RSI_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    10,
+                    30
+                ]
+            },
+            {
+                "name": "RSI_OVERBOUGHT",
+                "type": "real",
+                "bounds": [
+                    65.0,
+                    85.0
+                ]
+            },
+            {
+                "name": "RSI_OVERSOLD",
+                "type": "real",
+                "bounds": [
+                    15.0,
+                    35.0
+                ]
+            },
+            {
+                "name": "ADX_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    10,
+                    30
+                ]
+            },
+            {
+                "name": "ADX_THRESHOLD",
+                "type": "real",
+                "bounds": [
+                    20.0,
+                    40.0
+                ]
+            },
+            {
+                "name": "BBANDS_PERIOD",
+                "type": "integer",
+                "bounds": [
+                    15,
+                    30
+                ]
+            },
+            {
+                "name": "BBANDS_STD",
+                "type": "real",
+                "bounds": [
+                    1.5,
+                    2.5
+                ]
+            }
+        ],
+        "risk_management": [
+            {
+                "name": "STOP_LOSS_MULTIPLIER",
+                "type": "real",
+                "bounds": [
+                    0.5,
+                    3.0
+                ]
+            },
+            {
+                "name": "TAKE_PROFIT_MULTIPLIER",
+                "type": "real",
+                "bounds": [
+                    1.0,
+                    5.0
+                ]
+            },
+            {
+                "name": "POSITION_SIZE_PCT",
+                "type": "real",
+                "bounds": [
+                    1.0,
+                    25.0
+                ]
+            }
+        ]
+    }
+}

@@ -8,6 +8,8 @@ import sys
 import os
 import time
 import traceback
+import pandas as pd  # used in data standardizer test
+import numpy as np   # used in data standardizer test
 
 # Add current directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -38,19 +40,14 @@ def test_configuration_manager():
         assert validated['FIXED_RISK_PERCENTAGE'] <= 1.0
         print("   ✅ Configuration validation working")
         
-        return True
-        
     except Exception as e:
         print(f"   ❌ ConfigurationManager test failed: {e}")
-        return False
+        raise
 
 def test_data_standardizer():
     """Test DataStandardizer functionality."""
     print("📊 Testing DataStandardizer...")
-    
     try:
-        import pandas as pd
-        import numpy as np
         from utilities.utils import data_standardizer
         
         # Test DataFrame standardization
@@ -90,11 +87,9 @@ def test_data_standardizer():
         assert pd.api.types.is_datetime64_any_dtype(standardized_time['timestamp'])
         print("   ✅ Timestamp standardization working")
         
-        return True
-        
     except Exception as e:
         print(f"   ❌ DataStandardizer test failed: {e}")
-        return False
+        raise
 
 def test_event_system():
     """Test EventManager functionality."""
@@ -130,11 +125,9 @@ def test_event_system():
         assert 'test_event' in stats['event_types']
         print("   ✅ Event statistics working")
         
-        return True
-        
     except Exception as e:
         print(f"   ❌ EventManager test failed: {e}")
-        return False
+        raise
 
 def test_module_communication():
     """Test ModuleCommunicator functionality."""
@@ -168,11 +161,9 @@ def test_module_communication():
         assert result == "fallback"
         print("   ✅ Error handling with fallback working")
         
-        return True
-        
     except Exception as e:
         print(f"   ❌ ModuleCommunicator test failed: {e}")
-        return False
+        raise
 
 def test_performance_monitoring():
     """Test PerformanceMonitor functionality."""
@@ -194,11 +185,9 @@ def test_performance_monitoring():
         assert 0.150 < stats['avg_time'] < 0.170  # Average should be ~0.1625
         print("   ✅ Performance monitoring working")
         
-        return True
-        
     except Exception as e:
         print(f"   ❌ PerformanceMonitor test failed: {e}")
-        return False
+        raise
 
 def test_error_recovery():
     """Test ErrorRecoveryManager functionality."""
@@ -233,11 +222,9 @@ def test_error_recovery():
         assert stats['recovery_rate'] > 0
         print("   ✅ Error statistics working")
         
-        return True
-        
     except Exception as e:
         print(f"   ❌ ErrorRecoveryManager test failed: {e}")
-        return False
+        raise
 
 def test_health_monitoring():
     """Test IntegrationHealthMonitor functionality."""
@@ -271,12 +258,9 @@ def test_health_monitoring():
         trend = integration_health_monitor.get_health_trend(hours=1)
         assert 'trend' in trend
         print("   ✅ Health trend analysis working")
-        
-        return True
-        
     except Exception as e:
         print(f"   ❌ IntegrationHealthMonitor test failed: {e}")
-        return False
+        raise
 
 def test_integration_with_core_modules():
     """Test integration with actual core modules."""
@@ -301,12 +285,10 @@ def test_integration_with_core_modules():
         assert isinstance(result, bool)
         print("   ✅ Enhanced auto-fix config working")
         
-        return True
-        
     except Exception as e:
         print(f"   ❌ Core module integration test failed: {e}")
         traceback.print_exc()
-        return False
+        raise
 
 def run_comprehensive_integration_test():
     """Run comprehensive integration test suite."""
@@ -327,25 +309,24 @@ def run_comprehensive_integration_test():
     
     passed = 0
     failed = 0
-    
+
     for test_func in test_functions:
         try:
-            if test_func():
-                passed += 1
-            else:
-                failed += 1
+            test_func()
+            passed += 1
         except Exception as e:
-            print(f"❌ Test {test_func.__name__} crashed: {e}")
+            print(f"❌ Test {test_func.__name__} failed: {e}")
             failed += 1
         print()
-    
+
     print("=" * 60)
     print("📊 TEST RESULTS SUMMARY")
     print("=" * 60)
     print(f"✅ PASSED: {passed}")
     print(f"❌ FAILED: {failed}")
-    print(f"📈 SUCCESS RATE: {(passed / (passed + failed)) * 100:.1f}%")
-    
+    total = passed + failed if (passed + failed) > 0 else 1
+    print(f"📈 SUCCESS RATE: {(passed / total) * 100:.1f}%")
+
     if failed == 0:
         print("\n🎉 ALL TESTS PASSED! Phase 3 Integration Optimization is complete and functional.")
         return True

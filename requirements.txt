@@ -1,1 +1,15 @@
 requests
+pandas
+numpy
+scikit-learn
+joblib
+pyarrow
+ta
+pytest
+json5
+ccxt
+matplotlib
+tqdm
+numba
+scikit-optimize
+imbalanced-learn

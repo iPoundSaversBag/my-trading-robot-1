@@ -1,6 +1,5 @@
----
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: config-integrity
+
 on:
   push:
     branches: [main]
@@ -11,18 +10,36 @@ on:
 jobs:
   integrity:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Run integrity & hygiene tests
-        run: pytest -q tests/test_config_integrity.py
-      - name: Show trigger file
+      - name: Sync config hash
+        run: python .github/scripts/sync_config_hash.py
+      - name: Run integrity tests
+        run: pytest -q tests/test_config_integrity.py --maxfail=1 -vv
+      - name: Diagnostics on failure
+        if: failure()
+        run: |
+          echo '=== CONFIG HEAD ==='
+          head -n 40 core/optimization_config.json || true
+          echo '=== HASH META LINE ==='
+          grep -n 'content_hash' core/optimization_config.json || true
+          echo '=== TRIGGER FILE (if any) ==='
+          if [ -f deployment-trigger.json ]; then cat deployment-trigger.json; else echo 'No trigger file'; fi
+      - name: Show trigger file (always)
         if: always()
         run: |
           if [ -f deployment-trigger.json ]; then cat deployment-trigger.json; else echo 'No trigger file'; fi

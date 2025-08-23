@@ -1,0 +1,12 @@
+{
+  "config": "core/optimization_config.json",
+  "baseline_metrics_file": null,
+  "ml_metrics_file": null,
+  "baseline_duration_sec": 4.211284160614014,
+  "ml_duration_sec": 0.0,
+  "baseline_metrics_extracted": {},
+  "ml_metrics_extracted": {},
+  "pnl_delta_report": {},
+  "regime_entropy": {},
+  "timestamp": "2025-08-22 17:02:34"
+}

@@ -1,0 +1,191 @@
+{
+  "catastrophic": [
+    {
+      "fault": "COMPLETE_REGIME_DETECTION_FAILURE",
+      "regime": "BREAKOUT_BULLISH",
+      "severity": "CATASTROPHIC",
+      "precision": 0.0,
+      "impact": "NEVER detects BREAKOUT_BULLISH - complete blind spot",
+      "backtest_impact": "CATASTROPHIC - Will use wrong parameters during BREAKOUT_BULLISH periods"
+    },
+    {
+      "fault": "COMPLETE_BREAKOUT_BLINDNESS",
+      "breakout_type": "BREAKOUT_BULLISH",
+      "severity": "CATASTROPHIC",
+      "precision": 0.0,
+      "impact": "NEVER detects bullish breakouts - misses all major profit opportunities",
+      "backtest_impact": "CATASTROPHIC - Conservative parameters during explosive moves = missed profits",
+      "financial_impact": "Could miss 50-200% gains during bull breakouts"
+    },
+    {
+      "fault": "BREAKOUT_STRATEGY_FAILURE",
+      "severity": "CATASTROPHIC",
+      "impact": "Complete failure to implement breakout trading strategies",
+      "backtest_impact": "CATASTROPHIC - Backtesting will show artificially poor performance for breakout strategies",
+      "recommendation": "DO NOT USE for breakout-dependent strategies"
+    }
+  ],
+  "critical": [
+    {
+      "fault": "BELOW_RANDOM_ACCURACY",
+      "model": "Enhanced Model",
+      "severity": "CRITICAL",
+      "value": 0.453,
+      "impact": "Worse than random chance - will cause systematic losses in backtesting",
+      "backtest_impact": "CATASTROPHIC - Wrong regime detection leads to wrong parameters"
+    },
+    {
+      "fault": "POOR_MINORITY_CLASS_PERFORMANCE",
+      "model": "Enhanced Model",
+      "severity": "CRITICAL",
+      "value": 0.30250771596324566,
+      "impact": "Critical regimes (breakouts, high volatility) poorly detected",
+      "backtest_impact": "CRITICAL - Missing dangerous/profitable regimes causes major losses"
+    },
+    {
+      "fault": "BELOW_RANDOM_ACCURACY",
+      "model": "Ensemble Model",
+      "severity": "CRITICAL",
+      "value": 0.474,
+      "impact": "Worse than random chance - will cause systematic losses in backtesting",
+      "backtest_impact": "CATASTROPHIC - Wrong regime detection leads to wrong parameters"
+    },
+    {
+      "fault": "POOR_MINORITY_CLASS_PERFORMANCE",
+      "model": "Ensemble Model",
+      "severity": "CRITICAL",
+      "value": 0.26776319458706094,
+      "impact": "Critical regimes (breakouts, high volatility) poorly detected",
+      "backtest_impact": "CRITICAL - Missing dangerous/profitable regimes causes major losses"
+    },
+    {
+      "fault": "CRITICAL_REGIME_POOR_DETECTION",
+      "regime": "BREAKOUT_BEARISH",
+      "severity": "CRITICAL",
+      "precision": 0.1,
+      "impact": "Only 10.0% precision for BREAKOUT_BEARISH",
+      "backtest_impact": "CRITICAL - Wrong parameters 80%+ of time during BREAKOUT_BEARISH"
+    },
+    {
+      "fault": "POOR_BREAKOUT_DETECTION",
+      "breakout_type": "BREAKOUT_BEARISH",
+      "severity": "CRITICAL",
+      "precision": 0.1,
+      "impact": "Only 10.0% breakout detection accuracy",
+      "backtest_impact": "CRITICAL - Wrong risk parameters during volatile breakouts",
+      "financial_impact": "Potential for major losses during undetected bearish breakouts"
+    },
+    {
+      "fault": "EXTREME_CLASS_UNDERREPRESENTATION",
+      "regime": "BREAKOUT_BULLISH",
+      "severity": "CRITICAL",
+      "ratio": 0.005,
+      "impact": "Only 0.5% representation - model can't learn pattern",
+      "backtest_impact": "CRITICAL - Will almost never predict this regime correctly"
+    },
+    {
+      "fault": "HIGH_PREDICTION_UNRELIABILITY",
+      "model": "Enhanced Model",
+      "severity": "CRITICAL",
+      "unreliability": 0.6974922840367543,
+      "impact": "69.7% unreliable predictions",
+      "backtest_impact": "CRITICAL - Parameter changes cause unstable backtest results"
+    },
+    {
+      "fault": "HIGH_PREDICTION_UNRELIABILITY",
+      "model": "Ensemble Model",
+      "severity": "CRITICAL",
+      "unreliability": 0.7322368054129391,
+      "impact": "73.2% unreliable predictions",
+      "backtest_impact": "CRITICAL - Parameter changes cause unstable backtest results"
+    }
+  ],
+  "high": [
+    {
+      "fault": "LOW_OVERALL_ACCURACY",
+      "model": "Enhanced Model",
+      "severity": "HIGH",
+      "value": 0.453,
+      "impact": "Only 45-47% correct regime detection - frequent parameter misalignment",
+      "backtest_impact": "HIGH - Risk/reward parameters set for wrong market conditions"
+    },
+    {
+      "fault": "LOW_OVERALL_ACCURACY",
+      "model": "Ensemble Model",
+      "severity": "HIGH",
+      "value": 0.474,
+      "impact": "Only 45-47% correct regime detection - frequent parameter misalignment",
+      "backtest_impact": "HIGH - Risk/reward parameters set for wrong market conditions"
+    },
+    {
+      "fault": "INSUFFICIENT_TRAINING_DATA",
+      "regime": "BREAKOUT_BULLISH",
+      "severity": "HIGH",
+      "samples": 5,
+      "impact": "Only 5 training samples - unreliable detection",
+      "backtest_impact": "HIGH - Unpredictable behavior during BREAKOUT_BULLISH periods"
+    },
+    {
+      "fault": "INSUFFICIENT_TRAINING_DATA",
+      "regime": "BREAKOUT_BEARISH",
+      "severity": "HIGH",
+      "samples": 15,
+      "impact": "Only 15 training samples - unreliable detection",
+      "backtest_impact": "HIGH - Unpredictable behavior during BREAKOUT_BEARISH periods"
+    },
+    {
+      "fault": "SEVERE_CLASS_UNDERREPRESENTATION",
+      "regime": "BREAKOUT_BEARISH",
+      "severity": "HIGH",
+      "ratio": 0.015,
+      "impact": "Only 1.5% representation - unreliable detection",
+      "backtest_impact": "HIGH - Inconsistent detection leads to parameter instability"
+    },
+    {
+      "fault": "EXTREME_MEMORY_OVERHEAD",
+      "model": "Ensemble Model",
+      "severity": "HIGH",
+      "overhead": 22.45,
+      "impact": "2245% memory increase will significantly slow backtesting",
+      "backtest_impact": "HIGH - Much slower optimization, potential memory issues"
+    },
+    {
+      "fault": "UNEVEN_CLASS_PERFORMANCE",
+      "model": "Enhanced Model",
+      "severity": "HIGH",
+      "divergence": 0.15049228403675435,
+      "impact": "Performance varies wildly between regimes",
+      "backtest_impact": "HIGH - Some regimes detected well, others ignored completely"
+    },
+    {
+      "fault": "UNEVEN_CLASS_PERFORMANCE",
+      "model": "Ensemble Model",
+      "severity": "HIGH",
+      "divergence": 0.20623680541293904,
+      "impact": "Performance varies wildly between regimes",
+      "backtest_impact": "HIGH - Some regimes detected well, others ignored completely"
+    }
+  ],
+  "medium": [
+    {
+      "fault": "EXCESSIVE_MEMORY_OVERHEAD",
+      "model": "Enhanced Model",
+      "severity": "MEDIUM",
+      "overhead": 6.85,
+      "impact": "685% memory increase may slow backtesting",
+      "backtest_impact": "MEDIUM - Slower optimization, more memory pressure"
+    }
+  ],
+  "recommendations": [
+    "URGENT: Implement rule-based breakout detection as fallback",
+    "Collect 10x more breakout training data before ML deployment",
+    "Use ensemble voting with current ML system for better accuracy",
+    "Implement confidence thresholds - use rule-based when ML uncertain",
+    "Use hybrid approach: ML for common regimes, rules for rare regimes",
+    "Implement A/B testing: 50% enhanced ML, 50% current system",
+    "Monitor regime detection accuracy in live backtesting",
+    "Set up automatic fallback to current system if ML performance degrades",
+    "Deploy enhanced ML only for LOW_VOLATILITY and RANGING regimes initially",
+    "Keep current system for all critical regimes (breakouts, high volatility)"
+  ]
+}

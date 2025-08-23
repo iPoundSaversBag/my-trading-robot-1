@@ -1,0 +1,89 @@
+{
+  "system_name": "Complete 9-Regime ML System",
+  "version": "2.0",
+  "created_date": "2025-08-21T19:47:20.495202",
+  "purpose": "Comprehensive ML system covering all 9 market regimes",
+  "regime_coverage": {
+    "TRENDING_BULL": "15% of training data",
+    "TRENDING_BEAR": "15% of training data",
+    "RANGING": "20% of training data",
+    "HIGH_VOLATILITY": "15% of training data",
+    "LOW_VOLATILITY": "20% of training data",
+    "BREAKOUT_BULLISH": "5% of training data",
+    "BREAKOUT_BEARISH": "5% of training data",
+    "ACCUMULATION": "3% of training data",
+    "DISTRIBUTION": "2% of training data"
+  },
+  "models": {
+    "volatility_predictor": {
+      "target": "volatility_score",
+      "purpose": "Predict volatility level (0-1)",
+      "helps_regimes": [
+        "HIGH_VOLATILITY",
+        "LOW_VOLATILITY"
+      ]
+    },
+    "trend_strength_assessor": {
+      "target": "trend_strength",
+      "purpose": "Assess trend strength (0-1)",
+      "helps_regimes": [
+        "TRENDING_BULL",
+        "TRENDING_BEAR"
+      ]
+    },
+    "momentum_analyzer": {
+      "target": "momentum_direction",
+      "purpose": "Analyze momentum (-1 to 1)",
+      "helps_regimes": [
+        "BREAKOUT_BULLISH",
+        "BREAKOUT_BEARISH"
+      ]
+    },
+    "accumulation_detector": {
+      "target": "accumulation_score",
+      "purpose": "Detect accumulation patterns (0-1)",
+      "helps_regimes": [
+        "ACCUMULATION",
+        "DISTRIBUTION"
+      ]
+    },
+    "range_analyzer": {
+      "target": "range_bound_score",
+      "purpose": "Analyze range-bound behavior (0-1)",
+      "helps_regimes": [
+        "RANGING"
+      ]
+    },
+    "risk_assessor": {
+      "target": "risk_score",
+      "purpose": "Overall market risk assessment (0-1)",
+      "helps_regimes": [
+        "ALL"
+      ]
+    }
+  },
+  "feature_count": 23,
+  "advantages": [
+    "Covers all 9 market regimes properly",
+    "Specialized models for different market aspects",
+    "Balanced training data distribution",
+    "Continuous scores instead of brittle classifications",
+    "Integrates with existing regime detection",
+    "Avoids catastrophic breakout detection failures"
+  ],
+  "integration_strategy": [
+    "Use ML scores to enhance rule-based regime detection",
+    "Volatility predictor improves position sizing",
+    "Trend strength assessor optimizes trend following",
+    "Momentum analyzer enhances entry/exit timing",
+    "Risk assessor improves overall risk management",
+    "Accumulation detector identifies smart money flow"
+  ],
+  "deployment_approach": [
+    "Gradual rollout with A/B testing",
+    "Monitor performance vs existing system",
+    "Use as enhancement, not replacement",
+    "Maintain rule-based fallbacks",
+    "Focus on improving existing strengths"
+  ]
+}

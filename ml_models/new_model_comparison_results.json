@@ -1,0 +1,30 @@
+{
+  "comparison_timestamp": "2025-08-21T19:11:31.390200",
+  "models_tested": 2,
+  "test_description": "New ML models with advanced feature engineering",
+  "improvements_applied": [
+    "Advanced feature engineering (32 features vs 13)",
+    "Volume-price divergence analysis",
+    "Multi-timeframe momentum",
+    "Volatility regime detection",
+    "Breakout strength indicators",
+    "Order flow proxy features",
+    "Class weight balancing",
+    "Hyperparameter optimization",
+    "Ensemble methods"
+  ],
+  "results": {
+    "Enhanced Model": {
+      "accuracy": 0.453,
+      "macro_f1": 0.30250771596324566,
+      "weighted_f1": 0.43322214577723667,
+      "test_samples": 1000
+    },
+    "Ensemble Model": {
+      "accuracy": 0.474,
+      "macro_f1": 0.26776319458706094,
+      "weighted_f1": 0.4886006884265777,
+      "test_samples": 1000
+    }
+  }
+}

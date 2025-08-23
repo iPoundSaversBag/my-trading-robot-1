@@ -15,13 +15,35 @@ import json
 import os
 import requests
 import time
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-import subprocess
-import sys
+
+# Optional imports with fallbacks
+try:
+    import pandas as pd
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+
+try:
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    PLOTTING_AVAILABLE = True
+except ImportError:
+    PLOTTING_AVAILABLE = False
+
+# Add project root to path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+try:
+    from utilities.utils import EnhancedMonitor, WatcherHealthMonitor
+    from utilities.vercel_utils import sync_parameters_to_vercel
+except ImportError as e:
+    # Silently handle import errors for optional dependencies
+    EnhancedMonitor = None
+    WatcherHealthMonitor = None
+    sync_parameters_to_vercel = None
 
 class UnifiedLiveBotMonitor:
     def __init__(self):

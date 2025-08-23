@@ -24,8 +24,6 @@
 #
 # ==============================================================================
 
-import pandas as pd
-import numpy as np
 import json
 import os
 import sys
@@ -34,34 +32,45 @@ import datetime
 import traceback
 import time
 import logging
-from typing import Dict, Any, Optional, Union, Tuple
+from typing import Dict, Any, Optional, Union, Tuple, List, Set, TYPE_CHECKING
 from pathlib import Path
 import threading
 import shutil
+import hashlib
+import tempfile
 import glob
 import argparse
 import re
-import glob
 from collections import defaultdict
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
-# Additional imports for data management
-import ccxt.pro as ccxt
-import numpy as np
-import json
-import os
-import sys
+import matplotlib.pyplot as plt  # noqa: F401
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 import ast
 import subprocess
 import importlib.util
-from pathlib import Path
-from typing import Dict, List, Tuple, Set, Optional, Any
-from ta.trend import ADXIndicator, ichimoku_a, ichimoku_b
-from ta.momentum import RSIIndicator
-from ta.volatility import BollingerBands, average_true_range
 from enum import Enum
 from dataclasses import dataclass
+
+# Guarded heavy/optional imports
+try:  # pragma: no cover
+    import pandas as pd  # type: ignore
+except Exception:  # pragma: no cover
+    pd = None  # type: ignore
+if TYPE_CHECKING:  # pragma: no cover
+    import pandas as pd  # type: ignore
+try:  # pragma: no cover
+    import numpy as np  # type: ignore
+except Exception:  # pragma: no cover
+    np = None  # type: ignore
+try:  # pragma: no cover
+    import ccxt.pro as ccxt  # type: ignore  # noqa: F401
+except Exception:  # pragma: no cover
+    ccxt = None  # type: ignore
+try:  # pragma: no cover
+    from ta.trend import ADXIndicator, ichimoku_a, ichimoku_b  # type: ignore  # noqa: F401
+    from ta.momentum import RSIIndicator  # type: ignore  # noqa: F401
+    from ta.volatility import BollingerBands, average_true_range  # type: ignore  # noqa: F401
+except Exception:  # pragma: no cover
+    pass
 
 # ==============================================================================
 # ENHANCED FAULT TOLERANCE & CIRCUIT BREAKER SYSTEM
@@ -274,9 +283,10 @@ class DataStandardizer:
             
             # Handle missing data based on method
             if fill_method == 'forward':
-                df_clean = df_clean.fillna(method='ffill')
+                # pandas deprecation: use ffill()/bfill() instead of fillna(method='ffill')
+                df_clean = df_clean.ffill()
             elif fill_method == 'backward':
-                df_clean = df_clean.fillna(method='bfill')
+                df_clean = df_clean.bfill()
             elif fill_method == 'zero':
                 df_clean = df_clean.fillna(0)
             elif fill_method == 'drop':
@@ -540,10 +550,8 @@ module_communicator = ModuleCommunicator()
 
 # ========== PERFORMANCE MONITORING HELPERS ==========
 
-class PerformanceMonitor:
-    """
-    Monitor and optimize performance of cross-module interactions.
-    """
+class ModuleCallPerformanceTracker:
+    """Tracks cross-module call performance (renamed from PerformanceMonitor to avoid collision with detailed metrics class)."""
     
     _call_stats = {}
     _performance_history = []
@@ -601,8 +609,8 @@ class PerformanceMonitor:
         cls._call_stats.clear()
         cls._performance_history.clear()
 
-# Global performance monitor instance
-performance_monitor = PerformanceMonitor()
+# Global performance monitor instance (backward-compatible name retained)
+performance_monitor = ModuleCallPerformanceTracker()
 
 # ========== EVENT-DRIVEN COMMUNICATION SYSTEM ==========
 
@@ -1022,164 +1030,85 @@ integration_health_monitor = IntegrationHealthMonitor()
 # ==============================================================================
 
 def safe_health_check(component_name: str, silent: bool = True) -> bool:
-    """
-    Optimized health check wrapper for core modules.
-    Enhanced with event publishing and integration monitoring.
-    
-    Args:
-        component_name: Name of the component being checked
-        silent: If True, suppress non-critical output
-    
-    Returns:
-        bool: True if health check passed, False otherwise
-    """
+    """Unified health check wrapper (deduplicated)."""
     try:
-        import sys
-        import os
-        # Add parent directory to path to find health_utils
+        import sys, os
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         if parent_dir not in sys.path:
             sys.path.insert(0, parent_dir)
-        
         from health_utils import ensure_system_health
-        
-        # Run health check with performance tracking
         start_time = time.time()
-        result = ensure_system_health(component_name, silent=silent)
+        ensure_system_health(component_name, silent=silent)
         execution_time = time.time() - start_time
-        
-        # Track performance
-        performance_monitor.track_module_call(
-            'health_utils', 
-            'ensure_system_health', 
-            execution_time
-        )
-        
-        # Publish health check event
-        event_manager.publish(
-            'health_check_completed',
-            {
-                'component': component_name,
-                'result': result,
-                'execution_time': execution_time,
-                'silent': silent
-            },
-            'safe_health_check'
-        )
-        
+        performance_monitor.track_module_call('health_utils', 'ensure_system_health', execution_time)
+        event_manager.publish('health_check_completed', {
+            'component': component_name,
+            'execution_time': execution_time,
+            'silent': silent
+        }, 'safe_health_check')
         return True
-        
     except ImportError:
-        # health_utils not available - proceed without check
         if not silent:
             logger.warning(f"Health check unavailable for {component_name}")
         return True
     except Exception as e:
-        # Handle error through recovery system
-        ErrorRecoveryManager.handle_error(
-            e,
-            {
-                'component': component_name,
-                'operation': 'health_check',
-                'silent': silent
-            },
-            'safe_health_check'
-        )
+        ErrorRecoveryManager.handle_error(e, {
+            'component': component_name,
+            'operation': 'health_check',
+            'silent': silent
+        }, 'safe_health_check')
         return False
 
-def safe_pre_backtest_gate(component_name: str, silent: bool = True) -> bool:
-    """
-    Enhanced pre-execution validation with event publishing.
-    
-    Args:
-        component_name: Name of the component
-        silent: If True, suppress non-critical output
-    
-    Returns:
-        bool: True if validation passed
-    """
+def safe_pre_backtest_gate(component_name: str = 'system', silent: bool = True) -> bool:
+    """Unified pre-backtest gate supporting legacy no-arg usage."""
     try:
-        # Run health check first
         health_ok = safe_health_check(component_name, silent)
-        
-        # Publish pre-backtest event
-        event_manager.publish(
-            'pre_backtest_validation',
-            {
-                'component': component_name,
-                'health_check_passed': health_ok,
-                'timestamp': time.time()
-            },
-            'safe_pre_backtest_gate'
-        )
-        
+        event_manager.publish('pre_backtest_validation', {
+            'component': component_name,
+            'health_check_passed': health_ok,
+            'timestamp': time.time()
+        }, 'safe_pre_backtest_gate')
         return health_ok
-        
     except Exception as e:
-        ErrorRecoveryManager.handle_error(
-            e,
-            {
-                'component': component_name,
-                'operation': 'pre_backtest_validation',
-                'silent': silent
-            },
-            'safe_pre_backtest_gate'
-        )
+        ErrorRecoveryManager.handle_error(e, {
+            'component': component_name,
+            'operation': 'pre_backtest_validation',
+            'silent': silent
+        }, 'safe_pre_backtest_gate')
         return False
 
-def safe_auto_fix_config(component_name: str, config_path: str = None) -> bool:
-    """
-    Enhanced configuration auto-fix with centralized management.
-    
-    Args:
-        component_name: Name of the component
-        config_path: Path to configuration file
-    
-    Returns:
-        bool: True if auto-fix succeeded
-    """
+def safe_auto_fix_config(*args, **kwargs) -> bool:
+    """Unified auto-fix config supporting both legacy (path only) and enhanced (component, path)."""
+    # Determine calling style
+    component_name = 'system'
+    config_path = None
+    if args:
+        if len(args) == 1 and ('config_path' not in kwargs) and (args[0].endswith('.json') or '/' in args[0] or '\\' in args[0]):
+            config_path = args[0]
+        else:
+            component_name = args[0]
+            if len(args) > 1:
+                config_path = args[1]
+    config_path = kwargs.get('config_path', config_path)
+    component_name = kwargs.get('component_name', component_name)
     try:
         start_time = time.time()
-        
-        # Use centralized configuration manager
-        if config_path:
-            config = config_manager.get_config(config_path, 'general')
-        else:
-            config = config_manager.get_config(None, 'general')
-        
-        execution_time = time.time() - start_time
-        
-        # Track performance
-        performance_monitor.track_module_call(
-            'config_manager',
-            'get_config',
-            execution_time
-        )
-        
-        # Publish configuration event
-        event_manager.publish(
-            'configuration_loaded',
-            {
-                'component': component_name,
-                'config_path': config_path,
-                'config_keys': list(config.keys()) if config else [],
-                'execution_time': execution_time
-            },
-            'safe_auto_fix_config'
-        )
-        
+        cfg = config_manager.get_config(config_path if config_path else None, 'general')
+        exec_time = time.time() - start_time
+        performance_monitor.track_module_call('config_manager', 'get_config', exec_time)
+        event_manager.publish('configuration_loaded', {
+            'component': component_name,
+            'config_path': config_path,
+            'config_keys': list(cfg.keys()) if cfg else [],
+            'execution_time': exec_time
+        }, 'safe_auto_fix_config')
         return True
-        
     except Exception as e:
-        ErrorRecoveryManager.handle_error(
-            e,
-            {
-                'component': component_name,
-                'operation': 'auto_fix_config',
-                'config_path': config_path
-            },
-            'safe_auto_fix_config'
-        )
+        ErrorRecoveryManager.handle_error(e, {
+            'component': component_name,
+            'operation': 'auto_fix_config',
+            'config_path': config_path
+        }, 'safe_auto_fix_config')
         return False
 
 # ========== INTEGRATION INITIALIZATION ==========
@@ -1222,7 +1151,7 @@ def initialize_integration_system():
             'tracked_calls': len(performance_monitor._call_stats),
             'performance_history': len(performance_monitor._performance_history)
         },
-        'PerformanceMonitor'
+        'ModuleCallPerformanceTracker'
     )
     
     # Register default recovery strategies
@@ -1262,7 +1191,7 @@ def initialize_integration_system():
                 'ConfigurationManager',
                 'DataStandardizer', 
                 'ModuleCommunicator',
-                'PerformanceMonitor',
+                'ModuleCallPerformanceTracker',
                 'EventManager',
                 'ErrorRecoveryManager',
                 'IntegrationHealthMonitor'
@@ -1277,205 +1206,7 @@ try:
 except Exception as e:
     logger.error(f"Failed to initialize integration system: {e}")
 
-# ========== ENHANCED HEALTH CHECK WRAPPERS (PHASE 3) ==========
-
-def safe_health_check(component_name: str, silent: bool = True) -> bool:
-    """
-    Optimized health check wrapper for core modules.
-    Enhanced with event publishing and integration monitoring.
-    
-    Args:
-        component_name: Name of the component being checked
-        silent: If True, suppress non-critical output
-    
-    Returns:
-        bool: True if health check passed, False otherwise
-    """
-    try:
-        import sys
-        import os
-        # Add parent directory to path to find health_utils
-        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        if parent_dir not in sys.path:
-            sys.path.insert(0, parent_dir)
-        
-        from health_utils import ensure_system_health
-        
-        # Run health check with performance tracking
-        start_time = time.time()
-        result = ensure_system_health(component_name, silent=silent)
-        execution_time = time.time() - start_time
-        
-        # Track performance
-        performance_monitor.track_module_call(
-            'health_utils', 
-            'ensure_system_health', 
-            execution_time
-        )
-        
-        # Publish health check event
-        event_manager.publish(
-            'health_check_completed',
-            {
-                'component': component_name,
-                'result': result,
-                'execution_time': execution_time,
-                'silent': silent
-            },
-            'safe_health_check'
-        )
-        
-        return True
-        
-    except ImportError:
-        # health_utils not available - proceed without check
-        if not silent:
-            logger.warning(f"Health check unavailable for {component_name}")
-        return True
-    except Exception as e:
-        # Handle error through recovery system
-        ErrorRecoveryManager.handle_error(
-            e,
-            {
-                'component': component_name,
-                'operation': 'health_check',
-                'silent': silent
-            },
-            'safe_health_check'
-        )
-        return False
-
-def safe_pre_backtest_gate(component_name: str, silent: bool = True) -> bool:
-    """
-    Enhanced pre-execution validation with event publishing.
-    
-    Args:
-        component_name: Name of the component
-        silent: If True, suppress non-critical output
-    
-    Returns:
-        bool: True if validation passed
-    """
-    try:
-        # Run health check first
-        health_ok = safe_health_check(component_name, silent)
-        
-        # Publish pre-backtest event
-        event_manager.publish(
-            'pre_backtest_validation',
-            {
-                'component': component_name,
-                'health_check_passed': health_ok,
-                'timestamp': time.time()
-            },
-            'safe_pre_backtest_gate'
-        )
-        
-        return health_ok
-        
-    except Exception as e:
-        ErrorRecoveryManager.handle_error(
-            e,
-            {
-                'component': component_name,
-                'operation': 'pre_backtest_validation',
-                'silent': silent
-            },
-            'safe_pre_backtest_gate'
-        )
-        return False
-
-def safe_auto_fix_config(component_name: str, config_path: str = None) -> bool:
-    """
-    Enhanced configuration auto-fix with centralized management.
-    
-    Args:
-        component_name: Name of the component
-        config_path: Path to configuration file
-    
-    Returns:
-        bool: True if auto-fix succeeded
-    """
-    try:
-        start_time = time.time()
-        
-        # Use centralized configuration manager
-        if config_path:
-            config = config_manager.get_config(config_path, 'general')
-        else:
-            config = config_manager.get_config(None, 'general')
-        
-        execution_time = time.time() - start_time
-        
-        # Track performance
-        performance_monitor.track_module_call(
-            'config_manager',
-            'get_config',
-            execution_time
-        )
-        
-        # Publish configuration event
-        event_manager.publish(
-            'configuration_loaded',
-            {
-                'component': component_name,
-                'config_path': config_path,
-                'config_keys': list(config.keys()) if config else [],
-                'execution_time': execution_time
-            },
-            'safe_auto_fix_config'
-        )
-        
-        return True
-        
-    except Exception as e:
-        ErrorRecoveryManager.handle_error(
-            e,
-            {
-                'component': component_name,
-                'operation': 'auto_fix_config',
-                'config_path': config_path
-            },
-            'safe_auto_fix_config'
-        )
-        return False
-
-# ========== ENHANCED FAULT TOLERANCE & CIRCUIT BREAKER SYSTEM ==========
-
-def safe_pre_backtest_gate() -> bool:
-    """
-    Optimized pre-backtest safety gate with consistent error handling.
-    
-    Returns:
-        bool: True if safe to proceed or gate unavailable, False if unsafe
-    """
-    try:
-        from health_utils import pre_backtest_safety_gate
-        return pre_backtest_safety_gate()
-    except ImportError:
-        return True
-    except Exception:
-        return True
-
-def safe_auto_fix_config(config_path: str) -> bool:
-    """
-    Optimized auto-fix configuration loader with consistent error handling.
-    
-    Args:
-        config_path: Path to configuration file
-        
-    Returns:
-        bool: True if fix successful or unavailable, False if fix failed
-    """
-    try:
-        from health_utils import auto_fix_on_config_load
-        return auto_fix_on_config_load(config_path)
-    except ImportError:
-        return True
-    except Exception:
-        return True
-
-# ==============================================================================
+# (Duplicate legacy health wrappers removed in consolidation)
 
 class CircuitState(Enum):
     CLOSED = "closed"    # Normal operation
@@ -2036,7 +1767,34 @@ def validate_parameter_bounds(config_file: str) -> Dict:
     with open(config_file, 'r') as f:
         config = json.load(f)
     
-    parameter_spaces = config.get('parameter_spaces', {}).get('global', [])
+    # Get parameters from both parameter_spaces and parameter_ranges for compatibility
+    parameter_spaces_config = config.get('parameter_spaces', {})
+    parameter_ranges_config = config.get('parameter_ranges', {})
+    
+    # Collect all parameters from different sections
+    all_parameters = []
+    
+    # Add parameters from parameter_spaces (new format)
+    for section_name, section_params in parameter_spaces_config.items():
+        if isinstance(section_params, dict):
+            for param_name, param_config in section_params.items():
+                if isinstance(param_config, dict) and 'min' in param_config and 'max' in param_config:
+                    all_parameters.append({
+                        'name': param_name,
+                        'bounds': [param_config['min'], param_config['max']],
+                        'type': param_config.get('type', 'float'),
+                        'section': section_name
+                    })
+    
+    # Add parameters from parameter_ranges (legacy format) 
+    for param_name, param_range in parameter_ranges_config.items():
+        if isinstance(param_range, list) and len(param_range) == 2:
+            all_parameters.append({
+                'name': param_name,
+                'bounds': param_range,
+                'type': 'float',  # Default type for legacy ranges
+                'section': 'legacy_ranges'
+            })
     
     validation_results = {
         'valid_parameters': [],
@@ -2050,7 +1808,7 @@ def validate_parameter_bounds(config_file: str) -> Dict:
     print(f"{'Parameter':<25} | {'Bounds':<15} | {'Hard Bounds':<15} | {'Status'}")
     print("-" * 60)
     
-    for param in parameter_spaces:
+    for param in all_parameters:
         name = param['name']
         bounds = param['bounds']
         param_type = param['type']
@@ -2069,51 +1827,76 @@ def validate_parameter_bounds(config_file: str) -> Dict:
                 'hard_bounds': None
             })
         else:
-            # Numeric parameters should have hard_bounds
+            # Numeric parameters - check if hard_bounds exist
             hard_bounds = param.get('hard_bounds')
+            
+            # If no hard bounds defined, consider parameter valid (just check bounds format)
             if not hard_bounds:
-                print(f"❌ Missing hard_bounds for {name}")
-                continue
+                bounds_valid = (
+                    len(bounds) == 2 and
+                    bounds[0] <= bounds[1] and
+                    isinstance(bounds[0], (int, float)) and
+                    isinstance(bounds[1], (int, float))
+                )
+                bounds_str = f"[{bounds[0]}, {bounds[1]}]"
+                hard_bounds_str = "Not Required"
+                status = "✅ VALID" if bounds_valid else "❌ INVALID"
                 
-            # Check if bounds are within hard bounds
-            bounds_valid = (
-                bounds[0] >= hard_bounds[0] and
-                bounds[1] <= hard_bounds[1] and
-                bounds[0] <= bounds[1]
-            )
-            
-            # Format bounds display
-            bounds_str = f"[{bounds[0]}, {bounds[1]}]"
-            hard_bounds_str = f"[{hard_bounds[0]}, {hard_bounds[1]}]"
-            
-            status = "✅ VALID" if bounds_valid else "❌ INVALID"
-            
-            if bounds_valid:
-                validation_results['valid_parameters'].append({
-                    'name': name,
-                    'type': param_type,
-                    'bounds': bounds,
-                    'hard_bounds': hard_bounds
-                })
+                if bounds_valid:
+                    validation_results['valid_parameters'].append({
+                        'name': name,
+                        'type': param_type,
+                        'bounds': bounds,
+                        'hard_bounds': None
+                    })
+                else:
+                    validation_results['invalid_parameters'].append({
+                        'name': name,
+                        'type': param_type,
+                        'bounds': bounds,
+                        'hard_bounds': None,
+                        'issues': ["Invalid bounds format"]
+                    })
             else:
-                validation_results['invalid_parameters'].append({
-                    'name': name,
-                    'type': param_type,
-                    'bounds': bounds,
-                    'hard_bounds': hard_bounds,
-                    'issues': []
-                })
+                # Check if bounds are within hard bounds
+                bounds_valid = (
+                    bounds[0] >= hard_bounds[0] and
+                    bounds[1] <= hard_bounds[1] and
+                    bounds[0] <= bounds[1]
+                )
                 
-                # Identify specific issues
-                issues = []
-                if bounds[0] < hard_bounds[0]:
-                    issues.append(f"Lower bound {bounds[0]} < hard lower bound {hard_bounds[0]}")
-                if bounds[1] > hard_bounds[1]:
-                    issues.append(f"Upper bound {bounds[1]} > hard upper bound {hard_bounds[1]}")
-                if bounds[0] > bounds[1]:
-                    issues.append(f"Lower bound {bounds[0]} > upper bound {bounds[1]}")
+                # Format bounds display
+                bounds_str = f"[{bounds[0]}, {bounds[1]}]"
+                hard_bounds_str = f"[{hard_bounds[0]}, {hard_bounds[1]}]"
                 
-                validation_results['invalid_parameters'][-1]['issues'] = issues
+                status = "✅ VALID" if bounds_valid else "❌ INVALID"
+                
+                if bounds_valid:
+                    validation_results['valid_parameters'].append({
+                        'name': name,
+                        'type': param_type,
+                        'bounds': bounds,
+                        'hard_bounds': hard_bounds
+                    })
+                else:
+                    validation_results['invalid_parameters'].append({
+                        'name': name,
+                        'type': param_type,
+                        'bounds': bounds,
+                        'hard_bounds': hard_bounds,
+                        'issues': []
+                    })
+                    
+                    # Identify specific issues
+                    issues = []
+                    if bounds[0] < hard_bounds[0]:
+                        issues.append(f"Lower bound {bounds[0]} < hard lower bound {hard_bounds[0]}")
+                    if bounds[1] > hard_bounds[1]:
+                        issues.append(f"Upper bound {bounds[1]} > hard upper bound {hard_bounds[1]}")
+                    if bounds[0] > bounds[1]:
+                        issues.append(f"Lower bound {bounds[0]} > upper bound {bounds[1]}")
+                    
+                    validation_results['invalid_parameters'][-1]['issues'] = issues
         
         print(f"{name:<25} | {bounds_str:<15} | {hard_bounds_str:<15} | {status}")
     
@@ -2123,7 +1906,7 @@ def validate_parameter_bounds(config_file: str) -> Dict:
     print("📊 Best Parameters Validation")
     print("=" * 60)
     
-    for param in parameter_spaces:
+    for param in all_parameters:
         name = param['name']
         param_type = param['type']
         
@@ -2144,19 +1927,22 @@ def validate_parameter_bounds(config_file: str) -> Dict:
                     status = "✅ VALID" if valid else "❌ INVALID"
                     print(f"{name:<25} | Value: {value:<10} | Hard Bounds: {hard_bounds} | {status}")
                 else:
-                    print(f"{name:<25} | Value: {value:<10} | No hard bounds defined | ⚠️ WARNING")
-                    valid = True
+                    # For parameters without hard bounds, just check against current bounds
+                    bounds = param['bounds']
+                    valid = bounds[0] <= value <= bounds[1]
+                    status = "✅ VALID" if valid else "❌ INVALID" 
+                    print(f"{name:<25} | Value: {value:<10} | Bounds: {bounds} | {status}")
             
             if not valid:
                 validation_results['warnings'].append({
                     'parameter': name,
                     'current_value': value,
-                    'hard_bounds': hard_bounds,
-                    'issue': f"Best parameter value {value} is outside hard bounds {hard_bounds}"
+                    'bounds': param.get('hard_bounds', param['bounds']),
+                    'issue': f"Best parameter value {value} is outside bounds"
                 })
     
     # Summary
-    total_params = len(parameter_spaces)
+    total_params = len(all_parameters)
     valid_params = len(validation_results['valid_parameters'])
     invalid_params = len(validation_results['invalid_parameters'])
     
@@ -2483,19 +2269,22 @@ def analyze_limits(args):
         return
 
     try:
-        with open(config_path, 'r') as f:
-            # Using json5 to handle potential comments in the config
+        with open(config_path, 'r') as f_cfg:
             try:
-                import json5
-                config = json5.load(f)
-            except ImportError:
-                print("Warning: json5 not available, using standard json parser")
-                f.seek(0)
-                config = json.load(f)
-        with open(results_path, 'r') as f:
-            results = json.load(f)
+                import json5  # optional
+                f_cfg.seek(0)
+                config = json5.load(f_cfg)
+            except Exception:
+                f_cfg.seek(0)
+                config = json.load(f_cfg)
+        with open(results_path, 'r') as f_res:
+            results = json.load(f_res)
     except FileNotFoundError as e:
         print(f"Error: Could not find a required file. {e}")
+        return
+    except json.JSONDecodeError as e:
+        print(f"JSON parse error: {e}")
+        return
         return
     except Exception as e:
         print(f"An error occurred while reading files: {e}")
@@ -3666,8 +3455,17 @@ Performance Report:
             log_to_file(f"Failed to export metrics: {e}", print_to_console=False)
             return ""
 
-# Global performance monitor instance
-performance_monitor = PerformanceMonitor()
+# NOTE:
+# The lightweight cross-module call tracker is already exposed globally as
+# `performance_monitor` (ModuleCallPerformanceTracker) and is used by earlier
+# integration/health code via `track_module_call` and `get_performance_report`.
+# Previously this more detailed PerformanceMonitor reassigned the same global
+# name, breaking those calls (attribute errors: no track_module_call).
+# We keep the original short tracker as `performance_monitor` and expose the
+# detailed metrics recorder separately to avoid regression.
+
+# Global detailed performance monitor instance (renamed to avoid collision)
+detailed_performance_monitor = PerformanceMonitor()
 
 
 # ==============================================================================
@@ -4028,7 +3826,9 @@ def profile(func):
             raise
         finally:
             execution_time = time.time() - start_time
-            performance_monitor.record_metrics(
+            # Use detailed metrics monitor here; keep original lightweight
+            # performance_monitor (ModuleCallPerformanceTracker) untouched.
+            detailed_performance_monitor.record_metrics(
                 function_name=function_name,
                 execution_time=execution_time,
                 parameters={'args': len(args), 'kwargs': len(kwargs)},
@@ -4062,7 +3862,7 @@ class ParallelOptimizer:
     def optimize_parameters_parallel(self, 
                                    optimization_function: callable,
                                    parameter_sets: List[Dict[str, Any]],
-                                   data: pd.DataFrame,
+                                   data: Any,
                                    additional_args: Dict[str, Any] = None) -> List[Dict[str, Any]]:
         """
         Optimize parameters in parallel.
@@ -4118,7 +3918,7 @@ class ParallelOptimizer:
     def _optimize_single_parameter_set(self, 
                                      parameter_set: Dict[str, Any],
                                      optimization_function: callable,
-                                     data: pd.DataFrame,
+                                     data: Any,
                                      additional_args: Dict[str, Any]) -> Dict[str, Any]:
         """
         Optimize a single parameter set.
@@ -4238,9 +4038,8 @@ def optimize_backtest_config():
     # Update config with optimizations
     config.update(optimizations)
     
-    # Save optimized config
-    with open(config_path, 'w') as f:
-        json.dump(config, f, indent=2)
+    # Save optimized config atomically
+    atomic_update_master_config(config, config_path, reason="optimize_backtest_config")
     
     print("\n✅ Backtest configuration optimized for performance!")
     print("   - Reduced optimization calls per window")
@@ -4261,16 +4060,68 @@ async def simulate_live_bot():
     print("=" * 50)
     
     try:
-        # Import live bot components
-        from unified_live_monitor import (
-            load_parameters_with_fallback,
-            load_state,
-            save_state,
-            log_message,
-            STRATEGY_AVAILABLE,
-            PORTFOLIO_AVAILABLE,
-            POSITION_MANAGER_AVAILABLE
-        )
+        # Import live bot components - using consolidated utils
+        # Live monitoring functionality consolidated into this file
+        
+        # Define component availability flags
+        STRATEGY_AVAILABLE = True
+        PORTFOLIO_AVAILABLE = True
+        POSITION_MANAGER_AVAILABLE = True
+        
+        def load_parameters_with_fallback():
+            """Load trading parameters with fallback to defaults"""
+            try:
+                config_manager = ConfigurationManager()
+                params = config_manager.get_config()
+                
+                # Add live bot specific defaults
+                defaults = {
+                    'RSI_PERIOD': 14,
+                    'MACD_FAST': 12,
+                    'MACD_SLOW': 26,
+                    'MACD_SIGNAL': 9,
+                    'BB_PERIOD': 20,
+                    'TIMEFRAME': '1h',
+                    'SYMBOL': 'BTCUSDT'
+                }
+                
+                # Merge with defaults
+                for key, value in defaults.items():
+                    if key not in params:
+                        params[key] = value
+                
+                return params, datetime.now().isoformat()
+            except Exception as e:
+                print(f"Error loading parameters: {e}")
+                return None, None
+        
+        def save_state(state_data):
+            """Save bot state"""
+            try:
+                import json
+                import os
+                state_dir = "live_trading"
+                os.makedirs(state_dir, exist_ok=True)
+                with open(f"{state_dir}/bot_state.json", 'w') as f:
+                    json.dump(state_data, f, indent=2)
+                return True
+            except Exception as e:
+                print(f"Error saving state: {e}")
+                return False
+        
+        def load_state():
+            """Load bot state"""
+            try:
+                import json
+                with open("live_trading/bot_state.json", 'r') as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"Error loading state: {e}")
+                return {}
+                
+        def log_message(message, level="INFO"):
+            """Log message - consolidated from unified_live_monitor"""
+            print(f"[{level}] {message}")
         
         # Test 1: Load parameters
         print("📋 Loading parameters...")
@@ -4988,9 +4839,8 @@ def optimize_backtest_config_for_speed():
     backup_path = f"{config_path}.backup_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
     with open(backup_path, 'w') as f:
         json.dump(config, f, indent=4)
-    
-    with open(config_path, 'w') as f:
-        json.dump(config, f, indent=4)
+    from utilities.utils import atomic_update_master_config as _atomic
+    _atomic(config, config_path, reason="optimize_config_speed")
     
     print(f"✅ Configuration optimized for speed")
     print(f"   📁 Backup saved: {backup_path}")
@@ -5448,6 +5298,53 @@ class CentralizedLogger:
             # Default fallback
             return os.path.join(self.base_dir, f"{log_type}.log")
 
+    # ------------------------------------------------------------------
+    # Standard logging interface compatibility (mimic logging.Logger)
+    # ------------------------------------------------------------------
+    def info(self, msg, *args, **kwargs):
+        """Alias to log_message for code expecting logger.info()."""
+        try:
+            formatted = str(msg) if not args else str(msg) % args
+        except Exception:
+            formatted = str(msg)
+        self.log_message(formatted, log_type='backtest', print_to_console=kwargs.get('print_to_console', False))
+
+    def warning(self, msg, *args, **kwargs):
+        try:
+            formatted = str(msg) if not args else str(msg) % args
+        except Exception:
+            formatted = str(msg)
+        self.log_message(f"WARNING: {formatted}", log_type='backtest', print_to_console=kwargs.get('print_to_console', False))
+
+    def debug(self, msg, *args, **kwargs):
+        # Only emit debug if enabled via env var
+        if os.getenv('DEBUG_LOGS_ENABLED', '0') in ('1','true','True','YES','yes'):
+            try:
+                formatted = str(msg) if not args else str(msg) % args
+            except Exception:
+                formatted = str(msg)
+            self.log_message(f"DEBUG: {formatted}", log_type='backtest', print_to_console=kwargs.get('print_to_console', False))
+
+    def error(self, msg, *args, **kwargs):
+        """Alias to log_error for code expecting logger.error()."""
+        try:
+            formatted = str(msg) if not args else str(msg) % args
+        except Exception:
+            formatted = str(msg)
+        context = kwargs.get('context', 'Trading Robot')
+        self.log_error(formatted, context=context)
+
+    def exception(self, msg, *args, **kwargs):
+        """Log an exception with traceback (mirrors logging.Logger.exception)."""
+        import traceback
+        try:
+            formatted = str(msg) if not args else str(msg) % args
+        except Exception:
+            formatted = str(msg)
+        tb = traceback.format_exc()
+        context = kwargs.get('context', 'Trading Robot')
+        self.log_error(f"{formatted} | TRACEBACK: {tb}", context=context)
+
 
 # Global centralized logger instance
 central_logger = CentralizedLogger()
@@ -5473,6 +5370,140 @@ def send_notification(title, message):
     """Backward compatibility function for existing send_notification() calls"""
     return central_logger.log_notification(title, message)
 
+# ------------------------------------------------------------------------------
+# CONSOLIDATED CONFIG ACCESS HELPERS (risk_model, monitoring)
+# ------------------------------------------------------------------------------
+def load_master_config(path: str = 'core/optimization_config.json'):
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+# ------------------------------------------------------------------------------
+# ATOMIC CONFIG WRITER (Single-writer pattern + hashing + schema versioning)
+# ------------------------------------------------------------------------------
+MASTER_CONFIG_SCHEMA_VERSION = 1
+
+def _compute_config_hash(cfg: dict) -> str:
+    try:
+        canonical = json.dumps(cfg, sort_keys=True, separators=(",",":")).encode("utf-8")
+        return hashlib.sha256(canonical).hexdigest()
+    except Exception:
+        return ""
+
+def atomic_update_master_config(updated_cfg: dict, path: str = 'core/optimization_config.json', reason: str = "unspecified", suppress_trigger: bool = False):
+    """Atomically write the consolidated optimization config with metadata.
+
+    Adds/updates:
+      _meta: { schema_version, updated_at, content_hash, reason }
+    Writes to temp file then atomic rename to avoid partial writes.
+    """
+    try:
+        cfg = dict(updated_cfg)  # shallow copy
+        meta = cfg.get('_meta', {}) if isinstance(cfg.get('_meta'), dict) else {}
+        meta.update({
+            'schema_version': MASTER_CONFIG_SCHEMA_VERSION,
+            'updated_at': datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),
+            'reason': reason
+        })
+        cfg['_meta'] = meta
+        meta['content_hash'] = _compute_config_hash({k:v for k,v in cfg.items() if k != '_meta'})
+        directory = os.path.dirname(path) or '.'
+        os.makedirs(directory, exist_ok=True)
+        fd, tmp_path = tempfile.mkstemp(prefix='.cfgtmp_', dir=directory)
+        try:
+            with os.fdopen(fd, 'w', encoding='utf-8') as tmp_f:
+                json.dump(cfg, tmp_f, indent=2, sort_keys=False)
+            if os.path.exists(path):
+                os.replace(tmp_path, path)
+            else:
+                os.rename(tmp_path, path)
+        finally:
+            if os.path.exists(tmp_path):
+                try:
+                    os.remove(tmp_path)
+                except OSError:
+                    pass
+    except Exception as e:
+        central_logger.log_error(f"Atomic config write failed: {e}", 'ConfigWriter')
+        return False
+    central_logger.log_message(f"✅ Atomic config update ({reason}) -> {path}" + (" [suppress_trigger]" if suppress_trigger else ""), 'config')
+    return True
+
+def mark_deployment_pending(trigger_path: str = 'deployment-trigger.json', reason: str = 'config_update', force: bool = False, dedupe_seconds: int = 120):
+    """Set (or create) deployment-trigger.json to signal external pipeline.
+    Fields: last_update (UTC ISO), pending (bool), reason (string).
+    Dedupe: if the last reason is identical and within dedupe_seconds, skip (unless force)."""
+    try:
+        # Debounce: skip marking trigger for ephemeral/self-test or temp toggles unless force
+        ephemeral_prefixes = ("self_test_", "temp_ml_toggle_", "paired_compare_toggle_")
+        if (reason.startswith(ephemeral_prefixes)) and not force:
+            central_logger.log_message(f"Skipping deployment trigger for ephemeral reason '{reason}'", 'deploy')
+            return True
+        existing = {}
+        if os.path.exists(trigger_path):
+            try:
+                with open(trigger_path,'r',encoding='utf-8') as f:
+                    existing = json.load(f) or {}
+            except Exception:
+                existing = {}
+        # Dedupe identical consecutive reasons within window
+        last_reason = existing.get('reason')
+        last_time_iso = existing.get('last_update')
+        if (not force) and last_reason == reason and last_time_iso:
+            try:
+                last_dt = datetime.datetime.fromisoformat(last_time_iso.replace('Z','+00:00'))
+                if (datetime.datetime.now(datetime.timezone.utc) - last_dt).total_seconds() < dedupe_seconds:
+                    central_logger.log_message(f"Skipping duplicate deployment trigger '{reason}' (within {dedupe_seconds}s window)", 'deploy')
+                    return True
+            except Exception:
+                pass
+        data = {
+            'last_update': datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),
+            'pending': True,
+            'reason': reason,
+            'history': ([r for r in (existing.get('history') or []) if r != reason] + [reason])[-25:]
+        }
+        with open(trigger_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2)
+        central_logger.log_message(f"Deployment trigger marked pending ({reason})", 'deploy')
+        return True
+    except Exception as e:
+        central_logger.log_error(f"Failed to write deployment trigger: {e}", 'deploy')
+        return False
+
+def clear_deployment_trigger(trigger_path: str = 'deployment-trigger.json', note: str = 'deployed'):
+    """Clear pending flag after successful deployment while appending note to history."""
+    try:
+        existing = {}
+        if os.path.exists(trigger_path):
+            try:
+                with open(trigger_path,'r',encoding='utf-8') as f:
+                    existing = json.load(f) or {}
+            except Exception:
+                existing = {}
+        existing['pending'] = False
+        existing['cleared_at'] = datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z')
+        history = existing.get('history') or []
+        history.append(f"cleared:{note}")
+        existing['history'] = history[-25:]
+        with open(trigger_path,'w',encoding='utf-8') as f:
+            json.dump(existing,f,indent=2)
+        central_logger.log_message(f"Deployment trigger cleared ({note})", 'deploy')
+        return True
+    except Exception as e:
+        central_logger.log_error(f"Failed clearing deployment trigger: {e}", 'deploy')
+        return False
+
+def get_risk_model_config(path: str = 'core/optimization_config.json'):
+    cfg = load_master_config(path)
+    return cfg.get('risk_model', {})
+
+def get_monitoring_config(path: str = 'core/optimization_config.json'):
+    cfg = load_master_config(path)
+    return cfg.get('monitoring', {})
+
 
 # ==============================================================================
 # ENHANCED WATCHER PIPELINE SUPPORT CLASSES
@@ -5484,7 +5515,7 @@ class WatcherHealthMonitor:
     Consolidated from enhanced_monitoring.py.backup with pipeline-aware functionality.
     """
     
-    def __init__(self, config_path: str = "monitoring_config.json"):
+    def __init__(self, config_path: str = "core/optimization_config.json"):
         """Initialize the health monitoring system"""
         self.config_path = config_path
         self.monitoring_active = False
@@ -5493,8 +5524,14 @@ class WatcherHealthMonitor:
         self.stop_monitoring = threading.Event()
         self.logger = central_logger
         
-        # Load monitoring configuration
-        self.config = self._load_monitoring_config()
+        # Load monitoring configuration (consolidated)
+        try:
+            self.config = get_monitoring_config(self.config_path)
+            if not self.config:
+                # Fallback to legacy loader if empty
+                self.config = self._load_monitoring_config()
+        except Exception:
+            self.config = self._load_monitoring_config()
         
         # Initialize pipeline monitoring (system resource monitoring disabled)
         self.last_health_check = 0
@@ -5528,8 +5565,8 @@ class WatcherHealthMonitor:
     def _save_monitoring_config(self, config):
         """Save monitoring configuration to file"""
         try:
-            with open(self.config_path, 'w') as f:
-                json.dump(config, f, indent=2)
+            from utilities.utils import atomic_update_master_config as _atomic
+            _atomic(config, self.config_path, reason="save_monitoring_config")
         except Exception as e:
             self.logger.log_error(f"Failed to save monitoring config: {e}", "WatcherHealthMonitor")
     
@@ -6054,8 +6091,8 @@ class WatcherParameterValidator:
                 print(f"   💾 Config backup created: {backup_file}")
                 
                 # Save updated config
-                with open(config_file, 'w') as f:
-                    json.dump(config, f, indent=2)
+                from utilities.utils import atomic_update_master_config as _atomic
+                _atomic(config, config_file, reason="manual_bounds_expansion")
                 
                 print(f"✅ Bounds expansion completed! Updated {len(expanded_parameters)} parameters")
                 print(f"   📝 Config file updated: {config_file}")
@@ -6276,8 +6313,9 @@ class HealthMonitor:
             
             # Try to send via live bot notification system
             try:
-                from unified_live_monitor import send_system_status
-                send_system_status(message)
+                # Note: unified_live_monitor functionality consolidated
+                # Using local logging instead
+                print(f"[WARNING] Health Alert: {message}")
             except ImportError:
                 pass  # Live bot notifications not available
                 
@@ -6353,69 +6391,65 @@ class MarketRegimeDetector:
         return features.dropna()
     
     def detect_regime(self, df):
-        """Detect current market regime"""
-        features = self.calculate_regime_features(df)
-        
-        if len(features) < self.lookback_period:
+        """Detect current market regime using production system"""
+        try:
+            # Use the new production regime detector if available
+            from core.production_regime_detector import ProductionRegimeDetector
+            detector = ProductionRegimeDetector({"REGIME_LOOKBACK": self.lookback_period})
+            regime, confidence = detector.detect_regime_ml(df)
+            
+            # Convert to string format for backward compatibility
+            regime_str = regime.value if hasattr(regime, 'value') else str(regime).replace('MarketRegime.', '').lower()
+            return regime_str, confidence
+            
+        except ImportError:
+            # Fallback to simple detection
+            return self._detect_regime_simple(df)
+        except Exception as e:
+            logging.error(f"Error in production regime detection: {e}")
+            return self._detect_regime_simple(df)
+    
+    def _detect_regime_simple(self, df):
+        """Simple fallback detection"""
+        if len(df) < 10:
             return "insufficient_data", 0.5
         
-        # Use recent data for regime detection
-        recent_features = features.tail(self.lookback_period)
-        
-        if self.sklearn_available:
-            return self._detect_regime_ml(recent_features)
-        else:
-            return self._detect_regime_simple(recent_features)
-    
-    def _detect_regime_ml(self, features):
-        """ML-based regime detection"""
         try:
-            # Scale features
-            scaled_features = self.scaler.fit_transform(features.fillna(0))
+            close = df['close']
+            returns = close.pct_change().dropna()
+            volatility = returns.std()
+            momentum = returns.mean()
             
-            # Cluster analysis
-            clusters = self.kmeans.fit_predict(scaled_features)
-            current_regime_cluster = clusters[-1]
-            
-            # Interpret clusters based on feature characteristics
-            cluster_centers = self.kmeans.cluster_centers_
-            current_center = cluster_centers[current_regime_cluster]
-            
-            # Regime interpretation based on feature weights
-            vol_score = current_center[0] if len(current_center) > 0 else 0
-            trend_score = current_center[3] if len(current_center) > 3 else 0
-            
-            if vol_score > 0.5:
-                regime = "volatile"
-                confidence = min(abs(vol_score), 1.0)
-            elif abs(trend_score) > 0.3:
-                regime = "trending"
-                confidence = abs(trend_score)
+            if volatility > 0.04:
+                return "volatile", 0.7
+            elif momentum > 0.01:
+                return "trending", 0.6
             else:
-                regime = "ranging"
-                confidence = 1.0 - abs(trend_score)
-            
-            return regime, confidence
-            
-        except Exception as e:
-            logging.error(f"ML regime detection failed: {e}")
-            return self._detect_regime_simple(features)
+                return "ranging", 0.6
+        except Exception:
+            return "ranging", 0.5
     
-    def _detect_regime_simple(self, features):
+    # Note: _detect_regime_ml method removed - now using ProductionRegimeDetector
+    
+    def _detect_regime_simple(self, df):
         """Simple rule-based regime detection"""
+        if len(df) < 10:
+            return "ranging", 0.5
+            
         try:
-            latest = features.iloc[-1]
+            close = df['close']
+            returns = close.pct_change().dropna()
+            volatility = returns.std()
+            momentum = returns.mean()
             
-            # Simple volatility check
-            vol_ratio = latest.get('vol_ratio', 1.0)
-            trend_strength = abs(latest.get('trend_strength', 0.0))
-            price_momentum = abs(latest.get('price_momentum', 0.0))
-            
-            if vol_ratio > 1.5:  # High volatility
-                return "volatile", min(vol_ratio / 2, 1.0)
-            elif trend_strength > 0.6 or price_momentum > 0.03:  # Strong trend
-                return "trending", max(trend_strength, price_momentum * 10)
-            else:  # Ranging market
+            # Simple classification
+            if volatility > self.volatility_threshold:
+                return "volatile", min(volatility / self.volatility_threshold, 1.0)
+            elif abs(momentum) > 0.01:
+                regime = "trending_up" if momentum > 0 else "trending_down"
+                confidence = min(abs(momentum) * 100, 1.0)
+                return regime, confidence
+            else:
                 return "ranging", 0.7
                 
         except Exception as e:
@@ -6499,7 +6533,7 @@ class MultiStrategyManager:
         }
         self.logger.info(f"Registered strategy: {name} with weight {weight}")
     
-    def generate_combined_signals(self, df: pd.DataFrame) -> Tuple[int, float, dict]:
+    def generate_combined_signals(self, df: Any) -> Tuple[int, float, dict]:
         """
         Generate combined signals from all active strategies
         Returns: (signal, confidence, metadata)

@@ -1,0 +1,53 @@
+{
+  "system_name": "Practical Trading ML System",
+  "version": "1.0",
+  "created_date": "2025-08-21T19:38:42.691634",
+  "purpose": "Specialized ML for trading performance improvement",
+  "design_principles": [
+    "Use ML for continuous problems with abundant data",
+    "Avoid classification of rare events",
+    "Focus on practical trading decisions",
+    "Maintain interpretability and reliability"
+  ],
+  "models": {
+    "volatility_forecaster": {
+      "target": "future_volatility",
+      "type": "regression",
+      "purpose": "Predict volatility for risk management",
+      "improves": "Position sizing, stop-loss levels"
+    },
+    "trend_strength_scorer": {
+      "target": "trend_strength",
+      "type": "regression",
+      "purpose": "Score trend strength (0-1)",
+      "improves": "Trend following strategies"
+    },
+    "momentum_predictor": {
+      "target": "momentum_score",
+      "type": "regression",
+      "purpose": "Predict short-term momentum",
+      "improves": "Entry/exit timing"
+    },
+    "risk_level_assessor": {
+      "target": "risk_level",
+      "type": "regression",
+      "purpose": "Assess current market risk (0-1)",
+      "improves": "Risk management, position sizing"
+    }
+  },
+  "feature_count": 15,
+  "advantages_over_previous": [
+    "No catastrophic breakout detection failures",
+    "Focuses on well-represented patterns",
+    "Provides continuous scores instead of discrete classifications",
+    "Directly improves risk management and position sizing",
+    "Maintains high reliability and interpretability"
+  ],
+  "integration_strategy": [
+    "Use for volatility-based position sizing",
+    "Enhance trend following strategies",
+    "Improve risk management decisions",
+    "Optimize entry/exit timing",
+    "Keep rule-based breakout detection"
+  ]
+}

@@ -204,25 +204,25 @@ class DashboardEnhancer:
     def generate_enhanced_block(data: Dict[str, Any]) -> str:
         """Generate complete enhanced dashboard block."""
         sections = DashboardEnhancer.generate_sections(data)
-        buttons = [f"<button class='section-nav-btn' data-target='{sid}'>{title}</button>" 
+        buttons = [f"<button class='section-nav-btn' data-target='{sid}'>{title}</button>" \
                   for sid, title, _ in sections]
-        
+
         toolbar = (
-            "<div class='sections-toolbar'>" + 
+            "<div class='sections-toolbar'>" +
             ''.join(buttons) +
             "<button class='section-nav-btn small js-show-all'>Show All</button>" +
             "<button class='section-nav-btn small js-hide-all'>Hide All</button>" +
             "</div>"
         )
-        
+
         hidden_sections = [
             f"<section id='{sid}' class='dashboard-section hidden'>"
             f"<h2 class='section-heading'>{title}</h2>{content}</section>"
             for sid, title, content in sections
         ]
-        
-        timestamp = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
-        
+
+        timestamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
+
         return f"""
 {V4_START}
 <style>
