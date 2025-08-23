@@ -1,10 +1,10 @@
 {
-  "last_update": "2025-08-23T11:19:10.649556Z",
+  "last_update": "2025-08-23T13:52:08.280161Z",
   "pending": false,
   "reason": "config_update_ci",
   "history": [
     "config_update_ci",
     "cleared:ci_test"
   ],
-  "cleared_at": "2025-08-23T11:19:10.660859Z"
+  "cleared_at": "2025-08-23T13:52:08.293711Z"
 }

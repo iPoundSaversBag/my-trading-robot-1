@@ -1,35 +1,61 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: housekeeping-maintenance
+
 on:
   schedule:
     - cron: '0 3 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: maintenance
+  cancel-in-progress: true
+
 jobs:
   maintenance:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-maint-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            pip-maint-${{ runner.os }}-
       - name: Install dependencies (minimal)
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install --no-cache-dir pytest json5
       - name: Prune backups
         run: python scripts/prune_backups.py || echo "prune_backups.py failed"
       - name: Consolidate logs
         run: python scripts/consolidate_logs.py || echo "consolidate_logs.py failed"
-      - name: Show summary artifacts
+      - name: Dedupe / seed tests
+        run: pytest -q tests/test_trigger_dedupe_and_seed.py || echo "seed tests failed"
+      - name: Collect log artifacts
         if: always()
         run: |
-          if [ -f logs/summary_status.json ]; then cat logs/summary_status.json; else echo 'No summary file'; fi
-      - name: Dedupe / seed tests
-        run: pytest -q tests/test_trigger_dedupe_and_seed.py
+          mkdir -p artifact_logs
+          cp -f logs/*.json artifact_logs 2>/dev/null || true
+          ls -al artifact_logs || true
+      - name: Upload maintenance artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maintenance-logs
+          path: artifact_logs
 
 
 

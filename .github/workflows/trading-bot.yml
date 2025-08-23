@@ -1,26 +1,39 @@
-name: Automated Trading Bot
+name: automated-trading-bot
+
 on:
-  schedule:
-    # Run every 5 minutes (like your Google Cloud bot)
-    - cron: '*/5 * * * *'
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      bot_secret:
+        description: 'Bot secret (optional; if blank the job exits successfully)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: trading-bot
+  cancel-in-progress: true
 
 jobs:
   trading-cycle:
     runs-on: ubuntu-latest
+    timeout-minutes: 4
     steps:
-      - name: Execute Trading Cycle
+      - name: Execute trading cycle (skips if no secret)
+        shell: bash
+        env:
+          VERCEL_URL: https://my-trading-robot-1.vercel.app
         run: |
-          # Call your Vercel live bot endpoint with hardcoded values
-          VERCEL_URL="https://my-trading-robot-1.vercel.app"
-          BOT_SECRET="93699b3917045092715b8e16c01f2e1d"
-          
-          curl -X GET "$VERCEL_URL/api/live-bot" \
+          set -euo pipefail
+          BOT_SECRET="${{ github.event.inputs.bot_secret }}"
+          if [[ -z "$BOT_SECRET" ]]; then
+            echo "No secret provided; skipping without error.";
+            exit 0
+          fi
+          echo "Invoking live bot endpoint..."
+          curl -sS -X GET "${VERCEL_URL}/api/live-bot" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $BOT_SECRET" \
-            --max-time 30 \
-            --retry 3 \
-            --retry-delay 5
-      
-      - name: Log Result
-        run: echo "Trading cycle completed at $(date)"
+            -H "Authorization: Bearer ${BOT_SECRET}" \
+            --max-time 40 --retry 3 --retry-delay 5 --fail
+          echo "Trading cycle completed at $(date)"
