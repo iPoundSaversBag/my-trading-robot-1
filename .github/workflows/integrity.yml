@@ -34,6 +34,8 @@ jobs:
       - name: Sync config hash
         run: python .github/scripts/sync_config_hash.py
       - name: Run integrity tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: pytest -q tests/test_config_integrity.py --maxfail=1 -vv
       - name: Diagnostics on failure
         if: failure()
