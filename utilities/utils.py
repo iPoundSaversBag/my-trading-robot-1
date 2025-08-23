@@ -42,8 +42,12 @@ import glob
 import argparse
 import re
 from collections import defaultdict
-import matplotlib.pyplot as plt  # noqa: F401
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+try:  # pragma: no cover
+    import matplotlib.pyplot as plt  # type: ignore  # noqa: F401
+    from mpl_toolkits.mplot3d import Axes3D  # type: ignore  # noqa: F401
+except Exception:  # pragma: no cover
+    plt = None  # type: ignore
+    Axes3D = None  # type: ignore
 import ast
 import subprocess
 import importlib.util
