@@ -1,12 +1,10 @@
 name: automated-trading-bot
 
 on:
-  workflow_dispatch:
-    inputs:
-      bot_secret:
-        description: 'Bot secret (optional; if blank the job exits successfully)'
-        required: false
-        type: string
+  workflow_dispatch: {}
+  schedule:
+    # Runs at the top of every hour; adjust as needed. Keep frequency modest to avoid hitting rate limits.
+    - cron: '0 * * * *'
 
 permissions:
   contents: read
@@ -20,20 +18,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
-      - name: Execute trading cycle (skips if no secret)
+      - name: Execute trading cycle (skips if secret missing)
         shell: bash
         env:
-          VERCEL_URL: https://my-trading-robot-1.vercel.app
+          BOT_SECRET: ${{ secrets.BOT_SECRET }}
+          VERCEL_URL: ${{ secrets.VERCEL_URL }}
         run: |
           set -euo pipefail
-          BOT_SECRET="${{ github.event.inputs.bot_secret }}"
-          if [[ -z "$BOT_SECRET" ]]; then
-            echo "No secret provided; skipping without error.";
+          # Fallback for VERCEL_URL if not provided as secret
+          if [[ -z "${VERCEL_URL:-}" ]]; then
+            VERCEL_URL="https://my-trading-robot-1.vercel.app"
+          fi
+          if [[ -z "${BOT_SECRET:-}" ]]; then
+            echo "BOT_SECRET not set in secrets; skipping run safely.";
             exit 0
           fi
-          echo "Invoking live bot endpoint..."
+          echo "Invoking live bot endpoint at ${VERCEL_URL} (masked auth)..."
           curl -sS -X GET "${VERCEL_URL}/api/live-bot" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${BOT_SECRET}" \
             --max-time 40 --retry 3 --retry-delay 5 --fail
-          echo "Trading cycle completed at $(date)"
+          echo "Trading cycle completed at $(date -u)"
