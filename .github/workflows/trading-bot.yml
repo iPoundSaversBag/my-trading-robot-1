@@ -23,7 +23,6 @@ jobs:
         with:
           vercel-url: ${{ secrets.VERCEL_URL }}
           bot-secret: ${{ secrets.BOT_SECRET }}
-          bypass-token: ${{ secrets.VERCEL_BYPASS_TOKEN }}
           path: /api/live-bot
           method: GET
           fail-on-non-200: true
