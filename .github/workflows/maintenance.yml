@@ -1,4 +1,4 @@
-﻿# NOTE: If editor still shows phantom YAML errors, toggle language mode or reload window.
+---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: housekeeping-maintenance
 on:
