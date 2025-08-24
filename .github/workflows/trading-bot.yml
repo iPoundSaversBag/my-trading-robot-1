@@ -34,6 +34,7 @@ jobs:
           echo "VERCEL_URL=${VERCEL_URL_SRC}" >> "$GITHUB_ENV"
           echo "Secrets exported (values masked)."
       - name: Execute Trading Cycle
+        id: trade
         shell: bash
         run: |
           set -euo pipefail
@@ -43,10 +44,26 @@ jobs:
                         -H "Content-Type: application/json" \
                         --retry 3 --retry-delay 5 --max-time 30 \
                         -w "\n%{http_code}" "$URL" || true)
-          BODY="$(echo "$RESP" | head -n -1 | head -c 200 | tr '\n' ' ')"
+          BODY="$(echo "$RESP" | head -n -1 | head -c 400 | tr '\n' ' ')"
           CODE="$(echo "$RESP" | tail -n1)"
           echo "HTTP $CODE body(snippet)=$BODY"
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
+          echo "body_snippet=$BODY" >> "$GITHUB_OUTPUT"
           if [ "$CODE" != 200 ]; then
             echo "Live bot returned non-200 ($CODE)" >&2; exit 1; fi
       - name: Log Result
         run: echo "Trading cycle completed at $(date -u)"
+      - name: Job Summary
+        if: always()
+        run: |
+          status=${{ job.status }}
+          code=${{ steps.trade.outputs.code || 'n/a' }}
+          echo "### Trading Bot Run" >> "$GITHUB_STEP_SUMMARY"
+          echo "Status: $status  " >> "$GITHUB_STEP_SUMMARY"
+          echo "HTTP Code: $code  " >> "$GITHUB_STEP_SUMMARY"
+          if [ "$status" != 'success' ]; then
+            echo "Failure body snippet:" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            echo "${{ steps.trade.outputs.body_snippet || 'no snippet' }}" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi

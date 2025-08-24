@@ -56,5 +56,13 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Dashboard Deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "Result: ${{ job.status }}  " >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${{ steps.deployment.outputs.page_url }}" ]; then
+            echo "URL: ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
 
