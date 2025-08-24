@@ -4,12 +4,14 @@
     { "src": "public/index.html", "use": "@vercel/static" },
   { "src": "api/dashboard-data.py", "use": "@vercel/python" },
   { "src": "api/trades.py", "use": "@vercel/python" },
+  { "src": "api/health.py", "use": "@vercel/python" },
     { "src": "api/portfolio.py", "use": "@vercel/python" },
     { "src": "api/live-bot.py", "use": "@vercel/python" }
   ],
   "routes": [
     { "src": "/api/dashboard-data", "dest": "/api/dashboard-data.py" },
   { "src": "/api/trades", "dest": "/api/trades.py" },
+  { "src": "/api/health", "dest": "/api/health.py" },
     { "src": "/api/portfolio", "dest": "/api/portfolio.py" },
     { "src": "/api/live-bot", "dest": "/api/live-bot.py" },
     { "src": "/", "dest": "/public/index.html" }
