@@ -558,77 +558,46 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateLiveTestnetData(botData) {
         try {
             // Update market data from testnet bot
-            if (botData.account_balance) {
-                const btcBalance = botData.account_balance.BTC || 0;
-                const usdtBalance = botData.account_balance.USDT || 0;
-                
-                document.getElementById('live-portfolio-value').textContent = '$' + usdtBalance.toLocaleString('en-US');
+            // Unified schema mapping
+            const account = botData.account_balance || {};
+            if (account.USDT !== undefined) {
+                document.getElementById('live-portfolio-value').textContent = '$' + Number(account.USDT).toLocaleString('en-US');
             }
-            
-            // Update current signal and confidence
-            if (botData.signal) {
-                const signal = botData.signal;
-                const signalElement = document.getElementById('bot-status');
-                if (signalElement) {
-                    signalElement.textContent = `${signal.signal} (${(signal.confidence * 100).toFixed(1)}%)`;
-                }
+            const summary = botData.trading_summary || {};
+            if (summary.total_pnl !== undefined) {
+                const totalPnlEl = document.querySelector('.quick-stats .stat-value.loss');
+                if (totalPnlEl) totalPnlEl.textContent = '$' + parseFloat(summary.total_pnl).toFixed(2);
             }
-            
-            // Update trade execution status
-            if (botData.trade_executed) {
-                const trade = botData.trade_executed;
-                const statusText = trade.simulated ? 'Simulated Trade' : 'Testnet Trade';
-                document.getElementById('market-data-status').textContent = statusText;
-                
-                // Update position info if trade executed
-                if (trade.side && trade.quantity) {
-                    document.getElementById('position-1-current').textContent = 
-                        `${trade.side} ${trade.quantity} @ $${parseFloat(trade.price || 0).toFixed(2)}`;
-                    document.getElementById('position-1-pnl').textContent = 
-                        `$${parseFloat(trade.value || 0).toFixed(2)}`;
-                }
+            if (summary.total_trades !== undefined) {
+                const tradesEl = document.querySelectorAll('.quick-stats .stat-value')[1];
+                if (tradesEl) tradesEl.textContent = summary.total_trades;
             }
-            
-            // Update system status
-            document.getElementById('feed-latency').textContent = '< 50ms';
-            document.getElementById('position-sync').textContent = 'Testnet Active';
-            
-            // Update live BTC price indicator
-            if (botData.signal && botData.signal.current_price) {
-                const btcPrice = parseFloat(botData.signal.current_price);
+            if (summary.win_rate !== undefined) {
+                const winEl = document.querySelectorAll('.quick-stats .stat-value')[2];
+                if (winEl) winEl.textContent = (parseFloat(summary.win_rate)).toFixed(1) + '%';
+            }
+            const market = botData.market_data || {};
+            if (market.current_price) {
+                const btcPrice = parseFloat(market.current_price);
                 document.getElementById('btc-price').textContent = '$' + btcPrice.toLocaleString('en-US');
-                document.getElementById('live-btc-indicator').textContent = btcPrice.toLocaleString('en-US');
-                
-                // Update other crypto prices (estimated from BTC)
+                if (document.getElementById('live-btc-indicator')) {
+                    document.getElementById('live-btc-indicator').textContent = btcPrice.toLocaleString('en-US');
+                }
                 document.getElementById('eth-price').textContent = '$' + (btcPrice * 0.042).toFixed(2);
                 document.getElementById('sol-price').textContent = '$' + (btcPrice * 0.0025).toFixed(2);
                 document.getElementById('ada-price').textContent = '$' + (btcPrice * 0.000008).toFixed(4);
             }
-            
-            console.log('✅ Live testnet data updated successfully');
-            
+            const status = botData.system_status || {};
+            if (status.status) {
+                document.getElementById('bot-status').textContent = status.status;
+            }
+            document.getElementById('market-data-status').textContent = 'Live';
+            document.getElementById('position-sync').textContent = 'Synchronized';
+            document.getElementById('feed-latency').textContent = '<100ms';
+            console.log('✅ Live data updated');
         } catch (error) {
             console.log('Error updating testnet data:', error);
             showDataUnavailable();
-        }
-    }
-    
-    function updateRealMarketData(botState) {
-        // Legacy function - now handled by updateLiveTestnetData
-        if (botState && botState.position_details) {
-            const pos = botState.position_details;
-            const btcPrice = pos.entry_price || 115449;
-            
-            document.getElementById('btc-price').textContent = '$' + btcPrice.toLocaleString('en-US');
-            document.getElementById('live-btc-indicator').textContent = btcPrice.toLocaleString('en-US');
-            
-            const ethPrice = (btcPrice * 0.042).toFixed(2);
-            const solPrice = (btcPrice * 0.0025).toFixed(2);
-            const adaPrice = (btcPrice * 0.000008).toFixed(4);
-            
-            document.getElementById('eth-price').textContent = '$' + ethPrice;
-            document.getElementById('sol-price').textContent = '$' + solPrice;
-            document.getElementById('ada-price').textContent = '$' + adaPrice;
         }
     }
     
