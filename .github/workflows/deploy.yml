@@ -32,6 +32,7 @@ jobs:
       - name: Prepare site (fallback stub if missing)
         shell: bash
         run: |
+          set -euo pipefail
           if [ ! -d public ]; then
             echo 'public directory missing -> generating minimal placeholder'
             mkdir -p public
