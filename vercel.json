@@ -15,12 +15,5 @@
     { "src": "/api/portfolio", "dest": "/api/portfolio.py" },
     { "src": "/api/live-bot", "dest": "/api/live-bot.py" },
     { "src": "/", "dest": "/public/index.html" }
-  ],
-  "functions": {
-    "api/*.py": {
-      "runtime": "python3.11",
-      "maxDuration": 10,
-      "memory": 512
-    }
-  }
+  ]
 }
