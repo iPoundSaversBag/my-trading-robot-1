@@ -8,114 +8,62 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-permissions:
+  workflow_dispatch:
 
+permissions:
   contents: read
 
-
-
 concurrency:
-
   group: integrity-${{ github.ref }}
-
   cancel-in-progress: true
 
-
-
 jobs:
-
   integrity:
-
     runs-on: ubuntu-latest
-
     timeout-minutes: 8
-
     steps:
-
       - uses: actions/checkout@v4
-
         with:
-
           fetch-depth: 20
-
       - uses: actions/setup-python@v5
-
         with:
-
           python-version: '3.11'
-
       - name: Cache pip
-
         uses: actions/cache@v4
-
         with:
-
           path: ~/.cache/pip
-
           key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
-
           restore-keys: |
-
             pip-${{ runner.os }}-
-
       - name: Env diagnostics
-
         run: |
-
           set -e
-
           python -V
-
           echo "Repository SHA: $GITHUB_SHA"
-
           echo "Listing key packages (pre-install)"
-
           pip list | grep -E 'pytest|json5' || true
-
       - name: Install minimal dependencies
-
         run: |
-
           python -m pip install --upgrade pip
-
           pip install --no-cache-dir pytest json5
-
       - name: Sync config hash
-
         run: python .github/scripts/sync_config_hash.py
-
       - name: Run integrity tests
-
         env:
-
           PYTHONPATH: ${{ github.workspace }}
-
         run: pytest -q tests/test_config_integrity.py --maxfail=1 -vv
-
       - name: Diagnostics on failure
-
         if: failure()
-
         run: |
-
           echo '=== CONFIG HEAD ==='
-
           head -n 60 core/optimization_config.json || true
-
           echo '=== HASH META LINE ==='
-
           grep -n 'content_hash' core/optimization_config.json || true
-
           echo '=== TRIGGER FILE (if any) ==='
-
           if [ -f deployment-trigger.json ]; then cat deployment-trigger.json; else echo 'No trigger file'; fi
-
       - name: Show trigger file (always)
-
         if: always()
-
         run: |
-
           if [ -f deployment-trigger.json ]; then cat deployment-trigger.json; else echo 'No trigger file'; fi
 
 
