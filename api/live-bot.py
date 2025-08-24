@@ -9,7 +9,8 @@ import requests
 import hashlib
 import hmac
 import time
-from urllib.parse import urlencode
+from datetime import datetime, timezone
+from urllib.parse import urlencode, urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler
 
 def load_trading_config():
@@ -81,6 +82,47 @@ class VercelLiveBot:
         self.base_url = 'https://testnet.binance.vision'  # Using testnet for safe testing
         self.config = TRADING_CONFIG
         self.trade_log = []
+        self.health = {
+            'last_market_success': None,
+            'last_account_success': None,
+            'last_error': None,
+            'consecutive_failures': 0
+        }
+        self._load_trade_log()
+        # Simple in-memory (per lambda instance) market data cache
+        self._kline_cache = None  # (timestamp, data)
+
+    TRADE_LOG_PATH = 'trade_log.json'
+
+    def _load_trade_log(self):
+        try:
+            if os.path.exists(self.TRADE_LOG_PATH):
+                with open(self.TRADE_LOG_PATH, 'r') as f:
+                    self.trade_log = json.load(f)
+        except Exception:
+            self.trade_log = []
+
+    def _persist_trade(self, trade):
+        try:
+            self.trade_log.append(trade)
+            with open(self.TRADE_LOG_PATH, 'w') as f:
+                json.dump(self.trade_log[-1000:], f)  # cap size
+        except Exception as e:
+            self.health['last_error'] = f'trade_log_persist_failed: {e}'
+
+    def _retry(self, func, attempts=3, delay=0.5, label='op'):
+        last_err = None
+        for i in range(attempts):
+            try:
+                r = func()
+                if isinstance(r, dict) and r.get('error'):
+                    last_err = r.get('error')
+                else:
+                    return r
+            except Exception as e:
+                last_err = str(e)
+            time.sleep(delay)
+        return {"error": f"{label} failed after {attempts} attempts: {last_err}"}
     
     def _create_signature(self, params):
         """Create HMAC SHA256 signature for Binance API"""
@@ -115,6 +157,9 @@ class VercelLiveBot:
     def get_market_data(self, symbol='BTCUSDT', interval='5m', limit=100):
         """Get market data using your backtest timeframe"""
         try:
+            # Use cache if recent (<=15s) to reduce latency & API hits
+            if self._kline_cache and time.time() - self._kline_cache[0] < 15:
+                return self._kline_cache[1]
             response = requests.get(
                 f"{self.base_url}/api/v3/klines",
                 params={'symbol': symbol, 'interval': interval, 'limit': limit},
@@ -132,6 +177,9 @@ class VercelLiveBot:
                     return {"error": f"API request failed with status {response.status_code}", "response": response.text}
             
             data = response.json()
+            # Store successful fetch in cache
+            self._kline_cache = (time.time(), data)
+            self.health['last_market_success'] = int(time.time())
             
             # Validate response format
             if not isinstance(data, list):
@@ -519,21 +567,71 @@ class VercelLiveBot:
             # Generate signal (without executing)
             signal_data = self.generate_signal(indicators, market_regime)
             
-            return {
-                'status': 'dashboard_view',
+            # Fetch real account balances (read-only)
+            balances = {}
+            account = self._retry(lambda: self._make_request('/api/v3/account'), label='account')
+            if isinstance(account, dict) and 'balances' in account:
+                for bal in account.get('balances', []):
+                    try:
+                        free = float(bal.get('free', '0'))
+                        if free > 0:
+                            balances[bal.get('asset')] = free
+                    except Exception:
+                        continue
+                self.health['last_account_success'] = int(time.time())
+
+            # Basic trading summary approximation (placeholder if no history persisted)
+            # Compute PnL metrics from persisted trades
+            realized_pnl = 0
+            wins = 0
+            for t in self.trade_log:
+                pnl = t.get('pnl')
+                if pnl is not None:
+                    realized_pnl += pnl
+                    if pnl > 0:
+                        wins += 1
+            trading_summary = {
+                'total_trades': len(self.trade_log),
+                'realized_pnl': round(realized_pnl, 2),
+                'win_rate': round(100 * wins / len(self.trade_log), 2) if self.trade_log else 0.0
+            }
+
+            # Construct market_data snapshot similar to user sample
+            market_data = {
+                'symbol': self.config['SYMBOL'],
+                'current_price': current_price,
+                'volume_24h': None,
+                'high_24h': max(prices[-48:]) if len(prices) >= 48 else max(prices),
+                'low_24h': min(prices[-48:]) if len(prices) >= 48 else min(prices),
+                'change_24h': ((prices[-1] - prices[-min(288,len(prices))]) / prices[-min(288,len(prices))] * 100) if len(prices) > 1 else 0,
+                'timestamp': datetime.now(timezone.utc).isoformat().replace('+00:00','Z')
+            }
+
+            payload = {
+                'status': 'success',
+                'mode': 'dashboard_view',
                 'timestamp': int(time.time()),
                 'signal': signal_data,
                 'market_regime': market_regime,
-                'account_balance': {'USDT': 10000, 'BTC': 0.1},  # Placeholder values
-                'trade_executed': {
-                    'simulated': True,
-                    'side': 'HOLD',
-                    'quantity': 0,
-                    'value': 0
+                'account_balance': balances,
+                'market_data': market_data,
+                'trading_summary': trading_summary,
+                'system_status': {
+                    'config_source': 'optimized' if OPTIMIZED_CONFIG else 'default',
+                    'execution_mode': 'read_only_dashboard',
+                    'regime': market_regime.get('regime') if isinstance(market_regime, dict) else None
                 },
+                'trade_executed': None,
                 'config_source': 'optimized' if OPTIMIZED_CONFIG else 'default',
                 'execution_mode': 'read_only_dashboard'
             }
+            # Expose health subset
+            payload['health'] = {
+                'last_market_success': self.health['last_market_success'],
+                'last_account_success': self.health['last_account_success'],
+                'last_error': self.health['last_error']
+            }
+            return payload
             
         except Exception as e:
             return {"error": f"Dashboard status failed: {str(e)}"}
@@ -590,8 +688,18 @@ class VercelLiveBot:
                 if free > 0:
                     balances[balance['asset']] = free
             
+            # Simple position tracking (load prior position from last trade if any)
+            current_position = 0.0
+            avg_entry = None
+            for t in reversed(self.trade_log):
+                if 'position' in t:
+                    current_position = t['position']
+                    avg_entry = t.get('avg_entry')
+                    break
+
             # Execute trade if signal is strong enough
             trade_result = None
+            realized_pnl = 0
             if signal_data['signal'] in ['BUY', 'SELL'] and signal_data['confidence'] >= self.config['min_confidence_for_trade']:
                 
                 quantity = self.calculate_position_size(balances, indicators['current_price'])
@@ -606,21 +714,60 @@ class VercelLiveBot:
                 trade_result = self._make_request('/api/v3/order', trade_params, 'POST')
                 
                 # Log the trade for monitoring
+                executed_price = indicators['current_price']
+                side = signal_data['signal']
                 if trade_result and 'orderId' in trade_result:
-                    print(f"✅ TESTNET TRADE EXECUTED: {signal_data['signal']} {quantity:.5f} {self.config['SYMBOL']} at ${indicators['current_price']}")
+                    print(f"✅ TESTNET TRADE EXECUTED: {side} {quantity:.5f} {self.config['SYMBOL']} at ${executed_price}")
                 else:
                     print(f"⚠️ Trade failed: {trade_result}")
-                    # Fallback to simulation if trade fails
                     trade_result = {
                         'simulated': True,
                         'symbol': self.config['SYMBOL'],
-                        'side': signal_data['signal'],
+                        'side': side,
                         'quantity': f"{quantity:.5f}",
-                        'price': indicators['current_price'],
-                        'value': quantity * indicators['current_price'],
+                        'price': executed_price,
+                        'value': quantity * executed_price,
                         'error': 'Trade execution failed, simulated instead'
                     }
+                # Update position and realized PnL (simple FIFO assumption)
+                if side == 'BUY':
+                    if avg_entry is None:
+                        avg_entry = executed_price
+                        current_position = quantity
+                    else:
+                        total_cost = avg_entry * current_position + executed_price * quantity
+                        current_position += quantity
+                        avg_entry = total_cost / current_position if current_position else None
+                elif side == 'SELL':
+                    # Realized PnL on portion sold
+                    sell_qty = min(quantity, current_position)
+                    if avg_entry and sell_qty > 0:
+                        realized_pnl += (executed_price - avg_entry) * sell_qty
+                    current_position -= sell_qty
+                    if current_position <= 0:
+                        current_position = 0
+                        avg_entry = None
+                # Persist trade
+                self._persist_trade({
+                    'ts': int(time.time()),
+                    'side': side,
+                    'qty': quantity,
+                    'price': executed_price,
+                    'position': current_position,
+                    'avg_entry': avg_entry,
+                    'pnl': realized_pnl if realized_pnl else 0
+                })
+            # Unrealized PnL
+            unrealized_pnl = 0
+            if current_position and avg_entry:
+                unrealized_pnl = (indicators['current_price'] - avg_entry) * current_position
             
+            # Compute cumulative realized pnl from all stored trades
+            cumulative_realized = 0
+            for t in self.trade_log:
+                pnlv = t.get('pnl')
+                if pnlv:
+                    cumulative_realized += pnlv
             return {
                 'status': 'success',
                 'timestamp': int(time.time()),
@@ -628,6 +775,13 @@ class VercelLiveBot:
                 'market_regime': market_regime,
                 'account_balance': balances,
                 'trade_executed': trade_result,
+                'position': {
+                    'size': current_position,
+                    'avg_entry': avg_entry,
+                    'unrealized_pnl': round(unrealized_pnl, 2),
+                    'realized_pnl_session': realized_pnl
+                },
+                'cumulative_realized_pnl': round(cumulative_realized, 2),
                 'config_source': 'optimized' if OPTIMIZED_CONFIG else 'default',
                 'parameters_used': {
                     'RSI_PERIOD': self.config['RSI_PERIOD'],
@@ -644,26 +798,49 @@ class VercelLiveBot:
             }
             
         except Exception as e:
+            self.health['last_error'] = str(e)
             return {"error": f"Trading cycle failed: {str(e)}"}
 
 class handler(BaseHTTPRequestHandler):
+    # Simple in-memory rate limiting per cold start (not distributed). Allow 30 req/min.
+    requests_window_start = time.time()
+    requests_in_window = 0
+
     def do_GET(self):
         try:
+            # Rate limit
+            now = time.time()
+            if now - handler.requests_window_start > 60:
+                handler.requests_window_start = now
+                handler.requests_in_window = 0
+            handler.requests_in_window += 1
+            if handler.requests_in_window > 120:  # generous limit
+                self.send_response(429)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': 'rate_limited'}).encode())
+                return
+
             # Check if this is a dashboard view request vs trading execution
             auth_header = self.headers.get('Authorization')
             user_agent = self.headers.get('User-Agent', '')
             cron_secret = os.environ.get('BOT_SECRET')
+            # Parse query params for mode
+            parsed = urlparse(self.path)
+            params = parse_qs(parsed.query)
+            mode = params.get('mode', ['dashboard'])[0]
             
             # Allow dashboard access without authentication (read-only)
             # Require authentication for automated trading requests
-            is_dashboard_request = 'Mozilla' in user_agent or not auth_header
+            is_dashboard_request = mode == 'dashboard' or 'Mozilla' in user_agent or not auth_header
             is_authenticated = cron_secret and auth_header == f'Bearer {cron_secret}'
             
             # For dashboard requests, provide read-only status data
             if is_dashboard_request:
                 bot = VercelLiveBot()
                 result = bot.get_dashboard_status()
-            elif is_authenticated:
+            elif is_authenticated and mode == 'trade':
                 # Execute actual trading for authenticated requests
                 bot = VercelLiveBot()
                 result = bot.execute_live_trading_cycle()
@@ -684,6 +861,10 @@ class handler(BaseHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Origin', '*')
             self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
             self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+            # Rate limit visibility (not exact distributed count)
+            remaining = max(0, 120 - handler.requests_in_window)
+            self.send_header('X-RateLimit-Limit', '120')
+            self.send_header('X-RateLimit-Remaining', str(remaining))
             self.end_headers()
             
             self.wfile.write(json.dumps(result, indent=2).encode())

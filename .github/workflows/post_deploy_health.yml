@@ -1,0 +1,12 @@
+name: post-deploy-health
+on:
+  workflow_dispatch:
+
+jobs:
+  check-health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Curl health endpoint
+        run: |
+          curl -s https://my-trading-robot-1.vercel.app/api/health | tee health.json
+          python -c "import json,sys; j=json.load(open('health.json')); req=['status','cumulative_realized_pnl','timestamp']; missing=[k for k in req if k not in j];\nprint('Missing keys',missing) if missing else print('Health OK',j['status']); sys.exit(1 if missing else 0)"

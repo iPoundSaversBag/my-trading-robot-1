@@ -1,55 +1,24 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "public/index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "api/live-data.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/dashboard-data.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/test-python.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/portfolio-vercel.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/live-bot.py",
-      "use": "@vercel/python"
-    }
+    { "src": "public/index.html", "use": "@vercel/static" },
+  { "src": "api/dashboard-data.py", "use": "@vercel/python" },
+  { "src": "api/trades.py", "use": "@vercel/python" },
+    { "src": "api/portfolio.py", "use": "@vercel/python" },
+    { "src": "api/live-bot.py", "use": "@vercel/python" }
   ],
   "routes": [
-    {
-      "src": "/api/live-data",
-      "dest": "/api/live-data.py"
-    },
-    {
-      "src": "/api/dashboard-data",
-      "dest": "/api/dashboard-data.py"
-    },
-    {
-      "src": "/api/test-python",
-      "dest": "/api/test-python.py"
-    },
-    {
-      "src": "/api/portfolio",
-      "dest": "/api/portfolio-vercel.py"
-    },
-    {
-      "src": "/api/live-bot",
-      "dest": "/api/live-bot.py"
-    },
-    {
-      "src": "/",
-      "dest": "/public/index.html"
+    { "src": "/api/dashboard-data", "dest": "/api/dashboard-data.py" },
+  { "src": "/api/trades", "dest": "/api/trades.py" },
+    { "src": "/api/portfolio", "dest": "/api/portfolio.py" },
+    { "src": "/api/live-bot", "dest": "/api/live-bot.py" },
+    { "src": "/", "dest": "/public/index.html" }
+  ],
+  "functions": {
+    "api/*.py": {
+      "runtime": "python3.11",
+      "maxDuration": 10,
+      "memory": 512
     }
-  ]
+  }
 }

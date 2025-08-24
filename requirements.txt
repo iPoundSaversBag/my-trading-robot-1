@@ -13,3 +13,5 @@ tqdm
 numba
 scikit-optimize
 imbalanced-learn
+# Added for Vercel serverless functions that import binance.client
+python-binance

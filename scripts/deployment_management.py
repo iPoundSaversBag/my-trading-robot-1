@@ -42,7 +42,6 @@ class CloudDeploymentManager:
     def __init__(self, deploy_dir: str = "deploy"):
         self.deploy_dir = Path(deploy_dir)
         self.api_endpoints = {
-            'live-data': '/api/live-data',
             'dashboard-data': '/api/dashboard-data',
             'portfolio': '/api/portfolio',
             'tearsheet': '/api/tearsheet'
@@ -135,7 +134,6 @@ class CloudDeploymentManager:
         
         # Define API files to copy
         api_files = [
-            ("api/live-data.py", "live-data.py"),
             ("api/dashboard-data.py", "dashboard-data.py"),
             ("api/portfolio.py", "portfolio.py"),
             ("api/tearsheet.py", "tearsheet.py"),

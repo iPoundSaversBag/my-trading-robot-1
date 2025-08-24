@@ -2,6 +2,8 @@
 
 ![Integrity CI](https://github.com/iPoundSaversBag/my-trading-robot-1/actions/workflows/integrity.yml/badge.svg)
 ![Maintenance CI](https://github.com/iPoundSaversBag/my-trading-robot-1/actions/workflows/maintenance.yml/badge.svg)
+![Tests](https://github.com/iPoundSaversBag/my-trading-robot-1/actions/workflows/tests.yml/badge.svg)
+![Post Deploy Health](https://github.com/iPoundSaversBag/my-trading-robot-1/actions/workflows/post_deploy_health.yml/badge.svg)
 
 An advanced cryptocurrency trading bot with Ichimoku Cloud strategy, multi-timeframe analysis, and automated optimization pipeline.
 

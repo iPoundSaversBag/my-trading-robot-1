@@ -539,8 +539,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     async function loadRealBotData() {
         try {
-            // Use live-data API that connects to real trading data sources
-            const response = await fetch('/api/live-data');
+            // Fetch unified live bot endpoint (real trading data)
+            const response = await fetch('/api/live-bot');
             
             if (response.ok) {
                 const botData = await response.json();
@@ -563,10 +563,40 @@ document.addEventListener('DOMContentLoaded', function() {
             if (account.USDT !== undefined) {
                 document.getElementById('live-portfolio-value').textContent = '$' + Number(account.USDT).toLocaleString('en-US');
             }
+                        // Recent trades load (lazy)
+                        if (!window._lastTradesFetch || Date.now() - window._lastTradesFetch > 10000) {
+                                window._lastTradesFetch = Date.now();
+                                fetch('/api/trades')
+                                    .then(r=>r.ok?r.json():null)
+                                    .then(tradesResp=>{
+                                        if(!tradesResp) return;
+                                        let table = document.getElementById('recent-trades-table');
+                                        if(!table){
+                                                const container = document.querySelector('.live-quick-glance') || document.body;
+                                                const wrap = document.createElement('div');
+                                                wrap.style.marginTop='16px';
+                                                wrap.innerHTML = `<h4 style="margin:4px 0">Recent Trades</h4><table id="recent-trades-table" style="width:100%;font-size:12px;border-collapse:collapse"><thead><tr><th style='text-align:left'>Time</th><th>Side</th><th>Qty</th><th>Price</th><th>PnL</th><th>Pos</th></tr></thead><tbody></tbody></table>`;
+                                                container.appendChild(wrap);
+                                                table = wrap.querySelector('table');
+                                        }
+                                        const tbody = table.querySelector('tbody');
+                                        tbody.innerHTML = tradesResp.trades.map(t=>{
+                                                const dt = t.ts ? new Date(t.ts*1000).toLocaleTimeString() : '-';
+                                                const pnl = (t.pnl||0).toFixed(2);
+                                                const pnlColor = t.pnl>0? 'style="color:var(--accent-green)"': (t.pnl<0?'style="color:var(--accent-red)"':'');
+                                                return `<tr><td>${dt}</td><td>${t.side||'-'}</td><td>${(t.qty||0).toFixed? t.qty.toFixed(4): t.qty}</td><td>${t.price||'-'}</td><td ${pnlColor}>${pnl}</td><td>${(t.position||0).toFixed? t.position.toFixed(4): t.position}</td></tr>`;
+                                        }).reverse().join('');
+                                    }).catch(()=>{});
+                        }
             const summary = botData.trading_summary || {};
-            if (summary.total_pnl !== undefined) {
+            const cumulative = botData.cumulative_realized_pnl;
+            if (cumulative !== undefined || summary.realized_pnl !== undefined) {
+                const val = cumulative !== undefined ? cumulative : summary.realized_pnl;
                 const totalPnlEl = document.querySelector('.quick-stats .stat-value.loss');
-                if (totalPnlEl) totalPnlEl.textContent = '$' + parseFloat(summary.total_pnl).toFixed(2);
+                if (totalPnlEl) {
+                    totalPnlEl.textContent = '$' + parseFloat(val).toFixed(2);
+                    totalPnlEl.style.color = val >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+                }
             }
             if (summary.total_trades !== undefined) {
                 const tradesEl = document.querySelectorAll('.quick-stats .stat-value')[1];
@@ -588,9 +618,126 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('ada-price').textContent = '$' + (btcPrice * 0.000008).toFixed(4);
             }
             const status = botData.system_status || {};
+            // Position & PnL display
+            const position = botData.position || {};
+            const pnlContainerId = 'live-pnl-block';
+            let pnlBlock = document.getElementById(pnlContainerId);
+            if (!pnlBlock) {
+                const targetPanel = document.querySelector('.live-quick-glance');
+                if (targetPanel) {
+                    pnlBlock = document.createElement('div');
+                    pnlBlock.id = pnlContainerId;
+                    pnlBlock.style.marginTop = '12px';
+                    pnlBlock.style.display = 'flex';
+                    pnlBlock.style.gap = '20px';
+                    pnlBlock.innerHTML = `
+                        <div><strong>Position</strong>: <span id="pos-size">-</span> @ <span id="pos-entry">-</span></div>
+                        <div><strong>Unrealized PnL</strong>: <span id="pos-unrealized">-</span></div>
+                        <div><strong>Session Realized</strong>: <span id="pos-realized">-</span></div>`;
+                    targetPanel.appendChild(pnlBlock);
+                }
+            }
+            if (pnlBlock) {
+                const fmt = v => (v === null || v === undefined) ? '-' : Number(v).toFixed(2);
+                const sizeEl = document.getElementById('pos-size');
+                const entryEl = document.getElementById('pos-entry');
+                const unEl = document.getElementById('pos-unrealized');
+                const reEl = document.getElementById('pos-realized');
+                if (sizeEl && position.size !== undefined) sizeEl.textContent = Number(position.size).toFixed(5);
+                if (entryEl && position.avg_entry !== undefined && position.avg_entry !== null) entryEl.textContent = Number(position.avg_entry).toFixed(2);
+                if (unEl && position.unrealized_pnl !== undefined) {
+                    const val = Number(position.unrealized_pnl).toFixed(2);
+                    unEl.textContent = '$' + val;
+                    unEl.style.color = position.unrealized_pnl >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+                }
+                if (reEl && position.realized_pnl_session !== undefined) {
+                    const val = Number(position.realized_pnl_session).toFixed(2);
+                    reEl.textContent = '$' + val;
+                    reEl.style.color = position.realized_pnl_session >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+                }
+            }
             if (status.status) {
                 document.getElementById('bot-status').textContent = status.status;
             }
+            // --- Stale data detection (age > 60s) ---
+            try {
+                const nowSec = Date.now() / 1000;
+                // Prefer botData.health.last_market_success if present; fallback to market.last_update / botData.last_update
+                let lastTs = null;
+                if (botData.health && botData.health.last_market_success) {
+                    lastTs = botData.health.last_market_success; // assume already epoch seconds
+                } else if (botData.market_data && botData.market_data.last_update) {
+                    lastTs = botData.market_data.last_update; // may be epoch seconds
+                } else if (botData.last_update) {
+                    lastTs = botData.last_update;
+                }
+                const existingAlert = document.getElementById('stale-data-alert');
+                if (lastTs) {
+                    const age = nowSec - Number(lastTs);
+                    if (age > 60) {
+                        if (!existingAlert) {
+                            const alert = document.createElement('div');
+                            alert.id = 'stale-data-alert';
+                            alert.style.background = 'var(--accent-red)';
+                            alert.style.color = '#fff';
+                            alert.style.padding = '6px 10px';
+                            alert.style.borderRadius = '4px';
+                            alert.style.fontSize = '12px';
+                            alert.style.marginTop = '8px';
+                            alert.style.display = 'inline-block';
+                            alert.textContent = 'Warning: Data stale (' + Math.floor(age) + 's old)';
+                            const target = document.querySelector('.live-quick-glance') || document.body;
+                            target.prepend(alert);
+                        } else {
+                            existingAlert.textContent = 'Warning: Data stale (' + Math.floor(age) + 's old)';
+                        }
+                    } else if (existingAlert) {
+                        existingAlert.remove();
+                    }
+                    // Add/Update last trade badge
+                    const lastTradeTs = (botData.last_trade_ts || (botData.health && botData.health.last_market_success)) || lastTs;
+                    if (lastTradeTs) {
+                        let badge = document.getElementById('last-trade-badge');
+                        if (!badge) {
+                            badge = document.createElement('div');
+                            badge.id = 'last-trade-badge';
+                            badge.style.background = 'var(--panel-bg)';
+                            badge.style.border = '1px solid var(--border)';
+                            badge.style.padding = '4px 8px';
+                            badge.style.borderRadius = '4px';
+                            badge.style.fontSize = '12px';
+                            badge.style.marginTop = '6px';
+                            const target = document.querySelector('.live-quick-glance') || document.body;
+                            target.appendChild(badge);
+                        }
+                        const dt = new Date(Number(lastTradeTs) * 1000);
+                        const ago = Math.floor((Date.now() - dt.getTime()) / 1000);
+                        badge.textContent = 'Last Trade/Update: ' + dt.toLocaleTimeString() + ' (' + ago + 's ago)';
+                    }
+                    // Cumulative PnL badge (compact)
+                    if (botData.cumulative_realized_pnl !== undefined) {
+                        let cumBadge = document.getElementById('cum-pnl-badge');
+                        if (!cumBadge) {
+                            cumBadge = document.createElement('div');
+                            cumBadge.id = 'cum-pnl-badge';
+                            cumBadge.style.background = 'var(--panel-bg)';
+                            cumBadge.style.border = '1px solid var(--border)';
+                            cumBadge.style.padding = '4px 8px';
+                            cumBadge.style.borderRadius = '4px';
+                            cumBadge.style.fontSize = '12px';
+                            cumBadge.style.marginTop = '6px';
+                            const target = document.querySelector('.live-quick-glance') || document.body;
+                            target.appendChild(cumBadge);
+                        }
+                        const val = Number(botData.cumulative_realized_pnl).toFixed(2);
+                        cumBadge.textContent = 'Cumulative Realized PnL: $' + val;
+                        cumBadge.style.color = botData.cumulative_realized_pnl >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+                    }
+                } else if (existingAlert) {
+                    // No timestamp available anymore -> remove any lingering alert
+                    existingAlert.remove();
+                }
+            } catch(e) { /* non-fatal */ }
             document.getElementById('market-data-status').textContent = 'Live';
             document.getElementById('position-sync').textContent = 'Synchronized';
             document.getElementById('feed-latency').textContent = '<100ms';
@@ -1113,7 +1260,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Bootstrap immediate live-data fetch in case user lands directly on Live Data section
 (async ()=>{
     try {
-        const r = await fetch('/api/live-data');
+    const r = await fetch('/api/live-bot');
         if(!r.ok) { console.warn('bootstrap live-data status', r.status); return; }
         const d = await r.json();
         if (typeof updateLiveTestnetData === 'function') {
