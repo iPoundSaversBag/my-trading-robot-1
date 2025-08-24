@@ -8,7 +8,6 @@ import math
 import random
 import time
 from datetime import datetime, timezone
-from http.server import BaseHTTPRequestHandler
 
 
 def _simulate_price():
@@ -58,27 +57,26 @@ def _base_payload():
 	}
 
 
-class handler(BaseHTTPRequestHandler):  # Vercel Python runtime entrypoint
-	def do_GET(self):
-		try:
-			payload = _base_payload()
-			self.send_response(200)
-			self.send_header('Content-Type', 'application/json')
-			self.send_header('Access-Control-Allow-Origin', '*')
-			self.end_headers()
-			self.wfile.write(json.dumps(payload).encode())
-		except Exception as e:  # pragma: no cover (defensive)
-			self.send_response(500)
-			self.send_header('Content-Type', 'application/json')
-			self.end_headers()
-			self.wfile.write(json.dumps({"status": "error", "error": str(e)}).encode())
-
-	def do_OPTIONS(self):  # CORS preflight
-		self.send_response(200)
-		self.send_header('Access-Control-Allow-Origin', '*')
-		self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-		self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-		self.end_headers()
+def handler(request):  # Vercel Python runtime expects a function returning dict
+	try:
+		payload = _base_payload()
+		return {
+			'statusCode': 200,
+			'headers': {
+				'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*',
+				'Cache-Control': 'no-cache, no-store, must-revalidate',
+				'Pragma': 'no-cache',
+				'Expires': '0'
+			},
+			'body': json.dumps(payload)
+		}
+	except Exception as e:  # pragma: no cover
+		return {
+			'statusCode': 500,
+			'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+			'body': json.dumps({'status': 'error', 'error': str(e)})
+		}
 
 
 if __name__ == "__main__":  # Simple local smoke test

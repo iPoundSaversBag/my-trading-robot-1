@@ -1140,3 +1140,17 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- SENTINEL_WRITE_173776_413603 -->
 <!-- SENTINEL_WRITE_173778_413603 -->
 <!-- SENTINEL_WRITE_173769_413603 -->
+<script>
+// Bootstrap immediate live-data fetch in case user lands directly on Live Data section
+(async ()=>{
+    try {
+        const r = await fetch('/api/live-data');
+        if(!r.ok) { console.warn('bootstrap live-data status', r.status); return; }
+        const d = await r.json();
+        if (typeof updateLiveTestnetData === 'function') {
+            updateLiveTestnetData(d);
+            console.log('Bootstrap live-data applied');
+        }
+    } catch(e){ console.error('bootstrap live-data error', e); }
+})();
+</script>
