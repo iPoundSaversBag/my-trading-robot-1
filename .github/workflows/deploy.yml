@@ -36,9 +36,7 @@ jobs:
           if [ ! -d public ]; then
             echo 'public directory missing -> generating minimal placeholder'
             mkdir -p public
-            cat > public/index.html <<'EOF'
-            <html><head><title>Trading Dashboard Placeholder</title></head><body><h1>Placeholder Dashboard</h1><p>Content not generated yet.</p></body></html>
-            EOF
+            printf '%s\n' '<!DOCTYPE html><html><head><meta charset="utf-8"/><title>Trading Dashboard Placeholder</title></head><body><h1>Placeholder Dashboard</h1><p>Content not generated yet.</p></body></html>' > public/index.html
           fi
           test -f public/index.html || { echo 'public/index.html still missing'; exit 1; }
       - name: Upload artifact
