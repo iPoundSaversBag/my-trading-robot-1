@@ -5,7 +5,6 @@ scikit-learn
 joblib
 pyarrow
 ta
-pytest
 json5
 ccxt
 matplotlib
@@ -13,5 +12,4 @@ tqdm
 numba
 scikit-optimize
 imbalanced-learn
-# Added for Vercel serverless functions that import binance.client
-python-binance
+# Removed pytest & python-binance for local-only runtime simplification. Add back if needed.
